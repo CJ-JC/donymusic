@@ -1,37 +1,61 @@
-import { Routes, Route, Navigate, useLocation } from "react-router-dom";
+import React from "react";
+import { Routes, Route, Outlet } from "react-router-dom";
 import { Footer, Navbar } from "@/widgets/layout";
-import routes from "@/routes";
+import { Home, Profile, SignIn, SignUp } from "@/pages";
+import Detail from "./components/detail";
+import CoursePlayer from "./dashboard/course-player";
+import { Courses } from "@/pages/courses";
+import Admin from "./pages/admin/admin";
+import CreateCourse from "./pages/admin/course/create-course";
+import NotFound from "./pages/404";
+import CreateWebinar from "./pages/admin/create-webinar";
+import EditCourse from "./pages/admin/course/edit-course";
+import CreateChapter from "./pages/admin/course/create-chapter";
+import EditChapter from "./pages/admin/course/edit-chapter";
+
+const Layout = () => (
+  <>
+    <Navbar />
+    <Outlet />
+    <Footer />
+  </>
+);
 
 function App() {
-  const { pathname } = useLocation();
-
-  const isCoursePlayerPath =
-    /^\/course-player\/course\/\d+\/chapters\/\d+$/.test(pathname);
-
   return (
-    <>
-      {!isCoursePlayerPath && (
-        // <div className="container absolute left-2/4 z-10 mx-auto -translate-x-2/4 p-4">
-        //   <Navbar routes={routes} />
-        // </div>
-        <div className="inset-y-0 z-[49] mx-auto h-[80px] w-full bg-black">
-          <div className="flex h-full items-center gap-x-4 border-b p-4">
-            <div className="container z-10 mx-auto max-w-screen-xl">
-              <Navbar routes={routes} />
-            </div>
-          </div>
-        </div>
-      )}
+    <Routes>
+      {/* Routes principales */}
+      <Route>
+        <Route element={<Layout />}>
+          <Route index element={<Home />} />
+          <Route path="profile" element={<Profile />} />
+          <Route path="courses" element={<Courses />} />
+          <Route path="detail/slug/:id" element={<Detail />} />
+          <Route path="sign-in" element={<SignIn />} />
+          <Route path="sign-up" element={<SignUp />} />
+        </Route>
+      </Route>
 
-      <Routes>
-        {routes.map(
-          ({ path, element }, key) =>
-            element && <Route key={key} exact path={path} element={element} />,
-        )}
-        <Route path="*" element={<Navigate to="/home" replace />} />
-      </Routes>
-      {!isCoursePlayerPath && <Footer />}
-    </>
+      {/* Routes admin */}
+      <Route path="/administrator" element={<Admin />}>
+        <Route path="create-course" element={<CreateCourse />} />
+        <Route path="create-chapter/:courseId" element={<CreateChapter />} />
+        <Route
+          path="course/:courseId/edit-chapter/:id"
+          element={<EditChapter />}
+        />
+        <Route path="edit-course/:id" element={<EditCourse />} />
+        <Route path="create-webinar" element={<CreateWebinar />} />
+      </Route>
+
+      {/* Autres routes */}
+      <Route
+        path="/course-player/course/:courseId/chapters/:chapterId"
+        element={<CoursePlayer />}
+      />
+
+      <Route path="*" element={<NotFound />} />
+    </Routes>
   );
 }
 

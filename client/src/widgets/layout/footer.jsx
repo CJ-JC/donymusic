@@ -5,7 +5,7 @@ const year = new Date().getFullYear();
 
 export function Footer({ title, description, socials, menus, copyright }) {
   return (
-    <footer className="mx-auto w-full max-w-screen-xl p-4 md:py-4">
+    <footer className="mx-auto w-full max-w-screen-xl border-t p-4 md:py-4">
       <div className="container mx-auto">
         <div className="flex flex-wrap pt-6 text-center lg:text-left">
           <div className="w-full px-4 lg:w-6/12">

@@ -35,7 +35,7 @@ const CourseCard = ({ id, title, imageUrl, chaptersLength, price, slug }) => {
         <article className="pt-30 relative isolate mx-auto flex h-72 max-w-sm flex-col justify-end overflow-hidden rounded-2xl px-4 pb-4">
           <img
             alt={title}
-            src={imageUrl}
+            src={`http://localhost:8001${imageUrl}`}
             style={{
               borderBottomLeftRadius: "20px",
               borderBottomRightRadius: "20px",
@@ -60,56 +60,56 @@ const CourseCard = ({ id, title, imageUrl, chaptersLength, price, slug }) => {
 
       {/* <div className="grid grid-cols-1 gap-8 lg:grid-cols-[70%_30%]">
 
-        <div className="overflow-hidden rounded-lg bg-gray-900">
-          {selectedVideo ? (
-            <Vimeo video={selectedVideo} responsive={true} autoplay={false} />
-          ) : (
-            <div className="flex aspect-video items-center justify-center bg-gray-800 text-white">
-              Sélectionnez une vidéo
-            </div>
-          )}
-        </div>
+			<div className="overflow-hidden rounded-lg bg-gray-900">
+			{selectedVideo ? (
+				<Vimeo video={selectedVideo} responsive={true} autoplay={false} />
+			) : (
+				<div className="flex aspect-video items-center justify-center bg-gray-800 text-white">
+				Sélectionnez une vidéo
+				</div>
+			)}
+			</div>
 
 
-        <div className="overflow-hidden rounded-lg bg-white shadow-lg">
-          {course.chapters?.map((chapter) => (
-            <div key={chapter.id} className="border-b last:border-b-0">
-              <div className="bg-gray-50 p-4">
-                <h3 className="text-lg font-semibold">{chapter.title}</h3>
-                <p className="mt-1 text-sm text-gray-600">
-                  {chapter.description}
-                </p>
-              </div>
+			<div className="overflow-hidden rounded-lg bg-white shadow-lg">
+			{course.chapters?.map((chapter) => (
+				<div key={chapter.id} className="border-b last:border-b-0">
+				<div className="bg-gray-50 p-4">
+					<h3 className="text-lg font-semibold">{chapter.title}</h3>
+					<p className="mt-1 text-sm text-gray-600">
+					{chapter.description}
+					</p>
+				</div>
 
-              <div className="divide-y">
-                {chapter.videos?.map((video) => (
-                  <button
-                    key={video.id}
-                    onClick={() => setSelectedVideo(video.url)}
-                    className={`w-full p-4 text-left transition-colors hover:bg-gray-50 ${
-                      selectedVideo === video.url ? "bg-blue-50" : ""
-                    }`}
-                  >
-                    <div className="flex items-center gap-3">
-                      <div className="flex-1">
-                        <h4 className="font-medium text-gray-900">
-                          Vidéo {video.id}
-                        </h4>
-                        <p className="truncate text-sm text-gray-500">
-                          {chapter.title}
-                        </p>
-                      </div>
-                      {selectedVideo === video.url && (
-                        <span className="text-blue-600">▶</span>
-                      )}
-                    </div>
-                  </button>
-                ))}
-              </div>
-            </div>
-          ))}
-        </div>
-      </div> */}
+				<div className="divide-y">
+					{chapter.videos?.map((video) => (
+					<button
+						key={video.id}
+						onClick={() => setSelectedVideo(video.url)}
+						className={`w-full p-4 text-left transition-colors hover:bg-gray-50 ${
+						selectedVideo === video.url ? "bg-blue-50" : ""
+						}`}
+					>
+						<div className="flex items-center gap-3">
+						<div className="flex-1">
+							<h4 className="font-medium text-gray-900">
+							Vidéo {video.id}
+							</h4>
+							<p className="truncate text-sm text-gray-500">
+							{chapter.title}
+							</p>
+						</div>
+						{selectedVideo === video.url && (
+							<span className="text-blue-600">▶</span>
+						)}
+						</div>
+					</button>
+					))}
+				</div>
+				</div>
+			))}
+			</div>
+		</div> */}
     </>
   );
 };

@@ -1,6 +1,5 @@
 import sequelize from "../config/dbMysql.js";
 import { DataTypes } from "sequelize";
-import { Chapter } from "./Chapter.js";
 
 export const Video = sequelize.define(
     "video",

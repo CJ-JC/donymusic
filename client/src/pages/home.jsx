@@ -11,25 +11,29 @@ import {
   Textarea,
   Checkbox,
 } from "@material-tailwind/react";
-import { FingerPrintIcon, UsersIcon } from "@heroicons/react/24/solid";
+import { FingerPrintIcon } from "@heroicons/react/24/solid";
 import { PageTitle } from "@/widgets/layout";
 import { FeatureCard, TeamCard } from "@/widgets/cards";
 import { featuresData, teamData, contactData } from "@/data";
 import axios from "axios";
-import { BookOpen } from "lucide-react";
 import CourseList from "@/components/course-list";
 
 export function Home() {
   const [courses, setCourses] = useState([]);
   useEffect(() => {
-    axios
-      .get("/api/course")
-      .then((res) => {
-        setCourses(res.data);
-      })
-      .catch((error) => {
-        console.error("Erreur lors de la récupération des cours", error);
-      });
+    const fetchCourses = async () => {
+      try {
+        const response = await axios.get("/api/course");
+        const sortedCourses = response.data.sort(
+          (a, b) => new Date(a.createdAt) - new Date(b.createdAt),
+        ); // Trier par date décroissante
+        setCourses(sortedCourses);
+      } catch (error) {
+        console.error("Erreur lors de la récupération des cours :", error);
+      }
+    };
+
+    fetchCourses();
   }, []);
 
   return (
@@ -85,11 +89,9 @@ export function Home() {
               <PageTitle section="Our Team" heading="Nos cours">
                 Nos cours
               </PageTitle>
-              <main className="container mx-auto">
-                <div className="mt-24 grid gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-4 2xl:grid-cols-4">
-                  <CourseList courses={courses} />
-                </div>
-              </main>
+              <div className="mt-24 grid gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-4 2xl:grid-cols-4">
+                <CourseList courses={courses} />
+              </div>
               <div className="my-24 flex justify-center">
                 <Link to={`/courses`} className="rounded-full">
                   <Button variant="filled">Voir tous les cours</Button>

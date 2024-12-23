@@ -42,7 +42,7 @@ const CoursePlayer = () => {
   const [open, setOpen] = useState(0);
 
   const handleOpen = (value) => setOpen(open === value ? 0 : value);
-  const [isSidebarOpen, setIsSidebarOpen] = useState(true);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
   useEffect(() => {
     if (courseId) {
@@ -79,9 +79,9 @@ const CoursePlayer = () => {
     <>
       <aside
         id="cta-button-sidebar"
-        className={`fixed inset-y-0 z-50 h-full w-80 flex-col border-r bg-white shadow-sm transition-transform duration-300 ${
-          isSidebarOpen ? "translate-x-0" : "-translate-x-full"
-        }`}
+        className={`fixed inset-y-0 z-50 h-full w-80 flex-col border-r bg-white shadow-sm transition-transform duration-300
+		${isSidebarOpen ? "translate-x-0" : "-translate-x-full"} 
+		md:block md:translate-x-0`}
         aria-label="Sidebar"
       >
         <div className="flex h-full flex-col overflow-y-auto border-r bg-white shadow-sm">
@@ -94,7 +94,9 @@ const CoursePlayer = () => {
               {course?.title}
             </Typography>
             <CloseIcon
-              className="absolute right-4 top-6 h-6 w-6 rounded-sm text-gray-500 opacity-70 transition-colors hover:text-gray-700 md:opacity-0"
+              className={`absolute right-4 top-6 h-6 w-6 rounded-sm text-gray-500 opacity-70 transition-colors hover:text-gray-700 md:opacity-0 ${
+                isSidebarOpen ? "cursor-pointer" : "disabled"
+              }`}
               onClick={() => setIsSidebarOpen(false)}
             />
           </div>
@@ -124,12 +126,12 @@ const CoursePlayer = () => {
                             }}
                             disabled={isLocked}
                             className={`my-2 flex w-full items-center gap-x-2 p-3 text-sm font-bold transition
-        ${
-          selectedVideo?.url === video.url
-            ? "bg-gray-200 text-blue-gray-900"
-            : "text-blue-gray-800 hover:bg-gray-200"
-        } 
-        ${isLocked ? "cursor-not-allowed opacity-70" : ""}`}
+								${
+                  selectedVideo?.url === video.url
+                    ? "bg-gray-200 text-blue-gray-900"
+                    : "text-blue-gray-800 hover:bg-gray-200"
+                } 
+								${isLocked ? "cursor-not-allowed opacity-70" : ""}`}
                           >
                             {isLocked ? (
                               <Lock className="mr-2 h-4 w-4" />
@@ -159,7 +161,7 @@ const CoursePlayer = () => {
             <button
               onClick={() => setIsSidebarOpen(!isSidebarOpen)}
               type="button"
-              className="mt-2 inline-flex items-center rounded-lg p-2 text-sm text-gray-500 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-200 dark:text-gray-400 dark:hover:bg-gray-700 dark:focus:ring-gray-600 md:hidden"
+              className="inline-flex items-center rounded-lg p-2 text-sm text-gray-500 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-200 dark:text-gray-400 dark:hover:bg-gray-700 dark:focus:ring-gray-600 md:hidden"
             >
               <span className="sr-only">Open sidebar</span>
               <svg
@@ -185,7 +187,7 @@ const CoursePlayer = () => {
             </Link>
           </div>
         </div>
-        <div className="mx-auto w-[100%]">
+        <div className="mx-auto flex flex-col pb-20 xl:max-w-7xl">
           <div className="m-2">
             <div className="border-yellow-30 text-primary flex w-full items-center border bg-yellow-200/80 p-4 text-sm">
               <svg
@@ -208,10 +210,10 @@ const CoursePlayer = () => {
             </div>
             <div className="relative aspect-video">
               {/* {!isReady && !isLocked && (
-                <div className="absolute inset-0 flex items-center justify-center bg-slate-800">
-                    <Loader2 className="h-8 w-8 animate-spin text-white" />
-                </div>
-            )}
+				<div className="absolute inset-0 flex items-center justify-center bg-slate-800">
+					<Loader2 className="h-8 w-8 animate-spin text-white" />
+				</div>
+			)}
 			*/}
               {isLocked && (
                 <div className="absolute inset-0 flex flex-col items-center justify-center gap-y-2 bg-[#1E293B] text-white">

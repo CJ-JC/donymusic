@@ -33,6 +33,8 @@ function Icon({ id, open }) {
 const detail = () => {
   const { id } = useParams();
   const [course, setCourse] = useState(null);
+  const [error, setError] = useState();
+  const [showImage, setShowImage] = useState(false);
 
   useEffect(() => {
     axios
@@ -41,7 +43,7 @@ const detail = () => {
         setCourse(res.data);
       })
       .catch((error) => {
-        console.error("Erreur lors de la récupération du cours", error);
+        setError("Erreur lors de la récupération du cours", error);
       });
   }, [id]);
 
@@ -49,21 +51,37 @@ const detail = () => {
 
   const handleOpen = (value) => setOpen(open === value ? 0 : value);
 
+  const handleVideoError = () => {
+    setShowImage(true);
+  };
+
   if (!course) {
     return <div className="p-8 text-center">Chargement...</div>;
   }
+
   return (
     <main className="h-full">
       <div className="mx-auto max-w-screen-xl p-6">
         <div className="grid grid-cols-1 gap-6 lg:grid-cols-5">
           <div className="order-1 col-span-1 flex flex-col space-y-6 lg:col-span-3">
-            <div className="overflow-hidden rounded-md border py-2">
-              <div className="bg-slate-100 relative aspect-video overflow-hidden">
-                <Vimeo
-                  video={course.videoUrl}
-                  responsive={true}
-                  autoplay={false}
-                />
+            <div className="overflow-hidden rounded-md border p-2">
+              <div className="relative aspect-video overflow-hidden">
+                {showImage || !course.videoUrl ? (
+                  <img
+                    src={
+                      course.image || `http://localhost:8001${course.imageUrl}`
+                    }
+                    alt={course.title}
+                    className="h-full w-full object-cover"
+                  />
+                ) : (
+                  <Vimeo
+                    video={course.videoUrl}
+                    responsive={true}
+                    autoplay={false}
+                    onError={handleVideoError}
+                  />
+                )}
               </div>
             </div>
             <div className="relative rounded-md border p-6">
@@ -157,7 +175,7 @@ const detail = () => {
                 className="rounded-full"
               >
                 <Button
-                  variant="filled"
+                  variant="gradient"
                   className="flex w-full items-center justify-center transition"
                 >
                   <svg
