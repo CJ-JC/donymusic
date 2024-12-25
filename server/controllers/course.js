@@ -3,10 +3,15 @@ import { Chapter } from "../models/Chapter.js";
 import { Video } from "../models/Video.js";
 import fs from "fs";
 
+const admin = process.env.IS_ADMIN_EMAIL;
+
 export const getCourses = async (req, res) => {
     try {
         const courses = await Course.findAll({
-            attributes: ["id", "title", "description", "price", "videoUrl", "imageUrl", "slug", "createdAt"],
+            attributes: ["id", "title", "description", "price", "videoUrl", "imageUrl", "slug", "createdAt", "isPublished"],
+            // where: {
+            //     isPublished: true,
+            // },
             include: [
                 {
                     model: Chapter,
@@ -215,5 +220,24 @@ export const deleteCourse = async (req, res) => {
         res.status(500).json({
             error: `Erreur lors de la suppression du cours: ${error.message}`,
         });
+    }
+};
+
+export const togglePublishCourse = async (req, res) => {
+    const { id } = req.params;
+    const { isPublished } = req.body;
+
+    try {
+        const course = await Course.findByPk(id);
+        if (!course) {
+            return res.status(404).json({ message: "Cours introuvable" });
+        }
+
+        course.isPublished = isPublished;
+        await course.save();
+
+        res.status(200).json({ message: "Statut mis à jour", isPublished: course.isPublished });
+    } catch (error) {
+        res.status(500).json({ message: "Erreur lors de la mise à jour" });
     }
 };

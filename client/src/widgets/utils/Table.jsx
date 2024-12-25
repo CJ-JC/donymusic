@@ -75,7 +75,7 @@ const Table = ({ courses }) => {
               </th>
               <td className="px-6 py-4">{course.price}€</td>
               <td className="px-6 py-4">
-                {isPublished ? (
+                {course.isPublished ? (
                   <span className="me-2 rounded bg-green-100 px-2.5 py-0.5 text-xs font-medium text-green-800 dark:bg-green-900 dark:text-green-300">
                     Publié
                   </span>

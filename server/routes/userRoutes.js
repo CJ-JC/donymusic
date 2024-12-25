@@ -1,5 +1,6 @@
 import express from "express";
-import { createUser, loginUser } from "../controllers/user.js";
+import { createUser, loginUser, logoutUser } from "../controllers/user.js";
+import { checkAuth } from "../middlewares/auth.js";
 
 const router = express.Router();
 
@@ -8,5 +9,9 @@ const router = express.Router();
 router.post("/signin", loginUser);
 
 router.post("/signup", createUser);
+
+router.post("/logout", logoutUser);
+
+router.get("/check-auth", checkAuth);
 
 export default router;

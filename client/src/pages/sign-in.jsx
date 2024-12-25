@@ -1,12 +1,20 @@
 import { Input, Checkbox, Button, Typography } from "@material-tailwind/react";
 import axios from "axios";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { useSelector } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
 
 export function SignIn() {
   const [user, setUser] = useState(null);
   const [error, setError] = useState(null);
   const navigate = useNavigate();
+  const { isLoggedIn } = useSelector((state) => state.auth);
+
+  useEffect(() => {
+    if (isLoggedIn) {
+      navigate("/");
+    }
+  }, [isLoggedIn, user, navigate]);
 
   const [inputs, setInputs] = useState({
     lastName: "",
@@ -26,6 +34,7 @@ export function SignIn() {
       const response = await axios.post("/api/user/signin", inputs);
       setUser(response.data);
       navigate("/");
+      window.location.reload();
     } catch (error) {
       setError(error.response.data.message);
     }
@@ -154,7 +163,7 @@ export function SignIn() {
             Connexion
           </Button>
 
-          <div className="mt-6 flex items-center justify-between gap-2">
+          <div className="mt-6 flex flex-col items-center justify-between gap-2 md:flex-row">
             <Checkbox
               label={
                 <Typography

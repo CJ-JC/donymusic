@@ -36,6 +36,11 @@ export const Course = sequelize.define(
             type: DataTypes.STRING,
             allowNull: false,
         },
+        isPublished: {
+            type: DataTypes.BOOLEAN,
+            defaultValue: false,
+            allowNull: false,
+        },
         createdAt: {
             type: DataTypes.DATE,
             allowNull: false,

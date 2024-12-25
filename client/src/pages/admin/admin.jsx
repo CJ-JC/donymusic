@@ -2,18 +2,31 @@ import { Button, Typography } from "@material-tailwind/react";
 import React, { useEffect, useState } from "react";
 import CloseIcon from "@mui/icons-material/Close";
 
-import { Link, Outlet, useLocation } from "react-router-dom";
+import { Link, Outlet, useLocation, useNavigate } from "react-router-dom";
 import { LogOut } from "lucide-react";
 import { ArrowBack } from "@mui/icons-material";
 import Table from "@/widgets/utils/Table";
 import axios from "axios";
+import { loggedOut } from "@/reducer/auth";
+import { useDispatch, useSelector } from "react-redux";
 
 const Admin = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const location = useLocation();
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+
   const isMainAdminPage = location.pathname === "/administrator";
 
   const [courses, setCourses] = useState([]);
+  const { isLoggedIn, user } = useSelector((state) => state.auth);
+
+  useEffect(() => {
+    if (!isLoggedIn || (user && user.role !== "admin")) {
+      navigate("/sign-in");
+    }
+  }, [isLoggedIn, user, navigate]);
+
   useEffect(() => {
     const fetchCourses = async () => {
       try {
@@ -29,6 +42,17 @@ const Admin = () => {
 
     fetchCourses();
   }, []);
+
+  const logout = () => {
+    axios.post("/api/user/logout");
+    dispatch(loggedOut());
+    navigate("/");
+    window.location.reload();
+  };
+
+  if (!isLoggedIn || !user || user.role !== "admin") {
+    return null;
+  }
 
   return (
     <div>
@@ -109,16 +133,16 @@ const Admin = () => {
                 <ArrowBack className="mr-1 h-4 w-4" /> Retour
               </button>
             </Link>
-            <Link to={"/"}>
-              <Button
-                variant="gradient"
-                size="sm"
-                color="red"
-                className="flex items-center text-white focus:outline-none"
-              >
-                <LogOut className="mr-1 h-4 w-4" /> Déconnexion
-              </Button>
-            </Link>
+
+            <Button
+              onClick={logout}
+              variant="outlined"
+              size="sm"
+              color="red"
+              className="flex items-center focus:outline-none"
+            >
+              <LogOut className="mr-1 h-4 w-4" /> Déconnexion
+            </Button>
           </div>
         </div>
         <div className="mx-auto flex h-screen flex-col pb-20 xl:max-w-7xl">

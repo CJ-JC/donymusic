@@ -1,12 +1,21 @@
 import { Input, Checkbox, Button, Typography } from "@material-tailwind/react";
 import axios from "axios";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { useSelector } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
 
 export function SignUp() {
   const [user, setUser] = useState(null);
   const [error, setError] = useState(null);
   const navigate = useNavigate();
+
+  const { isLoggedIn } = useSelector((state) => state.auth);
+
+  useEffect(() => {
+    if (isLoggedIn) {
+      navigate("/");
+    }
+  }, [isLoggedIn, user, navigate]);
 
   const [inputs, setInputs] = useState({
     lastName: "",
@@ -23,7 +32,7 @@ export function SignUp() {
     e.preventDefault();
 
     try {
-      const response = await axios.post("/api/signup", inputs);
+      const response = await axios.post("/api/user/signup", inputs);
       setUser(response.data);
       navigate("/sign-in");
     } catch (error) {

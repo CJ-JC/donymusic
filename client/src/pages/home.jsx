@@ -20,13 +20,23 @@ import CourseList from "@/components/course-list";
 
 export function Home() {
   const [courses, setCourses] = useState([]);
+
   useEffect(() => {
     const fetchCourses = async () => {
       try {
         const response = await axios.get("/api/course");
-        const sortedCourses = response.data.sort(
-          (a, b) => new Date(a.createdAt) - new Date(b.createdAt),
-        ); // Trier par date décroissante
+
+        // Filtrer uniquement les cours publiés
+        const publishedCourses = response.data.filter(
+          (course) => course.isPublished,
+        );
+
+        // Trier les cours publiés par date de création (du plus récent au plus ancien)
+        const sortedCourses = publishedCourses.sort(
+          (a, b) => new Date(b.createdAt) - new Date(a.createdAt),
+        );
+
+        // Mettre à jour l'état avec les cours filtrés et triés
         setCourses(sortedCourses);
       } catch (error) {
         console.error("Erreur lors de la récupération des cours :", error);

@@ -31,8 +31,16 @@ export const createUser = async (req, res) => {
 
 export const loginUser = async (req, res) => {
     const email = req.body.email.toLowerCase();
-    const { password } = req.body;
 
+    const emailRegexp = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+    const isValidEmail = emailRegexp.test(email);
+
+    if (!isValidEmail) {
+        return res.status(400).json({ message: "L'email est invalide" });
+    }
+
+    const { password } = req.body;
+    console.log(req.session);
     try {
         const user = await User.findOne({ where: { email } });
         if (!user) {
@@ -44,8 +52,24 @@ export const loginUser = async (req, res) => {
             return res.status(401).json({ message: "Email ou mot de passe incorrect" });
         }
 
-        res.status(200).json({ message: "Connexion réussie", userId: user.id });
+        req.session.user = {
+            id: user.id,
+            email: user.email,
+            role: user.role,
+        };
+
+        res.status(200).json({ message: "Connexion réussie", user: req.session.user });
     } catch (error) {
-        res.status(500).json({ message: "Erreur lors de la connexion" });
+        res.status(500).json({ message: "Erreur lors de la connexion", error: error.message });
+    }
+};
+
+export const logoutUser = async (req, res) => {
+    try {
+        req.session.destroy();
+        res.clearCookie("connect.sid");
+        res.status(200).json({ message: "Déconnexion réussie" });
+    } catch (error) {
+        res.status(500).json({ message: "Erreur lors de la déconnexion", error: error.message });
     }
 };

@@ -1,7 +1,6 @@
 import React from "react";
 import { Routes, Route, Outlet } from "react-router-dom";
 import { Footer, Navbar } from "@/widgets/layout";
-import { Home, Profile, SignIn, SignUp } from "@/pages";
 import Detail from "./components/detail";
 import CoursePlayer from "./dashboard/course-player";
 import { Courses } from "@/pages/courses";
@@ -12,6 +11,10 @@ import CreateWebinar from "./pages/admin/create-webinar";
 import EditCourse from "./pages/admin/course/edit-course";
 import CreateChapter from "./pages/admin/course/create-chapter";
 import EditChapter from "./pages/admin/course/edit-chapter";
+import Home from "./pages/home";
+import Profile from "./pages/profile";
+import SignIn from "./pages/sign-in";
+import SignUp from "./pages/sign-up";
 
 const Layout = () => (
   <>

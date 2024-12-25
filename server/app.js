@@ -6,6 +6,8 @@ import courseRoutes from "./routes/courseRoutes.js";
 import chapterRoutes from "./routes/chapterRoutes.js";
 import videoRoutes from "./routes/videoRoutes.js";
 import userRoutes from "./routes/userRoutes.js";
+import session from "express-session";
+import crypto from "crypto";
 
 const app = express();
 
@@ -13,6 +15,26 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 app.use(cors());
+
+// const secretKey = crypto.randomBytes(32).toString("hex");
+// console.log(secretKey);
+
+app.use(
+    session({
+        secret: process.env.SESSION_SECRET_KEY,
+        resave: false,
+        saveUninitialized: false,
+        resave: false,
+
+        saveUninitialized: false,
+
+        cookie: {
+            maxAge: 1000 * 60 * 60 * 24,
+            httpOnly: true,
+            secure: process.env.NODE_ENV === "prod",
+        },
+    })
+);
 
 sequelize
     .authenticate()

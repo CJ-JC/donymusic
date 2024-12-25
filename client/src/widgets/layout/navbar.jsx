@@ -1,5 +1,5 @@
-import React from "react";
-import { Link } from "react-router-dom";
+import React, { useEffect, useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import {
   Navbar as MTNavbar,
   MobileNav,
@@ -8,11 +8,20 @@ import {
 } from "@material-tailwind/react";
 import { Bars3Icon, XMarkIcon } from "@heroicons/react/24/outline";
 import logo from "/img/logo-day.svg";
+import axios from "axios";
+import { checkAuthStatus } from "../utils/CheckAuthStatus";
+import { useDispatch, useSelector } from "react-redux";
+import { loggedOut } from "@/reducer/auth";
 
 export function Navbar({ brandName, action }) {
-  const [openNav, setOpenNav] = React.useState(false);
+  const [openNav, setOpenNav] = useState(false);
 
-  React.useEffect(() => {
+  const dispatch = useDispatch();
+  const { isLoggedIn, user } = useSelector((state) => state.auth);
+
+  const navigate = useNavigate();
+
+  useEffect(() => {
     window.addEventListener(
       "resize",
       () => window.innerWidth >= 960 && setOpenNav(false),
@@ -23,8 +32,16 @@ export function Navbar({ brandName, action }) {
     setOpenNav(false);
   };
 
-  //   const isAdmin = user?.role === "admin";
-  const isAdmin = true;
+  useEffect(() => {
+    checkAuthStatus(dispatch);
+  }, []);
+
+  const logout = () => {
+    axios.post("/api/user/logout");
+    dispatch(loggedOut());
+    navigate("/");
+    window.location.reload();
+  };
 
   const navList = (
     <ul className="mb-4 mt-2 flex flex-col gap-2 text-inherit lg:mb-0 lg:mt-0 lg:flex-row lg:items-center lg:gap-6">
@@ -51,17 +68,38 @@ export function Navbar({ brandName, action }) {
         </Link>
         <div className="hidden lg:block">{navList}</div>
         <div className="hidden gap-2 lg:flex">
-          <Link to="/sign-in">
-            <Button variant="gradient" size="sm" fullWidth>
-              S'authentifier
-            </Button>
-          </Link>
-          {isAdmin && (
-            <Link to="/administrator">
-              <Button variant="variant" color="red" size="sm" fullWidth>
-                Administrateur
+          {isLoggedIn && user ? (
+            <>
+              {user.role === "admin" ? (
+                <Link to="/administrator">
+                  <Button variant="gradient" size="sm">
+                    Administrateur
+                  </Button>
+                </Link>
+              ) : (
+                <Link to="/account">
+                  <Button variant="gradient" size="sm">
+                    Mon Compte
+                  </Button>
+                </Link>
+              )}
+              <Button variant="outlined" color="red" size="sm" onClick={logout}>
+                Déconnexion
               </Button>
-            </Link>
+            </>
+          ) : (
+            <>
+              <Link to="/sign-in">
+                <Button variant="outlined" size="sm">
+                  Connexion
+                </Button>
+              </Link>
+              <Link to="/sign-up">
+                <Button variant="gradient" size="sm" fullWidth>
+                  S'inscrire
+                </Button>
+              </Link>
+            </>
           )}
         </div>
         <IconButton
@@ -89,7 +127,7 @@ export function Navbar({ brandName, action }) {
             target="_blank"
             className="mb-2 block text-black"
           >
-            <Button variant="gradiant" size="sm" fullWidth>
+            <Button variant="gradient" size="sm" fullWidth>
               pro version
             </Button>
           </a>
