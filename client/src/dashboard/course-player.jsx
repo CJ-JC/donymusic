@@ -10,6 +10,8 @@ import {
   AccordionHeader,
   AccordionBody,
 } from "@material-tailwind/react";
+import Loading from "@/widgets/utils/Loading";
+import ReactQuill from "react-quill";
 
 function Icon({ id, open }) {
   return (
@@ -33,8 +35,8 @@ function Icon({ id, open }) {
 }
 
 const CoursePlayer = () => {
-  const [selectedVideo, setSelectedVideo] = useState(null);
   const { courseId } = useParams();
+  const [selectedVideo, setSelectedVideo] = useState(null);
   const [course, setCourse] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -66,7 +68,7 @@ const CoursePlayer = () => {
   }, [courseId]);
 
   if (loading) {
-    return <div className="p-8 text-center">Chargement...</div>;
+    return <Loading />;
   }
 
   if (error) {
@@ -74,6 +76,7 @@ const CoursePlayer = () => {
   }
 
   let isLocked = false;
+  console.log(selectedVideo.url);
 
   return (
     <>
@@ -244,7 +247,11 @@ const CoursePlayer = () => {
             <hr />
 
             <Typography className="mt-4 font-normal text-blue-gray-500">
-              {course.description}
+              <ReactQuill
+                value={course.description}
+                readOnly={true}
+                theme="bubble"
+              />
             </Typography>
           </div>
         </div>

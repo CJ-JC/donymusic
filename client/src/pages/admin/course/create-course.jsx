@@ -4,6 +4,7 @@ import axios from "axios";
 import AlertError from "@/widgets/utils/AlertError";
 import { PlusCircle } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import Editor from "@/widgets/utils/Editor";
 
 const CreateCourse = () => {
   const navigate = useNavigate();
@@ -49,10 +50,11 @@ const CreateCourse = () => {
 
     try {
       setLoading(true);
-      await axios.post("/api/course/create", formdata);
+      const response = await axios.post("/api/course/create", formdata);
       const newCourseId = response.data.result.id;
 
-      navigate(`/administrator/edit-chapter/${newCourseId}`);
+      navigate(`/administrator/edit-course/${newCourseId}`);
+
       setInputs({
         title: "",
         slug: "",
@@ -67,47 +69,13 @@ const CreateCourse = () => {
       setLoading(false);
     }
   };
+
   return (
     <div className="mx-auto max-w-screen-xl">
-      <div className="p-6">
-        <div className="flex items-center justify-between">
-          <div className="flex flex-col gap-y-2">
-            <h1 className="text-2xl font-medium">
-              Mise en place de la formation
-            </h1>
-          </div>
-          <div className="flex items-center gap-x-2">
-            <button className="ring-offset-background focus-visible:ring-ring border-input bg-background hover:bg-accent hover:text-accent-foreground inline-flex h-9 items-center justify-center whitespace-nowrap rounded-md border px-3 text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50">
-              Pas publier
-            </button>
-            <button
-              className="rounded-lg bg-red-600 px-3 py-2.5 text-center text-sm font-medium text-white hover:bg-red-800 focus:ring-4 focus:ring-red-300 dark:bg-red-600 dark:hover:bg-red-600 dark:focus:ring-red-800"
-              title="Supprimer la formation"
-              type="button"
-              aria-haspopup="dialog"
-              aria-expanded="false"
-              aria-controls="radix-:r28:"
-              data-state="closed"
-            >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width="24"
-                height="24"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                className="lucide lucide-trash h-4 w-4"
-              >
-                <path d="M3 6h18"></path>
-                <path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"></path>
-                <path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"></path>
-              </svg>
-            </button>
-          </div>
-        </div>
+      <div className="px-2">
+        <h2 className="text-xl font-medium md:text-2xl">
+          Mise en place de la formation
+        </h2>
         <AlertError error={error} />
         <form onSubmit={handleSubmit}>
           <div className="mt-10 grid grid-cols-1 gap-6 md:grid-cols-2">
@@ -135,17 +103,11 @@ const CreateCourse = () => {
                 <h2 className="text-xl">Personnalisez votre formation</h2>
               </div>
               <div className="mt-6 space-y-2 rounded-md border p-4">
-                <label
-                  htmlFor="title"
-                  className="text-sm font-medium text-blue-gray-900"
-                >
-                  Titre de la formation
-                </label>
                 <Input
                   type="text"
                   id="title"
                   name="title"
-                  placeholder="Titre de la formation"
+                  label="Titre de la formation"
                   required
                   value={inputs.title}
                   onChange={handleChange}
@@ -158,17 +120,11 @@ const CreateCourse = () => {
                 >
                   Description de la formation
                 </label>
-                <Textarea
-                  required
-                  rows={4}
-                  placeholder="La description de la formation"
-                  id="description"
-                  type="text"
+                <Editor
                   name="description"
-                  resize
                   value={inputs.description}
                   onChange={handleChange}
-                />
+                />{" "}
               </div>
               <div className="mt-6 space-y-2 rounded-md border p-4">
                 <label
@@ -262,14 +218,8 @@ const CreateCourse = () => {
                   </p>
                 </div>
                 <div className="mt-6 space-y-2 rounded-md border p-4">
-                  <label
-                    htmlFor="videoUrl"
-                    className="text-sm font-medium text-blue-gray-900"
-                  >
-                    Vidéo aperçu de la formation
-                  </label>
                   <Input
-                    placeholder="Exemple: Ajouter le lien de la vidéo"
+                    label="Vidéo aperçu de la formation"
                     required
                     name="videoUrl"
                     id="videoUrl"
@@ -320,8 +270,8 @@ const CreateCourse = () => {
             </div>
           </div>
           <div className="flex justify-center">
-            <Button className="mt-6 w-min" onClick={handleSubmit}>
-              Créer
+            <Button type="submit" className="mt-6" disabled={loading}>
+              {loading ? "Création..." : "Créer le cours"}
             </Button>
           </div>
         </form>

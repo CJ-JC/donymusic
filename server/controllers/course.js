@@ -3,8 +3,6 @@ import { Chapter } from "../models/Chapter.js";
 import { Video } from "../models/Video.js";
 import fs from "fs";
 
-const admin = process.env.IS_ADMIN_EMAIL;
-
 export const getCourses = async (req, res) => {
     try {
         const courses = await Course.findAll({

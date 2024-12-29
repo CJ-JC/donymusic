@@ -1,36 +1,46 @@
 import React, { useEffect, useState } from "react";
 import CourseList from "@/components/course-list";
-import axios from "axios";
 import SearchInput from "@/components/search/search-input";
 import Categories from "@/components/search/categories";
+import useCourses from "@/widgets/utils/UseCourses";
+import axios from "axios";
+import usePagination from "@/widgets/utils/usePagination";
 
 export function Courses() {
-  const [courses, setCourses] = useState([]);
+  // const [filteredCourses, setFilteredCourses] = useState([]);
+  // const [searchQuery, setSearchQuery] = useState("");
+  // const [currentPage, setCurrentPage] = useState(1);
 
-  useEffect(() => {
-    const fetchCourses = async () => {
-      try {
-        const response = await axios.get("/api/course");
+  // const coursesPerPage = 8;
 
-        // Filtrer uniquement les cours publiés
-        const publishedCourses = response.data.filter(
-          (course) => course.isPublished,
-        );
+  // const { courses, discountedCourses, globalDiscount, availableRemises } =
+  //   useCourses();
 
-        // Trier les cours publiés par date de création (du plus récent au plus ancien)
-        const sortedCourses = publishedCourses.sort(
-          (a, b) => new Date(b.createdAt) - new Date(a.createdAt),
-        );
+  // const handleSearch = (event) => {
+  //   const query = event.target.value;
+  //   setSearchQuery(query);
 
-        // Mettre à jour l'état avec les cours filtrés et triés
-        setCourses(sortedCourses);
-      } catch (error) {
-        console.error("Erreur lors de la récupération des cours :", error);
-      }
-    };
+  //   // Filter courses based on the search query
+  //   const filtered = courses.filter((course) =>
+  //     course.title.toLowerCase().includes(query.toLowerCase()),
+  //   );
 
-    fetchCourses();
-  }, []);
+  //   setFilteredCourses(filtered);
+  //   setCurrentPage(1);
+  // };
+
+  // // Get current courses for the current page
+  // const indexOfLastCourse = currentPage * coursesPerPage;
+  // const indexOfFirstCourse = indexOfLastCourse - coursesPerPage;
+  // const currentCourses = filteredCourses.slice(
+  //   indexOfFirstCourse,
+  //   indexOfLastCourse,
+  // );
+
+  // // Change page
+  // const paginate = (pageNumber) => setCurrentPage(pageNumber);
+
+  // const totalPages = Math.ceil(filteredCourses.length / coursesPerPage);
 
   const categories = [
     { id: "1", name: "Guitare", icon: "/img/guitare.svg" },
@@ -39,27 +49,95 @@ export function Courses() {
     { id: "4", name: "Piano", icon: "/img/piano.svg" },
   ];
 
+  const { courses, discountedCourses } = useCourses();
+  const [searchQuery, setSearchQuery] = useState("");
+
+  const filteredCourses = discountedCourses.filter((course) =>
+    course.title.toLowerCase().includes(searchQuery.toLowerCase()),
+  );
+
+  // Utiliser le hook de pagination
+  const { currentItems, currentPage, totalPages, paginate } = usePagination(
+    filteredCourses,
+    8,
+  );
+
+  const handleSearch = (event) => {
+    setSearchQuery(event.target.value);
+    paginate(1);
+  };
+
   return (
-    <section className="mx-auto h-screen max-w-screen-xl px-4 py-5">
-      <div className="container mx-auto">
-        {/* <Typography
-          variant="h3"
-          className="mb-6 text-center font-bold"
-          color="blue-gray"
-        >
-          Découvrez notre catalogue complet de formations
-        </Typography> */}
+    <section className="mx-auto max-w-screen-xl px-4 py-6">
+      <div className="">
+        {/* Search bar */}
         <div className="block py-6 pt-6 md:mb-0 md:hidden">
-          <SearchInput />
+          <SearchInput handleSearch={handleSearch} searchQuery={searchQuery} />
         </div>
         <div className="max-md:justify-center flex">
           <div className="mr-5 hidden md:block">
-            <SearchInput />
+            <SearchInput
+              handleSearch={handleSearch}
+              searchQuery={searchQuery}
+            />
           </div>
           <Categories items={categories} />
         </div>
-        <div className="my-5 grid gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
-          <CourseList courses={courses} />
+
+        {/* Course list */}
+        {/* <div className="h-screen"> */}
+        {/* <CourseList courses={currentCourses} /> */}
+
+        <CourseList courses={currentItems} />
+
+        {/* </div> */}
+
+        {/* Pagination */}
+        <div className="mt-6 flex justify-center">
+          <nav>
+            <ul className="inline-flex space-x-1">
+              <li>
+                <button
+                  onClick={() => paginate(currentPage - 1)}
+                  disabled={currentPage === 1}
+                  className={`border px-4 py-2 ${
+                    currentPage === 1
+                      ? "bg-gray-200 text-gray-400"
+                      : "bg-white text-gray-700 hover:bg-gray-100"
+                  }`}
+                >
+                  Précédent
+                </button>
+              </li>
+              {Array.from({ length: totalPages }, (_, i) => (
+                <li key={i + 1}>
+                  <button
+                    onClick={() => paginate(i + 1)}
+                    className={`border px-4 py-2 ${
+                      currentPage === i + 1
+                        ? "bg-gray-800 text-white"
+                        : "bg-white text-gray-700 hover:bg-gray-100"
+                    }`}
+                  >
+                    {i + 1}
+                  </button>
+                </li>
+              ))}
+              <li>
+                <button
+                  onClick={() => paginate(currentPage + 1)}
+                  disabled={currentPage === totalPages}
+                  className={`border px-4 py-2 ${
+                    currentPage === totalPages
+                      ? "bg-gray-200 text-gray-400"
+                      : "bg-white text-gray-700 hover:bg-gray-100"
+                  }`}
+                >
+                  Suivant
+                </button>
+              </li>
+            </ul>
+          </nav>
         </div>
       </div>
     </section>

@@ -7,6 +7,7 @@ import Vimeo from "@u-wave/react-vimeo";
 import Modal from "@/widgets/utils/Modal";
 import axios from "axios";
 import PublishButton from "@/widgets/utils/PublishButton";
+import Editor from "@/widgets/utils/Editor";
 
 const editCourse = () => {
   const { id } = useParams();
@@ -147,6 +148,7 @@ const editCourse = () => {
     try {
       await axios.delete(`/api/course/delete/${chapterDelete}`);
       navigate(`/administrator`);
+      window.location.reload();
     } catch (error) {
       console.error("Error deleting chapter:", error);
     } finally {
@@ -187,12 +189,10 @@ const editCourse = () => {
         </div>
       )}
       <div className="p-6">
-        <div className="flex items-center justify-between">
-          <div className="flex flex-col gap-y-2">
-            <h1 className="text-2xl font-medium">
-              Mise en place de la formation
-            </h1>
-          </div>
+        <div className="flex flex-col items-center justify-between space-y-2 md:flex-row">
+          <h1 className="text-xl font-medium md:text-2xl">
+            Mise en place de la formation
+          </h1>
           <div className="flex items-center gap-x-2">
             <PublishButton
               inputs={inputs}
@@ -240,15 +240,8 @@ const editCourse = () => {
                 <h2 className="text-xl">Personnalisez votre formation</h2>
               </div>
               <div className="mt-6 space-y-2 rounded-md border p-4">
-                <label
-                  htmlFor="title"
-                  className="-mb-3 text-sm font-medium text-blue-gray-900"
-                >
-                  Titre de la formation
-                </label>
                 <Input
-                  size="lg"
-                  placeholder="Votre nom"
+                  label="Titre de la formation"
                   required
                   name="title"
                   id="formation"
@@ -264,15 +257,10 @@ const editCourse = () => {
                 >
                   Description de la formation
                 </label>
-                <Textarea
-                  required
-                  placeholder="Votre description"
-                  id="description"
-                  type="text"
+                <Editor
                   name="description"
                   value={inputs.description}
                   onChange={handleChange}
-                  resize
                 />
               </div>
               <div className="my-6 rounded-md border p-4">
@@ -408,12 +396,6 @@ const editCourse = () => {
                       ))}
                 </div>
                 <div className="mt-6 space-y-2 rounded-md border p-4">
-                  <label
-                    htmlFor="videoUrl"
-                    className="-mb-3 text-sm font-medium text-blue-gray-900"
-                  >
-                    Vidéo aperçu de la formation
-                  </label>
                   {videoUrl && (
                     <div className="mb-4">
                       <Vimeo
@@ -424,7 +406,7 @@ const editCourse = () => {
                     </div>
                   )}
                   <Input
-                    placeholder="Exemple: Ajouter le lien de la vidéo"
+                    label="Vidéo aperçu de la formation"
                     required
                     name="videoUrl"
                     id="videoUrl"
@@ -456,14 +438,8 @@ const editCourse = () => {
                 <h2 className="text-xl">Vendre votre formation</h2>
               </div>
               <div className="mt-6 space-y-2 rounded-md border p-4">
-                <label
-                  htmlFor="price"
-                  className="-mb-3 text-sm font-medium text-blue-gray-900"
-                >
-                  Prix de la formation
-                </label>
                 <Input
-                  placeholder="Exemple: Ajouter le lien de la vidéo"
+                  label="Prix de la formation"
                   required
                   name="price"
                   id="price"

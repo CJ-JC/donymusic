@@ -3,6 +3,7 @@ import { Button, Input, Textarea } from "@material-tailwind/react";
 import { PlusCircle, Trash2 } from "lucide-react";
 import axios from "axios";
 import { useParams, useNavigate } from "react-router-dom";
+import Editor from "@/widgets/utils/Editor";
 
 const EditChapter = () => {
   const navigate = useNavigate();
@@ -44,7 +45,6 @@ const EditChapter = () => {
         }
       } catch (error) {
         setError("Erreur lors de la récupération du chapitre");
-        console.error(error);
       }
     };
 
@@ -128,19 +128,19 @@ const EditChapter = () => {
       <form onSubmit={handleSubmit}>
         <div className="mt-6 grid grid-cols-1 gap-6 md:grid-cols-2">
           <div className="space-y-2 rounded-md border p-4">
-            <label
+            {/* <label
               htmlFor="title"
               className="text-sm font-medium text-blue-gray-900"
             >
               Titre du chapitre
-            </label>
+            </label> */}
             <Input
+              label="Titre du chapitre"
               type="text"
               id="title"
               name="title"
               value={chapterData.title}
               onChange={handleChapterChange}
-              placeholder="Le titre du chapitre"
               required
             />
           </div>
@@ -151,14 +151,10 @@ const EditChapter = () => {
             >
               Description du chapitre
             </label>
-            <Textarea
-              id="description"
+            <Editor
               name="description"
               value={chapterData.description}
               onChange={handleChapterChange}
-              placeholder="La description du chapitre"
-              required
-              resize
             />
           </div>
         </div>
@@ -200,14 +196,8 @@ const EditChapter = () => {
             className="mt-6 grid grid-cols-1 gap-6 md:grid-cols-2"
           >
             <div className="space-y-2 rounded-md border p-4">
-              <label
-                htmlFor={`title-${index}`}
-                className="text-sm font-medium text-blue-gray-900"
-              >
-                Titre de la vidéo
-              </label>
               <Input
-                placeholder="Exemple: Introduction au piano"
+                label="Titre de la vidéo"
                 required
                 name="title"
                 value={video.title}
@@ -216,15 +206,9 @@ const EditChapter = () => {
               />
             </div>
             <div className="relative space-y-2 rounded-md border p-4">
-              <label
-                htmlFor={`url-${index}`}
-                className="text-sm font-medium text-blue-gray-900"
-              >
-                URL de la vidéo
-              </label>
               <div className="flex items-center gap-2">
                 <Input
-                  placeholder="Exemple: https://example.com/video.mp4"
+                  label="URL de la vidéo"
                   required
                   name="url"
                   value={video.url}
