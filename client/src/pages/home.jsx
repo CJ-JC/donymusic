@@ -15,36 +15,12 @@ import { FingerPrintIcon } from "@heroicons/react/24/solid";
 import { PageTitle } from "@/widgets/layout";
 import { FeatureCard, TeamCard } from "@/widgets/cards";
 import { featuresData, teamData, contactData } from "@/data";
-import axios from "axios";
 import CourseList from "@/components/course-list";
+import useCourses from "@/widgets/utils/UseCourses";
 
 export function Home() {
-  const [courses, setCourses] = useState([]);
-
-  useEffect(() => {
-    const fetchCourses = async () => {
-      try {
-        const response = await axios.get("/api/course");
-
-        // Filtrer uniquement les cours publiés
-        const publishedCourses = response.data.filter(
-          (course) => course.isPublished,
-        );
-
-        // Trier les cours publiés par date de création (du plus récent au plus ancien)
-        const sortedCourses = publishedCourses.sort(
-          (a, b) => new Date(b.createdAt) - new Date(a.createdAt),
-        );
-
-        // Mettre à jour l'état avec les cours filtrés et triés
-        setCourses(sortedCourses);
-      } catch (error) {
-        console.error("Erreur lors de la récupération des cours :", error);
-      }
-    };
-
-    fetchCourses();
-  }, []);
+  const { courses, discountedCourses, globalDiscount, availableRemises } =
+    useCourses();
 
   return (
     <>
@@ -99,9 +75,13 @@ export function Home() {
               <PageTitle section="Our Team" heading="Nos cours">
                 Nos cours
               </PageTitle>
-              <div className="mt-24 grid gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-4 2xl:grid-cols-4">
-                <CourseList courses={courses} />
-              </div>
+              {/* <div className="mt-24 grid gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-4 2xl:grid-cols-4"> */}
+              <CourseList
+                courses={discountedCourses}
+                globalDiscount={globalDiscount}
+                availableRemises={availableRemises}
+              />
+              {/* </div> */}
               <div className="my-24 flex justify-center">
                 <Link to={`/courses`} className="rounded-full">
                   <Button variant="filled">Voir tous les cours</Button>

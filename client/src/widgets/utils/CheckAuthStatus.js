@@ -1,7 +1,7 @@
 import axios from "axios";
 import { loggedFaillure, loggedInSuccess, loggedOut } from "../../reducer/auth";
 
-export const checkAuthStatus = async (dispatch) => {
+export const checkAuthStatus = async (dispatch, setAuthLoading) => {
   try {
     const response = await axios.get("/api/user/check-auth", {
       withCredentials: true,
@@ -18,5 +18,7 @@ export const checkAuthStatus = async (dispatch) => {
       "Erreur lors de la vérification de l'authentification :",
       error,
     );
+  } finally {
+    setAuthLoading(false);
   }
 };

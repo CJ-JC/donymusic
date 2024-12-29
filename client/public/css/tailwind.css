@@ -1,3 +1,12 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+.ql-tooltip.ql-hidden {
+  display: none;
+}
+
+.quill .ql-editor {
+  padding-left: 10px !important;
+  padding-right: 10px !important;
+}

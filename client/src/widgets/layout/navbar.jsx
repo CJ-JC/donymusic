@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, NavLink, useNavigate } from "react-router-dom";
 import {
   Navbar as MTNavbar,
   MobileNav,
@@ -12,10 +12,12 @@ import axios from "axios";
 import { checkAuthStatus } from "../utils/CheckAuthStatus";
 import { useDispatch, useSelector } from "react-redux";
 import { loggedOut } from "@/reducer/auth";
+import Loading from "../utils/Loading";
+import AccountDropdown from "../utils/AccountDropdown";
 
 export function Navbar({ brandName, action }) {
   const [openNav, setOpenNav] = useState(false);
-
+  const [authLoading, setAuthLoading] = useState(true);
   const dispatch = useDispatch();
   const { isLoggedIn, user } = useSelector((state) => state.auth);
 
@@ -33,27 +35,65 @@ export function Navbar({ brandName, action }) {
   };
 
   useEffect(() => {
-    checkAuthStatus(dispatch);
-  }, []);
+    checkAuthStatus(dispatch, setAuthLoading);
+  }, [dispatch]);
+
+  if (authLoading) {
+    return (
+      <div>
+        <Loading />
+      </div>
+    );
+  }
 
   const logout = () => {
     axios.post("/api/user/logout");
     dispatch(loggedOut());
     navigate("/");
-    window.location.reload();
   };
 
   const navList = (
     <ul className="mb-4 mt-2 flex flex-col gap-2 text-inherit lg:mb-0 lg:mt-0 lg:flex-row lg:items-center lg:gap-6">
-      <Link to="/" onClick={handleLinkClick}>
+      <NavLink
+        to="/"
+        onClick={handleLinkClick}
+        className={({ isActive }) =>
+          `group flex items-center rounded-lg p-1 px-2 ${
+            isActive
+              ? "border-b border-gray-500 font-medium text-gray-800"
+              : "bg-white font-medium text-gray-600 hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700"
+          }`
+        }
+      >
         Accueil
-      </Link>
-      <Link to="/courses" onClick={handleLinkClick}>
+      </NavLink>
+
+      <NavLink
+        to="/courses"
+        onClick={handleLinkClick}
+        className={({ isActive }) =>
+          `group flex items-center rounded-lg p-1 px-2 ${
+            isActive
+              ? "border-b border-gray-500 font-medium text-gray-800"
+              : "bg-white font-medium text-gray-600 hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700"
+          }`
+        }
+      >
         Nos formations
-      </Link>
-      <Link to="/master-class" onClick={handleLinkClick}>
+      </NavLink>
+      <NavLink
+        to="/master-class"
+        onClick={handleLinkClick}
+        className={({ isActive }) =>
+          `group flex items-center rounded-lg p-1 px-2 ${
+            isActive
+              ? "border-b border-gray-500 font-medium text-gray-800"
+              : "bg-white font-medium text-gray-600 hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700"
+          }`
+        }
+      >
         Masterclass
-      </Link>
+      </NavLink>
     </ul>
   );
 
@@ -70,22 +110,7 @@ export function Navbar({ brandName, action }) {
         <div className="hidden gap-2 lg:flex">
           {isLoggedIn && user ? (
             <>
-              {user.role === "admin" ? (
-                <Link to="/administrator">
-                  <Button variant="gradient" size="sm">
-                    Administrateur
-                  </Button>
-                </Link>
-              ) : (
-                <Link to="/account">
-                  <Button variant="gradient" size="sm">
-                    Mon Compte
-                  </Button>
-                </Link>
-              )}
-              <Button variant="outlined" color="red" size="sm" onClick={logout}>
-                Déconnexion
-              </Button>
+              <AccountDropdown user={user} logout={logout} />
             </>
           ) : (
             <>

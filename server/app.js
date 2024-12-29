@@ -6,6 +6,7 @@ import courseRoutes from "./routes/courseRoutes.js";
 import chapterRoutes from "./routes/chapterRoutes.js";
 import videoRoutes from "./routes/videoRoutes.js";
 import userRoutes from "./routes/userRoutes.js";
+import remiseRoutes from "./routes/remiseRoutes.js";
 import session from "express-session";
 import crypto from "crypto";
 
@@ -60,6 +61,8 @@ app.use("/api/course", courseRoutes);
 app.use("/api/course-player/course/:courseId/chapters/:chapterId", courseRoutes);
 
 app.use("/api/chapter", chapterRoutes);
+
+app.use("/api/remise", remiseRoutes);
 
 // app.use("/api/video/create", videoRoutes);
 app.use("/api/video", videoRoutes);

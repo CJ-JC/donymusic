@@ -3,6 +3,7 @@ import { Button, Input, Textarea } from "@material-tailwind/react";
 import { PlusCircle, Trash2 } from "lucide-react";
 import axios from "axios";
 import { useParams, useNavigate } from "react-router-dom";
+import Editor from "@/widgets/utils/Editor";
 
 const CreateChapter = () => {
   const navigate = useNavigate();
@@ -64,7 +65,7 @@ const CreateChapter = () => {
   };
 
   return (
-    <div className="p-6">
+    <div className="px-2 py-6">
       <div className="flex items-center gap-x-2">
         <div className="flex items-center justify-center rounded-full bg-blue-100 p-2">
           <svg
@@ -97,19 +98,13 @@ const CreateChapter = () => {
       <form onSubmit={handleSubmit}>
         <div className="mt-6 grid grid-cols-1 gap-6 md:grid-cols-2">
           <div className="space-y-2 rounded-md border p-4">
-            <label
-              htmlFor="title"
-              className="text-sm font-medium text-blue-gray-900"
-            >
-              Titre du chapitre
-            </label>
             <Input
               type="text"
               id="title"
               name="title"
               value={chapterData.title}
               onChange={handleChapterChange}
-              placeholder="Le titre du chapitre"
+              label="Titre du chapitre"
               required
             />
           </div>
@@ -120,7 +115,7 @@ const CreateChapter = () => {
             >
               Description du chapitre
             </label>
-            <Textarea
+            {/* <Textarea
               id="description"
               name="description"
               value={chapterData.description}
@@ -128,6 +123,11 @@ const CreateChapter = () => {
               placeholder="La description du chapitre"
               required
               resize
+            /> */}
+            <Editor
+              name="description"
+              value={chapterData.description}
+              onChange={handleChapterChange}
             />
           </div>
         </div>
@@ -169,14 +169,8 @@ const CreateChapter = () => {
             className="mt-6 grid grid-cols-1 gap-6 md:grid-cols-2"
           >
             <div className="space-y-2 rounded-md border p-4">
-              <label
-                htmlFor={`title-${index}`}
-                className="text-sm font-medium text-blue-gray-900"
-              >
-                Titre de la vidéo
-              </label>
               <Input
-                placeholder="Exemple: Introduction au piano"
+                label="Titre de la vidéo"
                 required
                 name="title"
                 value={video.title}
@@ -185,15 +179,9 @@ const CreateChapter = () => {
               />
             </div>
             <div className="relative space-y-2 rounded-md border p-4">
-              <label
-                htmlFor={`url-${index}`}
-                className="text-sm font-medium text-blue-gray-900"
-              >
-                URL de la vidéo
-              </label>
               <div className="flex items-center gap-2">
                 <Input
-                  placeholder="Exemple: https://example.com/video.mp4"
+                  label="Vidéo aperçu de la formation"
                   required
                   name="url"
                   value={video.url}
@@ -215,8 +203,8 @@ const CreateChapter = () => {
         ))}
 
         <div className="flex justify-center">
-          <Button type="submit" className="mt-6 w-min" disabled={loading}>
-            {loading ? "Création..." : "Créer"}
+          <Button type="submit" className="mt-6" disabled={loading}>
+            {loading ? "Création..." : "Créer le chapitre"}
           </Button>
         </div>
       </form>
