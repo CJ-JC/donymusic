@@ -8,14 +8,14 @@ import {
   useLocation,
   useNavigate,
 } from "react-router-dom";
-import { Home, LogOut } from "lucide-react";
+import { GraduationCap, LogOut } from "lucide-react";
 import { Discount } from "@mui/icons-material";
 import axios from "axios";
 import { loggedOut } from "@/reducer/auth";
 import { useDispatch, useSelector } from "react-redux";
 import { checkAuthStatus } from "@/widgets/utils/CheckAuthStatus";
 import Loading from "@/widgets/utils/Loading";
-import ShowCourses from "./course/show-courses";
+import ShowCourses from "./course/Show-courses";
 
 const Admin = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
@@ -27,7 +27,7 @@ const Admin = () => {
   const isMainAdminPage = location.pathname === "/administrator";
 
   const [courses, setCourses] = useState([]);
-  // const { isLoggedIn, user } = useSelector((state) => state.auth);
+  const { isLoggedIn, user } = useSelector((state) => state.auth);
 
   useEffect(() => {
     checkAuthStatus(dispatch, setAuthLoading);
@@ -46,11 +46,10 @@ const Admin = () => {
       }
     };
 
-    // if (!authLoading && isLoggedIn && user.role === "admin") {
-    fetchCourses();
-    // }
-  }, []);
-  // }, [authLoading, isLoggedIn, user]);
+    if (!authLoading && isLoggedIn && user.role === "admin") {
+      fetchCourses();
+    }
+  }, [authLoading, isLoggedIn, user]);
 
   const logout = () => {
     axios.post("/api/user/logout");
@@ -66,9 +65,9 @@ const Admin = () => {
     );
   }
 
-  // if (!isLoggedIn || !user || user.role !== "admin") {
-  //   return navigate("/");
-  // }
+  if (!isLoggedIn || !user || user.role !== "admin") {
+    return navigate("/");
+  }
 
   return (
     <div>
@@ -97,7 +96,7 @@ const Admin = () => {
             />
           </div>
           <ul className="h-screen w-full p-2 font-medium">
-            <li>
+            <li className="my-1">
               <NavLink
                 to={"/administrator"}
                 end
@@ -121,7 +120,23 @@ const Admin = () => {
                 <span className="ms-3">Formations</span>
               </NavLink>
             </li>
-            <li>
+            <li className="my-1">
+              <NavLink
+                to={"/administrator/masterclass"}
+                end
+                className={({ isActive }) =>
+                  `group flex items-center rounded-lg p-2 ${
+                    isActive
+                      ? "bg-gray-500 font-medium"
+                      : "bg-white font-medium text-gray-600 hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700"
+                  }`
+                }
+              >
+                <GraduationCap />
+                <span className="ms-3">Masterclass</span>
+              </NavLink>
+            </li>
+            <li className="my-1">
               <NavLink
                 to={"/administrator/remise"}
                 end

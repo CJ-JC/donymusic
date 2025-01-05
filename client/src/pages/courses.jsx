@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import CourseList from "@/components/course-list";
+import CourseList from "@/components/Course-list";
 import SearchInput from "@/components/search/search-input";
 import Categories from "@/components/search/categories";
 import useCourses from "@/widgets/utils/UseCourses";
@@ -85,12 +85,11 @@ export function Courses() {
         </div>
 
         {/* Course list */}
-        {/* <div className="h-screen"> */}
         {/* <CourseList courses={currentCourses} /> */}
 
-        <CourseList courses={currentItems} />
-
-        {/* </div> */}
+        <div className="h-screen">
+          <CourseList courses={currentItems} />
+        </div>
 
         {/* Pagination */}
         <div className="mt-6 flex justify-center">

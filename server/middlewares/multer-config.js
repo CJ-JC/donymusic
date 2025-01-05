@@ -1,10 +1,12 @@
 import multer from "multer";
 import path from "path";
 
-// Configuration de stockage
+// Configuration de stockage dynamique
 const storage = multer.diskStorage({
     destination: (req, file, cb) => {
-        cb(null, "public/uploads"); // Dossier de destination
+        const isImage = ["image/jpeg", "image/png", "image/jpg"].includes(file.mimetype);
+        const uploadDir = isImage ? "public/uploads/images" : "public/uploads/attachments";
+        cb(null, uploadDir); // Dossier de destination basé sur le type de fichier
     },
     filename: (req, file, cb) => {
         const ext = path.extname(file.originalname); // Extension du fichier
@@ -14,11 +16,13 @@ const storage = multer.diskStorage({
 
 // Vérification du type de fichier
 const fileFilter = (req, file, cb) => {
-    const allowedTypes = ["image/jpeg", "image/png", "image/jpg"];
-    if (allowedTypes.includes(file.mimetype)) {
-        cb(null, true);
+    const allowedImageTypes = ["image/jpeg", "image/png", "image/jpg"];
+    const allowedAttachmentTypes = ["application/pdf", "application/msword", "application/vnd.openxmlformats-officedocument.wordprocessingml.document", "text/plain"];
+
+    if (allowedImageTypes.includes(file.mimetype) || allowedAttachmentTypes.includes(file.mimetype)) {
+        cb(null, true); // Accepter le fichier
     } else {
-        cb(new Error("Type de fichier invalide. Seules les images sont autorisées."), false);
+        cb(new Error("Type de fichier invalide. Seules les images et certains fichiers sont autorisés."), false);
     }
 };
 

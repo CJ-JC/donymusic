@@ -1,14 +1,14 @@
 import express from "express";
-import { createChapter, editChapter, getChapterById, deleteChapter } from "../controllers/chapter.js";
+import { getChapters, getChapterById, createChapter, editChapter, deleteChapter, deleteChapterAttachment } from "../controllers/chapter.js";
+import upload from "../middlewares/multer-config.js";
 
 const router = express.Router();
 
-router.post("/create", createChapter);
-
-router.put("/edit/:id", editChapter);
-
+router.get("/", getChapters);
 router.get("/:id", getChapterById);
-
 router.delete("/delete/:id", deleteChapter);
+router.delete("/:id/attachment", deleteChapterAttachment);
+router.post("/create", upload.single("attachment"), createChapter);
+router.put("/edit/:id", upload.single("attachment"), editChapter);
 
 export default router;

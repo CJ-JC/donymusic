@@ -1,15 +1,17 @@
 import React, { useEffect, useState } from "react";
-import { Button, Input, Textarea } from "@material-tailwind/react";
+import { Button, Input } from "@material-tailwind/react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import AlertError from "@/widgets/utils/AlertError";
 import { Pen, PlusCircle, TrashIcon } from "lucide-react";
 import Vimeo from "@u-wave/react-vimeo";
-import Modal from "@/widgets/utils/Modal";
 import axios from "axios";
 import PublishButton from "@/widgets/utils/PublishButton";
 import Editor from "@/widgets/utils/Editor";
+import Modal from "@/widgets/utils/Modal";
 
 const editCourse = () => {
+  const BASE_URL = import.meta.env.VITE_API_URL;
+
   const { id } = useParams();
 
   const [error, setError] = useState(null);
@@ -20,6 +22,7 @@ const editCourse = () => {
   const [videoUrl, setVideoUrl] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [chapterToDelete, setChapterToDelete] = useState(null);
+  const [courseToDelete, setCourseToDelete] = useState(null);
   const [courses, setCourses] = useState([]);
 
   const navigate = useNavigate();
@@ -54,7 +57,7 @@ const editCourse = () => {
           isPublished,
         });
 
-        setImageUrl(imageUrl ? `${"http://localhost:8001"}${imageUrl}` : null);
+        setImageUrl(imageUrl ? `${BASE_URL}${imageUrl}` : null);
         setVideoUrl(videoUrl ? `${videoUrl}` : null);
       } catch (error) {
         setError("Erreur lors de la récupération du cours :", error);
@@ -123,11 +126,19 @@ const editCourse = () => {
 
   const openModal = (chapterId) => {
     setChapterToDelete(chapterId);
+    setCourseToDelete(null);
+    setIsModalOpen(true);
+  };
+
+  const openDeleteCourseModal = (courseId) => {
+    setCourseToDelete(courseId);
+    setChapterToDelete(null);
     setIsModalOpen(true);
   };
 
   const closeModal = () => {
     setChapterToDelete(null);
+    setCourseToDelete(null);
     setIsModalOpen(false);
   };
 
@@ -141,18 +152,16 @@ const editCourse = () => {
       } finally {
         closeModal();
       }
-    }
-  };
-
-  const handleDelete = async (chapterDelete) => {
-    try {
-      await axios.delete(`/api/course/delete/${chapterDelete}`);
-      navigate(`/administrator`);
-      window.location.reload();
-    } catch (error) {
-      console.error("Error deleting chapter:", error);
-    } finally {
-      closeModal();
+    } else if (courseToDelete) {
+      try {
+        await axios.delete(`/api/course/delete/${courseToDelete}`);
+        navigate(`/administrator`);
+        window.location.reload();
+      } catch (error) {
+        console.error("Error deleting course:", error);
+      } finally {
+        closeModal();
+      }
     }
   };
 
@@ -206,7 +215,7 @@ const editCourse = () => {
               className="rounded-lg bg-red-600 px-3 py-2.5 text-center text-sm font-medium text-white hover:bg-red-800 focus:ring-4 focus:ring-red-300 dark:bg-red-600 dark:hover:bg-red-600 dark:focus:ring-red-800"
               title="Supprimer la formation"
               type="button"
-              onClick={() => handleDelete(id)}
+              onClick={() => openDeleteCourseModal(id)}
             >
               <TrashIcon className="h-4 w-4" />
             </button>
@@ -263,6 +272,27 @@ const editCourse = () => {
                   onChange={handleChange}
                 />
               </div>
+              <div className="my-6 flex items-center gap-x-2">
+                <div className="flex items-center justify-center rounded-full bg-blue-100 p-2">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="24"
+                    height="24"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    className="lucide lucide-image text-green-500"
+                  >
+                    <rect width="18" height="18" x="3" y="3" rx="2" ry="2" />
+                    <circle cx="9" cy="9" r="2" />
+                    <path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21" />
+                  </svg>
+                </div>
+                <h2 className="text-xl">Image de la formation</h2>
+              </div>
               <div className="my-6 rounded-md border p-4">
                 <label
                   htmlFor="image"
@@ -271,6 +301,26 @@ const editCourse = () => {
                   Image de la formation
                 </label>
                 <div className="bg-grey-lighter flex w-full items-center justify-between">
+                  <label className="flex w-52 cursor-pointer flex-col items-center justify-center rounded-lg border bg-white px-4 py-6 tracking-wide shadow-sm hover:text-gray-700">
+                    <svg
+                      className="h-8 w-8"
+                      fill="currentColor"
+                      xmlns="http://www.w3.org/2000/svg"
+                      viewBox="0 0 20 20"
+                    >
+                      <path d="M16.88 9.1A4 4 0 0 1 16 17H5a5 5 0 0 1-1-9.9V7a3 3 0 0 1 4.52-2.59A4.98 4.98 0 0 1 17 8c0 .38-.04.74-.12 1.1zM11 11h3l-4-4-4 4h3v3h2v-3z" />
+                    </svg>
+                    <span className="mt-2 text-center text-sm leading-normal">
+                      Sélectionner une image
+                    </span>
+                    <input
+                      type="file"
+                      className="hidden"
+                      id="image"
+                      name="image"
+                      onChange={handleImageChange}
+                    />
+                  </label>
                   {imageUrl && (
                     <div className="mb-4">
                       <img
@@ -284,27 +334,39 @@ const editCourse = () => {
                       />
                     </div>
                   )}
-                  <label className="flex w-64 cursor-pointer flex-col items-center justify-center rounded-lg border bg-white px-4 py-6 tracking-wide shadow-sm hover:text-gray-700">
-                    <svg
-                      className="h-8 w-8"
-                      fill="currentColor"
-                      xmlns="http://www.w3.org/2000/svg"
-                      viewBox="0 0 20 20"
-                    >
-                      <path d="M16.88 9.1A4 4 0 0 1 16 17H5a5 5 0 0 1-1-9.9V7a3 3 0 0 1 4.52-2.59A4.98 4.98 0 0 1 17 8c0 .38-.04.74-.12 1.1zM11 11h3l-4-4-4 4h3v3h2v-3z" />
-                    </svg>
-                    <span className="mt-2 text-center text-base leading-normal">
-                      Sélectionner un fichier
-                    </span>
-                    <input
-                      type="file"
-                      className="hidden"
-                      id="image"
-                      name="image"
-                      onChange={handleImageChange}
-                    />
-                  </label>
                 </div>
+              </div>
+              <div className="flex items-center gap-x-2">
+                <div className="flex items-center justify-center rounded-full bg-blue-100 p-2">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="24"
+                    height="24"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    className="lucide lucide-circle-dollar-sign h-8 w-8 text-green-700"
+                  >
+                    <circle cx="12" cy="12" r="10"></circle>
+                    <path d="M16 8h-6a2 2 0 1 0 0 4h4a2 2 0 1 1 0 4H8"></path>
+                    <path d="M12 18V6"></path>
+                  </svg>
+                </div>
+                <h2 className="text-xl">Vendre votre formation</h2>
+              </div>
+              <div className="mt-6 space-y-2 rounded-md border p-4">
+                <Input
+                  placeholder="Exemple: Prix de la formation"
+                  required
+                  name="price"
+                  id="price"
+                  type="number"
+                  value={inputs.price}
+                  onChange={handleChange}
+                />
               </div>
             </div>
             <div className="space-y-6">
@@ -332,7 +394,7 @@ const editCourse = () => {
                   </div>
                   <h2 className="text-xl">Chapitres de la formation</h2>
                 </div>
-                <div className="mt-6 space-y-2 rounded-md border p-4 ">
+                <div className="mt-6 space-y-2 rounded-md border p-4">
                   <div className="flex items-center justify-between font-medium">
                     <label
                       htmlFor="chapterTitle"
@@ -395,6 +457,26 @@ const editCourse = () => {
                         </div>
                       ))}
                 </div>
+                <div className="my-6 flex items-center gap-x-2">
+                  <div className="flex items-center justify-center rounded-full bg-blue-100 p-2">
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="24"
+                      height="24"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      className="lucide lucide-video text-green-500"
+                    >
+                      <path d="m16 13 5.223 3.482a.5.5 0 0 0 .777-.416V7.87a.5.5 0 0 0-.752-.432L16 10.5" />
+                      <rect x="2" y="6" width="14" height="12" rx="2" />
+                    </svg>
+                  </div>
+                  <h2 className="text-xl">Vidéo aperçu de la formation</h2>
+                </div>
                 <div className="mt-6 space-y-2 rounded-md border p-4">
                   {videoUrl && (
                     <div className="mb-4">
@@ -416,43 +498,16 @@ const editCourse = () => {
                   />
                 </div>
               </div>
-              <div className="flex items-center gap-x-2">
-                <div className="flex items-center justify-center rounded-full bg-blue-100 p-2">
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    width="24"
-                    height="24"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    className="lucide lucide-circle-dollar-sign h-8 w-8 text-green-700"
-                  >
-                    <circle cx="12" cy="12" r="10"></circle>
-                    <path d="M16 8h-6a2 2 0 1 0 0 4h4a2 2 0 1 1 0 4H8"></path>
-                    <path d="M12 18V6"></path>
-                  </svg>
-                </div>
-                <h2 className="text-xl">Vendre votre formation</h2>
-              </div>
-              <div className="mt-6 space-y-2 rounded-md border p-4">
-                <Input
-                  label="Prix de la formation"
-                  required
-                  name="price"
-                  id="price"
-                  type="number"
-                  value={inputs.price}
-                  onChange={handleChange}
-                />
-              </div>
             </div>
             <Modal
               isModalOpen={isModalOpen}
               closeModal={closeModal}
               handleConfirmDelete={handleConfirmDelete}
+              message={
+                courseToDelete
+                  ? "Voulez-vous vraiment supprimer cette formation ?"
+                  : "Voulez-vous vraiment supprimer ce chapitre ?"
+              }
             />
           </div>
           <div className="flex justify-center">

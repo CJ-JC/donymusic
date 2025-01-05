@@ -82,7 +82,7 @@ export function Navbar({ brandName, action }) {
         Nos formations
       </NavLink>
       <NavLink
-        to="/master-class"
+        to="/masterclass"
         onClick={handleLinkClick}
         className={({ isActive }) =>
           `group flex items-center rounded-lg p-1 px-2 ${

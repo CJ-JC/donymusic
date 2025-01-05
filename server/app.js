@@ -4,9 +4,10 @@ import sequelize from "./config/dbMysql.js";
 import "./config/dotenv.js";
 import courseRoutes from "./routes/courseRoutes.js";
 import chapterRoutes from "./routes/chapterRoutes.js";
-import videoRoutes from "./routes/videoRoutes.js";
 import userRoutes from "./routes/userRoutes.js";
 import remiseRoutes from "./routes/remiseRoutes.js";
+import userProgressRoutes from "./routes/userProgressRoutes.js";
+import masterclassRoutes from "./routes/masterclassRoutes.js";
 import session from "express-session";
 import crypto from "crypto";
 
@@ -56,15 +57,16 @@ app.use("/uploads", express.static("public/uploads"));
 
 app.use("/api/user", userRoutes);
 
-app.use("/api/course", courseRoutes);
+app.use("/api/remise", remiseRoutes);
 
-app.use("/api/course-player/course/:courseId/chapters/:chapterId", courseRoutes);
+app.use("/api/course", courseRoutes);
 
 app.use("/api/chapter", chapterRoutes);
 
-app.use("/api/remise", remiseRoutes);
+app.use("/api/user-progress", userProgressRoutes);
 
-// app.use("/api/video/create", videoRoutes);
-app.use("/api/video", videoRoutes);
+app.use("/api/masterclass", masterclassRoutes);
+
+app.use("/api/course-player/course/:courseId/chapters/:chapterId", courseRoutes);
 
 export default app;

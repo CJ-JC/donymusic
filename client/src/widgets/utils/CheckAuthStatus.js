@@ -14,10 +14,6 @@ export const checkAuthStatus = async (dispatch, setAuthLoading) => {
     }
   } catch (error) {
     dispatch(loggedFaillure());
-    console.error(
-      "Erreur lors de la vérification de l'authentification :",
-      error,
-    );
   } finally {
     setAuthLoading(false);
   }

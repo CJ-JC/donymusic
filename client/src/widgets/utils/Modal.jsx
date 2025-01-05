@@ -1,6 +1,6 @@
 import React from "react";
 
-const Modal = ({ isModalOpen, closeModal, handleConfirmDelete }) => {
+const Modal = ({ isModalOpen, closeModal, handleConfirmDelete, message }) => {
   return (
     <div>
       {isModalOpen && (
@@ -50,7 +50,7 @@ const Modal = ({ isModalOpen, closeModal, handleConfirmDelete }) => {
                   />
                 </svg>
                 <h3 className="mb-5 text-lg font-normal text-gray-800 dark:text-gray-400">
-                  Voulez-vous vraiment supprimer ce chapitre ?
+                  {message || "Voulez-vous vraiment supprimer cet élément ?"}
                 </h3>
                 <button
                   onClick={handleConfirmDelete}

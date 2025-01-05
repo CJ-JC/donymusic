@@ -13,7 +13,7 @@ export const getCourses = async (req, res) => {
             include: [
                 {
                     model: Chapter,
-                    attributes: ["id", "title", "description"],
+                    attributes: ["id", "title", "description", "attachment"],
                     include: [
                         {
                             model: Video,
@@ -62,7 +62,7 @@ export const getCourseById = async (req, res) => {
 export const createCourse = async (req, res) => {
     try {
         const { title, slug, description, price, videoUrl } = req.body;
-        const imagePath = req.file ? `/uploads/${req.file.filename}` : null;
+        const imagePath = req.file ? `/uploads/images/${req.file.filename}` : null;
 
         // Vérifie les autres champs obligatoires
         if ((!title || !slug || !price || !description || videoUrl, !imagePath)) {
@@ -108,10 +108,8 @@ export const updateCourse = async (req, res) => {
 
         // Vérification des champs obligatoires
         if (!title || !slug || !description || !price || !videoUrl) {
-            // Si une nouvelle image a été uploadée mais les champs sont invalides,
-            // on la supprime pour éviter les fichiers orphelins
             if (req.file) {
-                fs.unlinkSync(`public/uploads/${req.file.filename}`);
+                fs.unlinkSync(`public/uploads/images/${req.file.filename}`);
             }
             return res.status(400).json({ error: "Tous les champs sont obligatoires" });
         }
@@ -119,7 +117,7 @@ export const updateCourse = async (req, res) => {
         const course = await Course.findByPk(id);
         if (!course) {
             if (req.file) {
-                fs.unlinkSync(`public/uploads/${req.file.filename}`);
+                fs.unlinkSync(`public/uploads/images/${req.file.filename}`);
             }
             return res.status(404).json({ error: "Cours non trouvé" });
         }
@@ -127,14 +125,14 @@ export const updateCourse = async (req, res) => {
         // Vérification si le prix est un nombre valide
         if (isNaN(parseFloat(price))) {
             if (req.file) {
-                fs.unlinkSync(`public/uploads/${req.file.filename}`);
+                fs.unlinkSync(`public/uploads/images/${req.file.filename}`);
             }
             return res.status(400).json({ error: "Le prix doit être un nombre valide" });
         }
 
         let imagePath = course.imageUrl;
         if (req.file) {
-            imagePath = `/uploads/${req.file.filename}`;
+            imagePath = `/uploads/images/${req.file.filename}`;
             // Supprime l'ancienne image si elle existe
             if (course.imageUrl && fs.existsSync(`public${course.imageUrl}`)) {
                 fs.unlinkSync(`public${course.imageUrl}`);
@@ -160,9 +158,8 @@ export const updateCourse = async (req, res) => {
     } catch (error) {
         // Si une erreur survient et qu'une image a été uploadée, on la supprime
         if (req.file) {
-            fs.unlinkSync(`public/uploads/${req.file.filename}`);
+            fs.unlinkSync(`public/uploads/images/${req.file.filename}`);
         }
-        console.error("Erreur Sequelize :", error);
         res.status(500).json({ error: `Erreur lors de la mise à jour du cours : ${error.message}` });
     }
 };
@@ -177,7 +174,7 @@ export const getCourseBySlug = async (req, res) => {
             include: [
                 {
                     model: Chapter,
-                    attributes: ["id", "title", "description"],
+                    attributes: ["id", "title", "description", "attachment"],
                     include: [
                         {
                             model: Video,

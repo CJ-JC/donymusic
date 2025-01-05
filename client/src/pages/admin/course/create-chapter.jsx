@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Button, Input, Textarea } from "@material-tailwind/react";
-import { PlusCircle, Trash2 } from "lucide-react";
+import { Check, PlusCircle, Trash2, TrashIcon } from "lucide-react";
 import axios from "axios";
 import { useParams, useNavigate } from "react-router-dom";
 import Editor from "@/widgets/utils/Editor";
@@ -10,6 +10,7 @@ const CreateChapter = () => {
   const { courseId } = useParams();
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+  const [attachment, setAttachment] = useState(null);
 
   const [chapterData, setChapterData] = useState({
     title: "",
@@ -50,11 +51,21 @@ const CreateChapter = () => {
     setLoading(true);
     setError("");
 
+    const formData = new FormData();
+
+    // Ajouter les données du chapitre
+    formData.append("title", chapterData.title);
+    formData.append("description", chapterData.description);
+    formData.append("courseId", chapterData.courseId);
+    formData.append("videos", JSON.stringify(videos));
+
+    // Ajouter le fichier attaché
+    if (attachment) {
+      formData.append("attachment", attachment);
+    }
+
     try {
-      await axios.post("/api/chapter/create", {
-        ...chapterData,
-        videos: videos,
-      });
+      await axios.post("/api/chapter/create", formData);
 
       navigate(`/administrator/edit-course/${courseId}`);
     } catch (error) {
@@ -62,6 +73,16 @@ const CreateChapter = () => {
     } finally {
       setLoading(false);
     }
+  };
+
+  const handleAttachmentChange = (e) => {
+    if (e.target.files && e.target.files[0]) {
+      setAttachment(e.target.files[0]);
+    }
+  };
+
+  const removeAttachment = () => {
+    setAttachment(null);
   };
 
   return (
@@ -115,15 +136,6 @@ const CreateChapter = () => {
             >
               Description du chapitre
             </label>
-            {/* <Textarea
-              id="description"
-              name="description"
-              value={chapterData.description}
-              onChange={handleChapterChange}
-              placeholder="La description du chapitre"
-              required
-              resize
-            /> */}
             <Editor
               name="description"
               value={chapterData.description}
@@ -202,6 +214,48 @@ const CreateChapter = () => {
           </div>
         ))}
 
+        <div className="mt-10 flex items-center gap-x-2">
+          <div className="flex items-center justify-center rounded-full bg-blue-100 p-2">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              className="lucide lucide-paperclip text-green-700"
+            >
+              <path d="M13.234 20.252 21 12.3" />
+              <path d="m16 6-8.414 8.586a2 2 0 0 0 0 2.828 2 2 0 0 0 2.828 0l8.414-8.586a4 4 0 0 0 0-5.656 4 4 0 0 0-5.656 0l-8.415 8.585a6 6 0 1 0 8.486 8.486" />
+            </svg>
+          </div>
+          <h2 className="text-xl">Annexes de la formation</h2>
+        </div>
+        <div className="mt-6 w-2/4 gap-6 space-y-2 rounded-md border p-4">
+          <Input
+            label="Fichier annexe"
+            type="file"
+            name="attachment"
+            id="attachment"
+            onChange={handleAttachmentChange}
+          />
+
+          {attachment && (
+            <div className="mt-2">
+              <div className="flex justify-between">
+                {attachment.name.substring(0, 50)}{" "}
+                <div className="flex gap-x-2">
+                  <button onClick={removeAttachment} className="text-red-500">
+                    <TrashIcon className="h-5 w-5" />
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
+        </div>
         <div className="flex justify-center">
           <Button type="submit" className="mt-6" disabled={loading}>
             {loading ? "Création..." : "Créer le chapitre"}

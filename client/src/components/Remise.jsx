@@ -107,7 +107,7 @@ const AddRemise = () => {
   };
 
   return (
-    <div className="container mx-auto p-4">
+    <div className="container mx-auto">
       <h1 className="mb-4 text-2xl font-bold">Ajouter une Remise</h1>
       <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
         <div className="mb-4">

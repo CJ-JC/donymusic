@@ -40,7 +40,7 @@ export const loginUser = async (req, res) => {
     }
 
     const { password } = req.body;
-    console.log(req.session);
+
     try {
         const user = await User.findOne({ where: { email } });
         if (!user) {

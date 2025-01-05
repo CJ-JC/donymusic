@@ -19,6 +19,10 @@ export const Chapter = sequelize.define(
             type: DataTypes.TEXT,
             allowNull: false,
         },
+        attachment: {
+            type: DataTypes.STRING,
+            allowNull: true,
+        },
         courseId: {
             type: DataTypes.INTEGER,
             allowNull: true,

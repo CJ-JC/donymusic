@@ -13,15 +13,21 @@ import {
 } from "@material-tailwind/react";
 import { FingerPrintIcon } from "@heroicons/react/24/solid";
 import { PageTitle } from "@/widgets/layout";
-import { FeatureCard, TeamCard } from "@/widgets/cards";
-import { featuresData, teamData, contactData } from "@/data";
-import CourseList from "@/components/course-list";
+import { TeamCard } from "@/widgets/cards";
+import { teamData, contactData } from "@/data";
+import CourseList from "@/components/Course-list";
 import useCourses from "@/widgets/utils/UseCourses";
+import Countdown from "@/widgets/utils/Countdown";
 
+function getTargetDate(daysFromNow) {
+  const now = new Date();
+  now.setDate(now.getDate() + daysFromNow);
+  return now.toISOString();
+}
 export function Home() {
   const { courses, discountedCourses, globalDiscount, availableRemises } =
     useCourses();
-
+  const targetDate = getTargetDate(10);
   return (
     <>
       <div className="relative flex h-[700px] content-center items-center justify-center pb-32 pt-16">
@@ -43,12 +49,12 @@ export function Home() {
                 color="white"
                 className="mb-6 font-black"
               >
-                Your story starts with us.
+                Laissez la musique vous inspirer.
               </Typography>
               <Typography variant="lead" color="white" className="opacity-80">
-                This is a simple example of a Landing Page you can build using
-                Material Tailwind. It features multiple components based on the
-                Tailwind CSS and Material Design by Google.
+                Avec DonyMusic, découvrez une nouvelle façon d'apprendre à jouer
+                de vos instruments préférés. Suivez des cours interactifs,
+                progressez à votre rythme et réalisez vos rêves musicaux.
               </Typography>
             </div>
           </div>
@@ -57,19 +63,40 @@ export function Home() {
 
       <section className="mx-auto -mt-32 max-w-screen-xl bg-white px-4 pb-20 pt-4">
         <div className="container mx-auto">
-          <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
-            {featuresData.map(({ color, title, icon, description }) => (
-              <FeatureCard
-                key={title}
-                color={color}
-                title={title}
-                icon={React.createElement(icon, {
-                  className: "w-5 h-5 text-white",
-                })}
-                description={description}
-              />
-            ))}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-1">
+            <Card className="rounded-lg shadow-lg shadow-gray-500/10">
+              <CardBody className="px-8 py-6">
+                <div className="flex flex-col items-center justify-between gap-x-10 md:flex-row">
+                  <div>
+                    <Typography
+                      variant="h5"
+                      className="font-bold text-blue-gray-900"
+                    >
+                      Masterclass : Maîtrisez l'Art de la Musique
+                    </Typography>
+                    <p className="mt-2 text-sm text-blue-gray-600">
+                      Rejoignez-nous pour une session exclusive et apprenez les
+                      secrets pour exceller dans votre art.
+                    </p>
+                  </div>
+                  <div>
+                    <Typography variant="h6" className="text-gray-500">
+                      Début dans :
+                    </Typography>
+                    <Countdown targetDate={targetDate} />
+                  </div>
+                </div>
+                <div className="flex w-full justify-center">
+                  <Link to="/masterclass">
+                    <Button variant="gradient" size="md" className="mt-4">
+                      En savoir plus
+                    </Button>
+                  </Link>
+                </div>
+              </CardBody>
+            </Card>
           </div>
+
           <section className="mt-32 flex flex-wrap items-center">
             <div className="container mx-auto">
               <PageTitle section="Our Team" heading="Nos cours">

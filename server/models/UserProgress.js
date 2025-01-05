@@ -2,6 +2,7 @@ import sequelize from "../config/dbMysql.js";
 import { DataTypes } from "sequelize";
 import { Chapter } from "./Chapter.js";
 import { User } from "./User.js";
+import { Video } from "./Video.js";
 
 export const UserProgress = sequelize.define(
     "userProgress",
@@ -76,5 +77,15 @@ User.hasMany(UserProgress, {
 
 Chapter.hasMany(UserProgress, {
     foreignKey: "chapterId",
+    onDelete: "CASCADE",
+});
+
+UserProgress.belongsTo(Video, {
+    foreignKey: "videoId",
+    onDelete: "CASCADE",
+});
+
+Video.hasMany(UserProgress, {
+    foreignKey: "videoId",
     onDelete: "CASCADE",
 });
