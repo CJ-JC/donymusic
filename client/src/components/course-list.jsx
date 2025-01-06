@@ -15,14 +15,13 @@ const courseList = ({ courses }) => {
             videoUrl={course.videoUrl}
             slug={course.slug}
             discountedPrice={course.discountedPrice}
+            category={course.category.title}
           />
         ))}
       </div>
 
       {courses.length === 0 && (
-        <p className="text-muted-foreground mt-10 text-center text-sm">
-          Aucune formation trouvée
-        </p>
+        <p className="text-center">Aucune formation trouvée.</p>
       )}
     </>
   );

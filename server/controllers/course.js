@@ -2,6 +2,7 @@ import { Course } from "../models/Course.js";
 import { Chapter } from "../models/Chapter.js";
 import { Video } from "../models/Video.js";
 import fs from "fs";
+import { Category } from "../models/Category.js";
 
 export const getCourses = async (req, res) => {
     try {
@@ -20,6 +21,11 @@ export const getCourses = async (req, res) => {
                             attributes: ["id", "url", "title"],
                         },
                     ],
+                },
+                {
+                    model: Category,
+                    as: "category",
+                    attributes: ["id", "title"],
                 },
             ],
         });
@@ -45,6 +51,11 @@ export const getCourseById = async (req, res) => {
                         },
                     ],
                 },
+                {
+                    model: Category,
+                    as: "category",
+                    attributes: ["id", "title"],
+                },
             ],
         });
 
@@ -61,42 +72,46 @@ export const getCourseById = async (req, res) => {
 
 export const createCourse = async (req, res) => {
     try {
-        const { title, slug, description, price, videoUrl } = req.body;
+        const { title, slug, description, price, videoUrl, categoryId } = req.body;
         const imagePath = req.file ? `/uploads/images/${req.file.filename}` : null;
 
-        // Vérifie les autres champs obligatoires
-        if ((!title || !slug || !price || !description || videoUrl, !imagePath)) {
+        if (!title || !price || !description || !videoUrl || !imagePath || !categoryId) {
             return res.status(400).json({ error: "Tous les champs sont requis." });
         }
 
+        // Vérifiez que la catégorie existe
+        const categoryExists = await Category.findByPk(categoryId);
+        if (!categoryExists) {
+            return res.status(400).json({ error: "La catégorie spécifiée est introuvable." });
+        }
+
+        // Vérifiez les doublons
         const existingCourse = await Course.findOne({ where: { title } });
         if (existingCourse) {
-            // Supprimer l'image téléchargée
             fs.unlinkSync(`public${imagePath}`);
             return res.status(400).json({ error: "Un cours avec ce nom existe déjà." });
         }
 
+        // Créez le cours
         const newCourse = await Course.create({
             imageUrl: imagePath,
             title,
-            slug: slug.toLowerCase(),
+            slug,
             description,
             price: parseFloat(price),
             videoUrl,
+            categoryId: parseInt(categoryId),
         });
 
         res.status(201).json({ message: "Cours créé avec succès", result: newCourse });
     } catch (error) {
-        // Si une erreur Sequelize survient, loguer les détails
         console.error("Erreur Sequelize :", error);
 
-        // Vérifie si l'erreur est liée à des erreurs de validation
         if (error.name === "SequelizeUniqueConstraintError") {
-            const details = error.errors.map((e) => e.message); // Extrait tous les messages d'erreur
+            const details = error.errors.map((e) => e.message);
             return res.status(400).json({ error: `Erreur de validation : ${details.join(", ")}` });
         }
 
-        // Autres erreurs générales
         res.status(500).json({ error: `Erreur lors de la création du cours : ${error.message}` });
     }
 };
@@ -104,14 +119,20 @@ export const createCourse = async (req, res) => {
 export const updateCourse = async (req, res) => {
     try {
         const { id } = req.params;
-        const { title, slug, description, price, videoUrl } = req.body;
+        const { title, slug, description, price, videoUrl, categoryId } = req.body;
 
         // Vérification des champs obligatoires
-        if (!title || !slug || !description || !price || !videoUrl) {
+        if (!title || !slug || !description || !price || !videoUrl || !categoryId) {
             if (req.file) {
                 fs.unlinkSync(`public/uploads/images/${req.file.filename}`);
             }
             return res.status(400).json({ error: "Tous les champs sont obligatoires" });
+        }
+
+        // Vérifiez que la catégorie existe
+        const categoryExists = await Category.findByPk(categoryId);
+        if (!categoryExists) {
+            return res.status(400).json({ error: "La catégorie spécifiée est introuvable." });
         }
 
         const course = await Course.findByPk(id);
@@ -139,7 +160,7 @@ export const updateCourse = async (req, res) => {
             }
         }
 
-        const updatedCourse = await Course.update(
+        const [rowsUpdated, updatedCourses] = await Course.update(
             {
                 title,
                 slug: slug.toLowerCase(),
@@ -147,6 +168,7 @@ export const updateCourse = async (req, res) => {
                 imageUrl: imagePath,
                 price: parseFloat(price),
                 videoUrl,
+                categoryId: parseInt(categoryId),
             },
             {
                 where: { id },
@@ -154,7 +176,13 @@ export const updateCourse = async (req, res) => {
             }
         );
 
-        res.status(200).json({ message: "Cours mis à jour avec succès", result: updatedCourse });
+        // Vérifiez si des lignes ont été mises à jour
+        if (rowsUpdated === 0 || updatedCourses.length === 0) {
+            return res.status(404).json({ error: "Cours non trouvé ou aucune modification détectée." });
+        }
+
+        // Retourner le premier cours mis à jour
+        res.status(200).json({ message: "Cours mis à jour avec succès", result: updatedCourses[0] });
     } catch (error) {
         // Si une erreur survient et qu'une image a été uploadée, on la supprime
         if (req.file) {
@@ -181,6 +209,11 @@ export const getCourseBySlug = async (req, res) => {
                             attributes: ["id", "url", "title"],
                         },
                     ],
+                },
+                {
+                    model: Category,
+                    as: "category",
+                    attributes: ["id", "title"],
                 },
             ],
         });

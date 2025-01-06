@@ -5,12 +5,24 @@ import path from "path";
 const storage = multer.diskStorage({
     destination: (req, file, cb) => {
         const isImage = ["image/jpeg", "image/png", "image/jpg"].includes(file.mimetype);
-        const uploadDir = isImage ? "public/uploads/images" : "public/uploads/attachments";
-        cb(null, uploadDir); // Dossier de destination basé sur le type de fichier
+        let uploadDir;
+
+        if (isImage) {
+            // Déterminer le dossier de destination en fonction de la route
+            if (req.originalUrl.includes("/instructor")) {
+                uploadDir = "public/uploads/instructors";
+            } else {
+                uploadDir = "public/uploads/images";
+            }
+        } else {
+            uploadDir = "public/uploads/attachments";
+        }
+
+        cb(null, uploadDir);
     },
     filename: (req, file, cb) => {
-        const ext = path.extname(file.originalname); // Extension du fichier
-        cb(null, `${Date.now()}-${file.originalname}`); // Nom unique
+        const ext = path.extname(file.originalname);
+        cb(null, `${Date.now()}-${file.originalname}`);
     },
 });
 
@@ -20,7 +32,7 @@ const fileFilter = (req, file, cb) => {
     const allowedAttachmentTypes = ["application/pdf", "application/msword", "application/vnd.openxmlformats-officedocument.wordprocessingml.document", "text/plain"];
 
     if (allowedImageTypes.includes(file.mimetype) || allowedAttachmentTypes.includes(file.mimetype)) {
-        cb(null, true); // Accepter le fichier
+        cb(null, true);
     } else {
         cb(new Error("Type de fichier invalide. Seules les images et certains fichiers sont autorisés."), false);
     }

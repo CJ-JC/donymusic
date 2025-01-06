@@ -23,9 +23,10 @@ const MasterclassRegistration = ({ endDate }) => {
       <Button
         variant="gradient"
         size="md"
-        disabled={isExpired} // Désactive le bouton si isExpired est vrai
+        disabled={isExpired}
+        className="w-full"
       >
-        {isExpired ? "Inscription fermée" : "S'inscrire"}
+        {isExpired ? "Inscription fermée" : "S'inscrire à la masterclasse"}
       </Button>
     </div>
   );

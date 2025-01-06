@@ -39,17 +39,6 @@ function AccountDropdown({ user, logout }) {
                 {user.role === "admin" ? "Administrateur" : "Mon Compte"}
               </Link>
             </li>
-            {user.role === "admin" && (
-              <li>
-                <Link
-                  to="/administrator/coupon"
-                  className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                  onClick={closeDropdown} // Ferme le menu
-                >
-                  Coupons
-                </Link>
-              </li>
-            )}
             <li>
               <Link
                 to="/user/settings"

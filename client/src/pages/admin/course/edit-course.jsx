@@ -24,6 +24,7 @@ const editCourse = () => {
   const [chapterToDelete, setChapterToDelete] = useState(null);
   const [courseToDelete, setCourseToDelete] = useState(null);
   const [courses, setCourses] = useState([]);
+  const [categories, setCategories] = useState([]);
 
   const navigate = useNavigate();
 
@@ -31,6 +32,18 @@ const editCourse = () => {
     setFile(e.target.files[0]);
     setImageUrl(URL.createObjectURL(e.target.files[0]));
   };
+
+  useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        const response = await axios.get("/api/category");
+        setCategories(response.data);
+      } catch (error) {
+        setError("Erreur lors de la récupération des catégories");
+      }
+    };
+    fetchCategories();
+  }, []);
 
   useEffect(() => {
     const fetchCourse = async () => {
@@ -45,6 +58,7 @@ const editCourse = () => {
           slug,
           chapters,
           isPublished,
+          categoryId,
         } = response.data;
 
         setInputs({
@@ -55,6 +69,7 @@ const editCourse = () => {
           slug,
           chapters,
           isPublished,
+          categoryId,
         });
 
         setImageUrl(imageUrl ? `${BASE_URL}${imageUrl}` : null);
@@ -75,6 +90,7 @@ const editCourse = () => {
     videoUrl: "",
     chapters: [],
     isPublished: false,
+    categoryId: null,
   });
 
   const handleChange = (e) => {
@@ -90,7 +106,8 @@ const editCourse = () => {
       !inputs.slug ||
       !inputs.description ||
       !inputs.price ||
-      !inputs.videoUrl
+      !inputs.videoUrl ||
+      !inputs.categoryId
     ) {
       setError("Tous les champs sont obligatoires");
       return;
@@ -111,6 +128,7 @@ const editCourse = () => {
     formData.append("description", inputs.description);
     formData.append("price", inputs.price);
     formData.append("videoUrl", inputs.videoUrl);
+    formData.append("categoryId", inputs.categoryId);
 
     try {
       setLoading(true);
@@ -358,6 +376,12 @@ const editCourse = () => {
                 <h2 className="text-xl">Vendre votre formation</h2>
               </div>
               <div className="mt-6 space-y-2 rounded-md border p-4">
+                <label
+                  htmlFor="price"
+                  className="text-sm font-medium text-blue-gray-900"
+                >
+                  Prix de la formation
+                </label>
                 <Input
                   placeholder="Exemple: Prix de la formation"
                   required
@@ -496,6 +520,35 @@ const editCourse = () => {
                     value={inputs.videoUrl}
                     onChange={handleChange}
                   />
+                </div>
+                <div className="mt-6 space-y-2 rounded-md border p-4">
+                  <label
+                    htmlFor="category"
+                    className="mb-2 block text-sm font-medium text-gray-900 dark:text-white"
+                  >
+                    Catégorie du cours
+                  </label>
+                  <select
+                    id="category"
+                    name="categoryId"
+                    value={inputs.categoryId || ""}
+                    onChange={(e) =>
+                      setInputs((prev) => ({
+                        ...prev,
+                        categoryId: parseInt(e.target.value),
+                      }))
+                    }
+                    className="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500"
+                  >
+                    <option value="" disabled>
+                      -- Sélectionnez une catégorie --
+                    </option>
+                    {categories.map((category) => (
+                      <option key={category.id} value={category.id}>
+                        {category.title}
+                      </option>
+                    ))}
+                  </select>
                 </div>
               </div>
             </div>

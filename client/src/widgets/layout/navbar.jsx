@@ -5,6 +5,7 @@ import {
   MobileNav,
   Button,
   IconButton,
+  Collapse,
 } from "@material-tailwind/react";
 import { Bars3Icon, XMarkIcon } from "@heroicons/react/24/outline";
 import logo from "/img/logo-day.svg";
@@ -141,11 +142,11 @@ export function Navbar({ brandName, action }) {
           )}
         </IconButton>
       </div>
-      <MobileNav
-        className="absolute left-2/4 z-10 w-[350px] -translate-x-2/4 rounded-xl border bg-white px-4 pb-4 pt-2 text-blue-gray-900"
+      <Collapse
+        className="absolute left-2/4 z-10 w-[350px] -translate-x-2/4 rounded-xl text-blue-gray-900"
         open={openNav}
       >
-        <div className="container mx-auto">
+        <div className="container mx-auto border bg-white px-4 pb-4 pt-2">
           {navList}
           <a
             href="https://www.material-tailwind.com/blocks/react?ref=mtkr"
@@ -160,7 +161,7 @@ export function Navbar({ brandName, action }) {
             className: "w-full block",
           })}
         </div>
-      </MobileNav>
+      </Collapse>
     </MTNavbar>
   );
 }

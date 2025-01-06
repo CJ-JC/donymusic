@@ -1,15 +1,17 @@
 import React, { useEffect, useState } from "react";
 import { Card, CardBody, Button, Typography } from "@material-tailwind/react";
-import { Clock, Calendar, GraduationCap, Piano, Mic } from "lucide-react";
+import { Mic, User } from "lucide-react";
 import Countdown from "../widgets/utils/Countdown";
 import { Link } from "react-router-dom";
 import axios from "axios";
 import ReactQuill from "react-quill";
-import MasterclassRegistration from "@/widgets/utils/MasterclassRegistration";
+import Loading from "@/widgets/utils/Loading";
 
 const MasterClass = () => {
   const [masterclasses, setMasterclasses] = useState([]);
   const [error, setError] = useState(null);
+  const BASE_URL = import.meta.env.VITE_API_URL;
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     const fetchMasterclass = async () => {
@@ -18,13 +20,19 @@ const MasterClass = () => {
         setMasterclasses(response.data);
       } catch (error) {
         setError("Erreur lors de la récupération de la masterclass");
+      } finally {
+        setIsLoading(false);
       }
     };
     fetchMasterclass();
   }, []);
 
+  if (isLoading) {
+    return <Loading />;
+  }
+
   return (
-    <div className="container mx-auto  max-w-screen-xl px-6 py-4">
+    <div className="container mx-auto max-w-screen-xl py-4">
       {/* Hero Section */}
       {masterclasses.length !== 0 ? (
         <>
@@ -64,14 +72,13 @@ const MasterClass = () => {
 
                   <Card className="flex-1 bg-gray-50 text-white shadow-md">
                     <CardBody className="flex flex-col items-center gap-6 p-4 md:flex-row">
-                      <img
-                        src="https://live.themewild.com/eventu/assets/img/schedule/01.jpg"
-                        alt={`${masterclass.title}`}
-                        className="rounded-lg"
-                        width={280}
-                        height={225}
-                      />
-
+                      <div className="overflow-hidden rounded-md">
+                        <img
+                          src={`${BASE_URL}${masterclass.imageUrl}`}
+                          alt={`${masterclass.title}`}
+                          className="h-[250px] w-[350px] rounded-lg object-cover"
+                        />
+                      </div>
                       <div className="w-full">
                         <div className="mb-4 flex flex-col justify-between gap-2 md:flex-row">
                           <div>
@@ -118,33 +125,48 @@ const MasterClass = () => {
                             />
                           </div>
                         </div>
-                        <Typography variant="h4" className="px-2 text-gray-900">
+                        <Typography
+                          variant="h5"
+                          className="px-2 font-medium text-gray-900"
+                        >
                           {masterclass.title}
                         </Typography>
 
                         <ReactQuill
-                          value={masterclass.description.substring(0, 300)}
+                          value={
+                            masterclass.description.length > 220
+                              ? masterclass.description.substring(
+                                  0,
+                                  masterclass.description.lastIndexOf(" ", 220),
+                                ) + "..."
+                              : masterclass.description
+                          }
                           readOnly={true}
                           theme="bubble"
                           className="text-gray-700"
                         />
                         <hr className="my-4" />
-
                         <div className="flex items-center justify-between gap-2">
                           <div className="flex items-center gap-2">
-                            <div className="relative">
-                              <img
-                                src="https://live.themewild.com/eventu/assets/img/speaker/01.jpg"
-                                alt=""
-                                className="h-14 w-14 rounded-full"
-                              />
+                            <div className="relative ml-4">
+                              {masterclass.instructor?.imageUrl ? (
+                                <img
+                                  src={`${BASE_URL}${masterclass.instructor?.imageUrl}`}
+                                  alt={masterclass.instructor?.name}
+                                  className="h-14 w-14 rounded-full object-cover"
+                                />
+                              ) : (
+                                <div className="rounded-full bg-gray-400">
+                                  <User className="h-14 w-14" />
+                                </div>
+                              )}
+
                               <Mic className="absolute bottom-0 right-0 h-6 w-6 rounded-full border-2 border-white bg-red-400" />
                             </div>
                             <Typography variant="h6" className=" text-gray-900">
-                              Dony Paul
+                              {masterclass.instructor?.name}
                             </Typography>
                           </div>
-                          {/* <MasterclassRegistration endDate={masterclass.endDate} /> */}
                           <Link to={`/masterclass/slug/${masterclass.slug}`}>
                             <Button
                               variant="gradient"
@@ -168,7 +190,7 @@ const MasterClass = () => {
           <Typography
             variant="h2"
             color="blue-gray"
-            className="mb-6 text-center text-3xl font-extrabold"
+            className="mb-6 text-center text-2xl font-extrabold"
           >
             Pas de sessions disponibles pour le moment.
           </Typography>

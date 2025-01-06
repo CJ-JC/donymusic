@@ -18,6 +18,9 @@ import { teamData, contactData } from "@/data";
 import CourseList from "@/components/Course-list";
 import useCourses from "@/widgets/utils/UseCourses";
 import Countdown from "@/widgets/utils/Countdown";
+import Loading from "@/widgets/utils/Loading";
+import axios from "axios";
+import ReactQuill from "react-quill";
 
 function getTargetDate(daysFromNow) {
   const now = new Date();
@@ -28,6 +31,30 @@ export function Home() {
   const { courses, discountedCourses, globalDiscount, availableRemises } =
     useCourses();
   const targetDate = getTargetDate(10);
+  const [masterclasses, setMasterclasses] = useState([]);
+  const [error, setError] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchMasterclass = async () => {
+      try {
+        const response = await axios.get(`/api/masterclass`);
+        setMasterclasses(response.data);
+      } catch (error) {
+        setError("Erreur lors de la récupération de la masterclass");
+      } finally {
+        setIsLoading(false);
+      }
+    };
+    fetchMasterclass();
+  }, []);
+
+  if (isLoading) {
+    return <Loading />;
+  }
+
+  const firstMasterclass = masterclasses[0];
+
   return (
     <>
       <div className="relative flex h-[700px] content-center items-center justify-center pb-32 pt-16">
@@ -61,29 +88,44 @@ export function Home() {
         </div>
       </div>
 
-      <section className="mx-auto -mt-32 max-w-screen-xl bg-white px-4 pb-20 pt-4">
+      <section className="mx-auto -mt-28 max-w-screen-xl bg-white px-4 pb-20 pt-4">
         <div className="container mx-auto">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-1">
             <Card className="rounded-lg shadow-lg shadow-gray-500/10">
-              <CardBody className="px-8 py-6">
+              <CardBody className="px-4 py-6">
                 <div className="flex flex-col items-center justify-between gap-x-10 md:flex-row">
                   <div>
                     <Typography
                       variant="h5"
-                      className="font-bold text-blue-gray-900"
+                      className="px-2 font-bold text-blue-gray-900"
                     >
-                      Masterclass : Maîtrisez l'Art de la Musique
+                      {firstMasterclass.title}
                     </Typography>
-                    <p className="mt-2 text-sm text-blue-gray-600">
-                      Rejoignez-nous pour une session exclusive et apprenez les
-                      secrets pour exceller dans votre art.
-                    </p>
+                    <ReactQuill
+                      value={
+                        firstMasterclass.description.length > 200
+                          ? firstMasterclass.description.substring(
+                              0,
+                              firstMasterclass.description.lastIndexOf(
+                                " ",
+                                200,
+                              ),
+                            ) + "..."
+                          : firstMasterclass.description
+                      }
+                      readOnly={true}
+                      theme="bubble"
+                    />
                   </div>
                   <div>
                     <Typography variant="h6" className="text-gray-500">
                       Début dans :
                     </Typography>
-                    <Countdown targetDate={targetDate} />
+                    <Countdown
+                      targetDate={firstMasterclass.startDate}
+                      startDate={firstMasterclass.startDate}
+                      endDate={firstMasterclass.endDate}
+                    />
                   </div>
                 </div>
                 <div className="flex w-full justify-center">
@@ -99,16 +141,20 @@ export function Home() {
 
           <section className="mt-32 flex flex-wrap items-center">
             <div className="container mx-auto">
-              <PageTitle section="Our Team" heading="Nos cours">
-                Nos cours
+              <PageTitle
+                section="Explorez Nos Cours"
+                heading="Maîtrisez Votre Instrument"
+              >
+                Découvrez nos formations et perfectionnez vos compétences
+                musicales
               </PageTitle>
-              {/* <div className="mt-24 grid gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-4 2xl:grid-cols-4"> */}
+
               <CourseList
                 courses={discountedCourses}
                 globalDiscount={globalDiscount}
                 availableRemises={availableRemises}
               />
-              {/* </div> */}
+
               <div className="my-24 flex justify-center">
                 <Link to={`/courses`} className="rounded-full">
                   <Button variant="filled">Voir tous les cours</Button>

@@ -10,6 +10,8 @@ import userProgressRoutes from "./routes/userProgressRoutes.js";
 import masterclassRoutes from "./routes/masterclassRoutes.js";
 import session from "express-session";
 import crypto from "crypto";
+import categoryRoutes from "./routes/categoryRoutes.js";
+import instructorRoutes from "./routes/instructorRoutes.js";
 
 const app = express();
 
@@ -68,5 +70,9 @@ app.use("/api/user-progress", userProgressRoutes);
 app.use("/api/masterclass", masterclassRoutes);
 
 app.use("/api/course-player/course/:courseId/chapters/:chapterId", courseRoutes);
+
+app.use("/api/category", categoryRoutes);
+
+app.use("/api/instructor", instructorRoutes);
 
 export default app;

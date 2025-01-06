@@ -25,6 +25,11 @@ import CreateMasterclass from "./pages/admin/masterclass/create-masterclass";
 import EditMasterclass from "./pages/admin/masterclass/Edit-masterclass";
 import Coursedetail from "./components/Course-detail";
 import ScrollToTop from "./widgets/utils/ScrollToTop";
+import CreateInstructor from "./pages/admin/instructor/create-instructor";
+import Instructors from "./pages/admin/instructor/Instructors";
+import EditInstructor from "./pages/admin/instructor/edit-instructor";
+import Users from "./pages/admin/Users/Users";
+import AccountAdmin from "./pages/admin/Users/Account-admin";
 
 const Layout = ({ hasGlobalDiscount, discountPercentage }) => (
   <>
@@ -59,7 +64,7 @@ const Layout = ({ hasGlobalDiscount, discountPercentage }) => (
 function App() {
   const [hasGlobalDiscount, setHasGlobalDiscount] = useState(false);
   const [discountPercentage, setDiscountPercentage] = useState(null);
-  const [authLoading, setAuthLoading] = useState(false);
+  const [authLoading, setAuthLoading] = useState(true);
 
   useEffect(() => {
     const fetchRemises = async () => {
@@ -127,18 +132,29 @@ function App() {
 
         {/* Routes admin */}
         <Route path="/administrator" element={<Admin />}>
-          <Route path="create-course" element={<CreateCourse />} />
+          {/* Chapters */}
           <Route path="create-chapter/:courseId" element={<CreateChapter />} />
           <Route
             path="course/:courseId/edit-chapter/:id"
             element={<EditChapter />}
           />
+          {/* Courses */}
+          <Route path="create-course" element={<CreateCourse />} />
           <Route path="edit-course/:id" element={<EditCourse />} />
-          <Route path="remise" element={<Remise />} />
           <Route path="courses" element={<ShowCourses />} />
+          {/* Masterclass */}
           <Route path="masterclass" element={<Masterclass />} />
           <Route path="create-masterclass" element={<CreateMasterclass />} />
           <Route path="edit-masterclass/:id" element={<EditMasterclass />} />
+          {/* instructors */}
+          <Route path="instructors" element={<Instructors />} />
+          <Route path="instructor/create" element={<CreateInstructor />} />
+          <Route path="instructor/edit/:id" element={<EditInstructor />} />
+          {/* users */}
+          <Route path="users" element={<Users />} />
+          <Route path="profile/:id" element={<AccountAdmin />} />
+          {/* remise */}
+          <Route path="remise" element={<Remise />} />
         </Route>
 
         <Route path="/user/account" element={<Account />}>

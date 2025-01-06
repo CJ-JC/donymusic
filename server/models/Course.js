@@ -2,6 +2,7 @@ import sequelize from "../config/dbMysql.js";
 import { DataTypes } from "sequelize";
 import { Chapter } from "./Chapter.js";
 import slugify from "slugify";
+import { Category } from "./Category.js";
 
 export const Course = sequelize.define(
     "course",
@@ -35,6 +36,16 @@ export const Course = sequelize.define(
         imageUrl: {
             type: DataTypes.STRING,
             allowNull: false,
+        },
+        categoryId: {
+            type: DataTypes.INTEGER,
+            allowNull: true,
+            references: {
+                model: "category",
+                key: "id",
+            },
+            onUpdate: "CASCADE",
+            onDelete: "SET NULL",
         },
         isPublished: {
             type: DataTypes.BOOLEAN,
@@ -81,4 +92,14 @@ Course.hasMany(Chapter, {
 
 Chapter.belongsTo(Course, {
     foreignKey: "courseId",
+});
+
+Category.hasMany(Course, {
+    foreignKey: "categoryId",
+    as: "courses",
+});
+
+Course.belongsTo(Category, {
+    foreignKey: "categoryId",
+    as: "category",
 });

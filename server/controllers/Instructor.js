@@ -1,36 +1,35 @@
 import { Instructor } from "../models/Instructor.js";
 import { Masterclass } from "../models/Masterclass.js";
-import { Files } from "../models/Files.js";
 import fs from "fs";
 
-export const createInstructor = async (req, res) => {
-    const { name, biography, imageUrl } = req.body;
-
-    // Vérification des champs obligatoires
-    if (!name || !biography || !imageUrl) {
-        return res.status(400).json({ message: "Tous les champs sont obligatoires" });
-    }
-
+export const getInstructors = async (req, res) => {
     try {
+        const instructors = await Instructor.findAll();
+        res.status(200).json(instructors);
+    } catch (error) {
+        res.status(500).json({ message: "Erreur lors de la récupération des instructeurs" });
+    }
+};
+
+export const createInstructor = async (req, res) => {
+    try {
+        const { name, biography } = req.body;
+        const imagePath = req.file ? `/uploads/instructors/${req.file.filename}` : null;
+
+        // Vérification des champs obligatoires
+        if (!name || !biography) {
+            return res.status(400).json({ message: "Tous les champs sont obligatoires" });
+        }
+
         // Vérifier si l'image existe déjà
-        const existingImage = await Files.findOne({ where: { path: imageUrl } });
+        const existingImage = await Instructor.findOne({ where: { name } });
         if (existingImage) {
             fs.unlinkSync(`public${imageUrl}`);
             return res.status(400).json({ error: "Un fichier avec ce nom existe déjà." });
         }
-        // Créer l'image
-        const imagePath = req.file ? `/uploads/images/${req.file.filename}` : null;
-        console.log(req.body, imagePath);
-
-        // Vérifier si l'image a été téléchargée
-        if (imagePath) {
-            const image = await Files.create({ title: "image", path: imagePath, courseId: null });
-            // Mettre à jour l'imageUrl
-            imageUrl = `/uploads/images/${image.filename}`;
-        }
 
         // Créer l'instructeur
-        const instructor = await Instructor.create({ name, biography, imageUrl });
+        const instructor = await Instructor.create({ name, biography, imageUrl: imagePath });
 
         res.status(201).json(instructor);
     } catch (error) {
@@ -44,12 +43,6 @@ export const getInstructorById = async (req, res) => {
         const { id } = req.params;
         const instructor = await Instructor.findOne({
             where: { id },
-            include: [
-                {
-                    model: Masterclass,
-                    attributes: ["id", "title"],
-                },
-            ],
         });
 
         if (!instructor) {
@@ -66,12 +59,12 @@ export const getInstructorById = async (req, res) => {
 export const updateInstructor = async (req, res) => {
     try {
         const { id } = req.params;
-        const { name, biography, imageUrl } = req.body;
+        const { name, biography } = req.body;
 
         // Vérifier les champs obligatoires
-        if (!name || !biography || !imageUrl) {
+        if (!name || !biography) {
             if (req.file) {
-                fs.unlinkSync(`public/uploads/images/${req.file.filename}`);
+                fs.unlinkSync(`public/uploads/instructors/${req.file.filename}`);
             }
             return res.status(400).json({ message: "Tous les champs sont obligatoires" });
         }
@@ -79,34 +72,25 @@ export const updateInstructor = async (req, res) => {
         const instructor = await Instructor.findByPk(id);
         if (!instructor) {
             if (req.file) {
-                fs.unlinkSync(`public/uploads/images/${req.file.filename}`);
+                fs.unlinkSync(`public/uploads/instructors/${req.file.filename}`);
             }
             return res.status(404).json({ error: "Instructeur non trouvé" });
         }
 
-        // Vérifier si l'image existe déjà
-        let existingImage = await Files.findOne({ where: { path: imageUrl } });
-        if (existingImage) {
-            fs.unlinkSync(`public${imageUrl}`);
-            return res.status(400).json({ error: "Un fichier avec ce nom existe déjà." });
-        }
-
-        // Créer l'image
-        const imagePath = req.file ? `/uploads/images/${req.file.filename}` : null;
-        console.log(req.body, imagePath);
-
-        // Vérifier si l'image a été téléchargée
-        if (imagePath) {
-            existingImage = await Files.create({ title: "image", path: imagePath, courseId: null });
-            // Mettre à jour l'imageUrl
-            imageUrl = `/uploads/images/${existingImage.filename}`;
+        let imagePath = instructor.imageUrl;
+        if (req.file) {
+            imagePath = `/uploads/instructors/${req.file.filename}`;
+            // Supprime l'ancienne image si elle existe
+            if (instructor.imageUrl && fs.existsSync(`public${instructor.imageUrl}`)) {
+                fs.unlinkSync(`public${instructor.imageUrl}`);
+            }
         }
 
         await instructor.update(
             {
                 name,
                 biography,
-                imageUrl,
+                imageUrl: imagePath,
             },
             {
                 where: { id },

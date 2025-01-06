@@ -5,43 +5,9 @@ import Categories from "@/components/search/categories";
 import useCourses from "@/widgets/utils/UseCourses";
 import axios from "axios";
 import usePagination from "@/widgets/utils/usePagination";
+import { useSearchParams } from "react-router-dom";
 
 export function Courses() {
-  // const [filteredCourses, setFilteredCourses] = useState([]);
-  // const [searchQuery, setSearchQuery] = useState("");
-  // const [currentPage, setCurrentPage] = useState(1);
-
-  // const coursesPerPage = 8;
-
-  // const { courses, discountedCourses, globalDiscount, availableRemises } =
-  //   useCourses();
-
-  // const handleSearch = (event) => {
-  //   const query = event.target.value;
-  //   setSearchQuery(query);
-
-  //   // Filter courses based on the search query
-  //   const filtered = courses.filter((course) =>
-  //     course.title.toLowerCase().includes(query.toLowerCase()),
-  //   );
-
-  //   setFilteredCourses(filtered);
-  //   setCurrentPage(1);
-  // };
-
-  // // Get current courses for the current page
-  // const indexOfLastCourse = currentPage * coursesPerPage;
-  // const indexOfFirstCourse = indexOfLastCourse - coursesPerPage;
-  // const currentCourses = filteredCourses.slice(
-  //   indexOfFirstCourse,
-  //   indexOfLastCourse,
-  // );
-
-  // // Change page
-  // const paginate = (pageNumber) => setCurrentPage(pageNumber);
-
-  // const totalPages = Math.ceil(filteredCourses.length / coursesPerPage);
-
   const categories = [
     { id: "1", name: "Guitare", icon: "/img/guitare.svg" },
     { id: "2", name: "Batterie", icon: "/img/batterie.svg" },
@@ -50,11 +16,21 @@ export function Courses() {
   ];
 
   const { courses, discountedCourses } = useCourses();
-  const [searchQuery, setSearchQuery] = useState("");
-
-  const filteredCourses = discountedCourses.filter((course) =>
-    course.title.toLowerCase().includes(searchQuery.toLowerCase()),
+  const [searchParams] = useSearchParams();
+  const [searchQuery, setSearchQuery] = useState(
+    searchParams.get("title") || "",
   );
+  const categoryId = searchParams.get("categoryId");
+
+  const filteredCourses = discountedCourses.filter((course) => {
+    const matchesSearch = course.title
+      .toLowerCase()
+      .includes(searchQuery.toLowerCase());
+    const matchesCategory = categoryId
+      ? course.category?.id === categoryId
+      : true;
+    return matchesSearch && matchesCategory;
+  });
 
   // Utiliser le hook de pagination
   const { currentItems, currentPage, totalPages, paginate } = usePagination(

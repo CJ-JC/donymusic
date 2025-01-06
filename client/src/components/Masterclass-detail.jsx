@@ -15,6 +15,7 @@ import FormatHour from "@/widgets/utils/FormatHour";
 import Loading from "@/widgets/utils/Loading";
 import { CalculateDuration } from "@/widgets/utils/calculateDuration";
 import parse from "html-react-parser";
+import MasterclassRegistration from "@/widgets/utils/MasterclassRegistration";
 
 const MasterclassDetail = () => {
   const BASE_URL = import.meta.env.VITE_API_URL;
@@ -49,7 +50,7 @@ const MasterclassDetail = () => {
   }
 
   return (
-    <div className="container mx-auto max-w-screen-xl px-6 py-12">
+    <div className="container mx-auto max-w-screen-xl py-4">
       {/* En-tête de la masterclass */}
       <div className="mx-auto max-w-7xl">
         <div className="grid grid-cols-1 gap-8 md:grid-cols-2">
@@ -102,6 +103,7 @@ const MasterclassDetail = () => {
               <div className="flex items-center space-x-2">
                 <Hourglass className="h-5 w-5 text-blue-gray-900" />
                 <Typography>
+                  Pendant{" "}
                   <CalculateDuration
                     startDate={masterclass.startDate}
                     endDate={masterclass.endDate}
@@ -111,13 +113,14 @@ const MasterclassDetail = () => {
               <div className="flex items-center space-x-2">
                 <CalendarClock className="h-5 w-5 text-blue-gray-900" />
                 <Typography>
-                  {masterclass.duration}h durer de la réunion
+                  Durée de la réunion {masterclass.duration}h
                 </Typography>
               </div>
             </div>
 
             {/* Bouton d'inscription */}
-            <Button className="w-full">S'inscrire à la masterclass</Button>
+
+            <MasterclassRegistration endDate={masterclass.endDate} />
           </div>
         </div>
 
@@ -144,18 +147,16 @@ const MasterclassDetail = () => {
             </Typography>
             <div className="flex items-center space-x-4">
               <img
-                src="https://live.themewild.com/eventu/assets/img/schedule/01.jpg"
+                src={`${BASE_URL}${masterclass.instructor?.imageUrl}`}
                 alt={masterclass.instructor?.name}
                 className="h-16 w-16 rounded-full object-cover"
               />
               <div>
                 <Typography variant="h6">
-                  {masterclass.instructor?.name} Dony Paul
+                  {masterclass.instructor?.name}
                 </Typography>
                 <Typography className="text-gray-600">
-                  {masterclass.instructor?.bio} Je suis un expert en
-                  programmation et je suis passionné par les technologies
-                  d'information et de communication.
+                  {masterclass.instructor?.biography}
                 </Typography>
               </div>
             </div>

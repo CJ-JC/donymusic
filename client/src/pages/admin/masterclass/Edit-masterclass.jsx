@@ -15,11 +15,29 @@ const EditMasterclass = () => {
   const navigate = useNavigate();
   const [imageUrl, setImageUrl] = useState(null);
   const [file, setFile] = useState(null);
+  const [instructors, setInstructors] = useState([]);
 
   const handleImageChange = (e) => {
     setFile(e.target.files[0]);
     setImageUrl(URL.createObjectURL(e.target.files[0]));
   };
+
+  useEffect(() => {
+    const fetchInstructors = async () => {
+      try {
+        const response = await axios.get("/api/instructor");
+        const instructors = response.data;
+        setInstructors(instructors);
+      } catch (error) {
+        console.error(
+          "Erreur lors de la récupération des instructeurs :",
+          error,
+        );
+      }
+    };
+
+    fetchInstructors();
+  }, []);
 
   useEffect(() => {
     const fetchMasterclass = async () => {
@@ -35,6 +53,7 @@ const EditMasterclass = () => {
           imageUrl,
           duration,
           maxParticipants,
+          instructorId,
         } = response.data;
 
         setInputs({
@@ -47,6 +66,7 @@ const EditMasterclass = () => {
           imageUrl,
           duration,
           maxParticipants,
+          instructorId,
         });
         setImageUrl(imageUrl ? `${BASE_URL}${imageUrl}` : null);
       } catch (error) {
@@ -67,6 +87,7 @@ const EditMasterclass = () => {
     duration: "",
     maxParticipants: "",
     slug: "",
+    instructorId: null,
   });
 
   const handleChange = (e) => {
@@ -87,7 +108,8 @@ const EditMasterclass = () => {
       !inputs.endDate ||
       !inputs.duration ||
       !inputs.maxParticipants ||
-      !inputs.slug
+      !inputs.slug ||
+      !inputs.instructorId
     ) {
       setError("Tous les champs sont obligatoires");
       return;
@@ -112,6 +134,7 @@ const EditMasterclass = () => {
     formData.append("duration", inputs.duration);
     formData.append("maxParticipants", inputs.maxParticipants);
     formData.append("slug", inputs.slug);
+    formData.append("instructorId", inputs.instructorId);
 
     try {
       await axios.put(`/api/masterclass/update/${id}`, formData);
@@ -241,6 +264,35 @@ const EditMasterclass = () => {
                     </div>
                   )}
                 </div>
+              </div>
+              <div className="my-6 rounded-md border p-4">
+                <label
+                  htmlFor="instructor"
+                  className="mb-2 block text-sm font-medium text-gray-900"
+                >
+                  Instructeur
+                </label>
+                <select
+                  id="instructor"
+                  name="instructorId"
+                  value={inputs.instructorId || ""}
+                  onChange={(e) =>
+                    setInputs((prev) => ({
+                      ...prev,
+                      instructorId: parseInt(e.target.value),
+                    }))
+                  }
+                  className="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400"
+                >
+                  <option value="" disabled>
+                    -- Sélectionnez un instructeur --
+                  </option>
+                  {instructors.map((instructor) => (
+                    <option key={instructor.id} value={instructor.id}>
+                      {instructor.name}
+                    </option>
+                  ))}
+                </select>
               </div>
             </div>
 

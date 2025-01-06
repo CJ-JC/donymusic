@@ -144,7 +144,7 @@ const Coursedetail = () => {
   );
 
   return (
-    <div className="mx-auto my-6 max-w-screen-xl px-2">
+    <div className="mx-auto my-6 h-screen max-w-screen-xl px-2">
       <div className="grid grid-cols-1 gap-6 lg:grid-cols-5">
         <div className="order-1 col-span-1 flex flex-col space-y-6 lg:col-span-3">
           <div className="overflow-hidden rounded-md border p-2">

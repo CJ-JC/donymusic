@@ -52,7 +52,7 @@ export const Masterclass = sequelize.define(
         },
         instructorId: {
             type: DataTypes.INTEGER,
-            allowNull: false,
+            allowNull: true,
             references: {
                 model: "instructor",
                 key: "id",

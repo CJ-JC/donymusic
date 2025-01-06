@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import { Button, Input } from "@material-tailwind/react";
+import React, { useEffect, useState } from "react";
+import { Button, Input, Option, Select } from "@material-tailwind/react";
 import axios from "axios";
 import AlertError from "@/widgets/utils/AlertError";
 import { PlusCircle } from "lucide-react";
@@ -12,11 +12,19 @@ const CreateCourse = () => {
   const [loading, setLoading] = useState(false);
   const [file, setFile] = useState(null);
   const [imageUrl, setImageUrl] = useState(null);
+  const [categories, setCategories] = useState([]);
 
-  const handleImageChange = (e) => {
-    setFile(e.target.files[0]);
-    setImageUrl(URL.createObjectURL(e.target.files[0]));
-  };
+  useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        const response = await axios.get("/api/category");
+        setCategories(response.data);
+      } catch (error) {
+        setError("Erreur lors de la récupération des catégories");
+      }
+    };
+    fetchCategories();
+  }, []);
 
   const [inputs, setInputs] = useState({
     title: "",
@@ -24,7 +32,13 @@ const CreateCourse = () => {
     description: "",
     price: "",
     videoUrl: "",
+    categoryId: "",
   });
+
+  const handleImageChange = (e) => {
+    setFile(e.target.files[0]);
+    setImageUrl(URL.createObjectURL(e.target.files[0]));
+  };
 
   const handleChange = (e) => {
     setInputs((prev) => ({ ...prev, [e.target.name]: e.target.value }));
@@ -46,6 +60,7 @@ const CreateCourse = () => {
     formData.append("description", inputs.description);
     formData.append("price", inputs.price);
     formData.append("videoUrl", inputs.videoUrl);
+    formData.append("categoryId", inputs.categoryId);
 
     try {
       setLoading(true);
@@ -60,6 +75,7 @@ const CreateCourse = () => {
         description: "",
         price: "",
         videoUrl: "",
+        categoryId: "",
       });
       setFile(null);
       setLoading(false);
@@ -305,6 +321,35 @@ const CreateCourse = () => {
                     value={inputs.videoUrl}
                     onChange={handleChange}
                   />
+                </div>
+                <div className="mt-6 space-y-2 rounded-md border p-4">
+                  <label
+                    htmlFor="category"
+                    className="mb-2 block text-sm font-medium text-gray-900 dark:text-white"
+                  >
+                    Catégorie du cours
+                  </label>
+                  <select
+                    id="category"
+                    name="categoryId"
+                    value={inputs.categoryId || ""}
+                    onChange={(e) =>
+                      setInputs((prev) => ({
+                        ...prev,
+                        categoryId: parseInt(e.target.value),
+                      }))
+                    }
+                    className="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500"
+                  >
+                    <option value="" disabled>
+                      -- Sélectionnez une catégorie --
+                    </option>
+                    {categories.map((category) => (
+                      <option key={category.id} value={category.id}>
+                        {category.title}
+                      </option>
+                    ))}
+                  </select>
                 </div>
               </div>
             </div>

@@ -1,10 +1,19 @@
 import slugify from "slugify";
 import { Masterclass } from "../models/Masterclass.js";
 import fs from "fs";
+import { Instructor } from "../models/Instructor.js";
 
 export const getMasterclasses = async (req, res) => {
     try {
-        const masterclasses = await Masterclass.findAll();
+        const masterclasses = await Masterclass.findAll({
+            include: [
+                {
+                    model: Instructor,
+                    as: "instructor",
+                    attributes: ["id", "name", "imageUrl", "biography"],
+                },
+            ],
+        });
         res.status(200).json(masterclasses);
     } catch (error) {
         res.status(500).json({ message: "Erreur lors de la récupération des masterclasses" });
@@ -13,12 +22,11 @@ export const getMasterclasses = async (req, res) => {
 
 export const createMasterclass = async (req, res) => {
     try {
-        const { title, description, startDate, endDate, price, duration, maxParticipants } = req.body;
+        const { title, description, startDate, endDate, price, duration, maxParticipants, instructorId } = req.body;
         const imagePath = req.file ? `/uploads/images/${req.file.filename}` : null;
-        console.log(req.body, imagePath);
 
         // Vérifier les champs obligatoires
-        if (!title || !description || !startDate || !endDate || !price || !duration || !maxParticipants) {
+        if (!title || !description || !startDate || !endDate || !price || !duration || !maxParticipants || !instructorId) {
             return res.status(400).json({ message: "Tous les champs sont obligatoires" });
         }
 
@@ -30,6 +38,12 @@ export const createMasterclass = async (req, res) => {
         // Vérifier que le prix est valide
         if (isNaN(parseFloat(price)) || parseFloat(price) <= 0) {
             return res.status(400).json({ message: "Le prix doit être un nombre valide et supérieur à 0" });
+        }
+
+        // Vérifiez que la catégorie existe
+        const instructorExists = await Instructor.findByPk(instructorId);
+        if (!instructorExists) {
+            return res.status(400).json({ error: "L'instructeur spécifié n'existe pas." });
         }
 
         const existingMasterclass = await Masterclass.findOne({ where: { title } });
@@ -46,6 +60,7 @@ export const createMasterclass = async (req, res) => {
             startDate,
             endDate,
             price: parseFloat(price),
+            instructorId: parseInt(instructorId),
         });
 
         res.status(201).json(masterclass);
@@ -60,6 +75,13 @@ export const getMasterclassById = async (req, res) => {
         const { id } = req.params;
         const masterclass = await Masterclass.findOne({
             where: { id },
+            include: [
+                {
+                    model: Instructor,
+                    as: "instructor",
+                    attributes: ["id", "name", "imageUrl", "biography"],
+                },
+            ],
         });
 
         if (!masterclass) {
@@ -76,14 +98,20 @@ export const getMasterclassById = async (req, res) => {
 export const updateMasterclass = async (req, res) => {
     try {
         const { id } = req.params;
-        const { title, description, startDate, endDate, price, duration, maxParticipants, slug } = req.body;
+        const { title, description, startDate, endDate, price, duration, maxParticipants, slug, instructorId } = req.body;
 
         // Vérification des champs obligatoires
-        if (!title || !description || !startDate || !endDate || !price || !duration || !maxParticipants) {
+        if (!title || !description || !startDate || !endDate || !price || !duration || !maxParticipants || !instructorId) {
             if (req.file) {
                 fs.unlinkSync(`public/uploads/images/${req.file.filename}`);
             }
             return res.status(400).json({ message: "Tous les champs sont obligatoires" });
+        }
+
+        // Vérifiez que la catégorie existe
+        const instructorExists = await Instructor.findByPk(instructorId);
+        if (!instructorExists) {
+            return res.status(400).json({ error: "L'instructeur spécifié n'existe pas." });
         }
 
         const masterclass = await Masterclass.findByPk(id);
@@ -124,6 +152,7 @@ export const updateMasterclass = async (req, res) => {
                 duration,
                 maxParticipants,
                 slug: newSlug,
+                instructorId: parseInt(instructorId),
             },
             {
                 where: { id },
@@ -144,6 +173,13 @@ export const getMasterclassBySlug = async (req, res) => {
 
         const masterclass = await Masterclass.findOne({
             where: { slug },
+            include: [
+                {
+                    model: Instructor,
+                    as: "instructor",
+                    attributes: ["id", "name", "imageUrl", "biography"],
+                },
+            ],
         });
 
         if (!masterclass) {
