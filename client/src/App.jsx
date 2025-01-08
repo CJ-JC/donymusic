@@ -10,11 +10,11 @@ import EditCourse from "./pages/admin/course/Edit-course";
 import CreateChapter from "./pages/admin/course/Create-chapter";
 import EditChapter from "./pages/admin/course/Edit-chapter";
 import Home from "./pages/home";
-import Profile, { Account } from "./pages/user/Account";
+import Account from "./pages/user/Account";
 import CoursesUser from "./pages/user/Courses";
 import SignIn from "./pages/auth/sign-in";
 import SignUp from "./pages/auth/sign-up";
-import Remise from "./components/Remise";
+import Remise from "./pages/admin/Remise";
 import ShowCourses from "./pages/admin/course/Show-courses";
 import axios from "axios";
 import Loading from "./widgets/utils/Loading";
@@ -30,6 +30,8 @@ import Instructors from "./pages/admin/instructor/Instructors";
 import EditInstructor from "./pages/admin/instructor/edit-instructor";
 import Users from "./pages/admin/Users/Users";
 import AccountAdmin from "./pages/admin/Users/Account-admin";
+import Setting from "./pages/user/Settings";
+import Success from "./pages/Success";
 
 const Layout = ({ hasGlobalDiscount, discountPercentage }) => (
   <>
@@ -126,8 +128,18 @@ function App() {
             path="masterclass/slug/:slug"
             element={<MasterclassDetail />}
           />
+
+          {/* compte */}
+          <Route path="user/account" element={<Account />} />
+          <Route path="user/account/settings" element={<Setting />} />
+          <Route path="user/account/my-courses" element={<CoursesUser />} />
+
+          {/* s'authentifier */}
           <Route path="sign-in" element={<SignIn />} />
           <Route path="sign-up" element={<SignUp />} />
+
+          {/* payment */}
+          <Route path="success" element={<Success />} />
         </Route>
 
         {/* Routes admin */}
@@ -155,11 +167,6 @@ function App() {
           <Route path="profile/:id" element={<AccountAdmin />} />
           {/* remise */}
           <Route path="remise" element={<Remise />} />
-        </Route>
-
-        <Route path="/user/account" element={<Account />}>
-          <Route path="profile" element={<Profile />} />
-          <Route path="my-courses" element={<CoursesUser />} />
         </Route>
 
         {/* Autres routes */}

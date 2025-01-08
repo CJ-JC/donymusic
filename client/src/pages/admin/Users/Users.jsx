@@ -57,21 +57,20 @@ const Users = () => {
 
   return (
     <>
-      <Typography
-        variant="h3"
-        className="mb-3 text-xl font-bold md:text-3xl"
-        color="blue-gray"
-      >
-        Liste des utilisateurs
-      </Typography>
-      <div className="flex-column mb-4 flex flex-wrap items-center justify-center space-y-4 sm:flex-row sm:space-y-4 md:justify-between">
-        <SearchInput handleSearch={handleSearch} searchQuery={searchQuery} />
-      </div>
-
       {/* Tableau des utilisateurs */}
-      <div className="relative flex w-full flex-col overflow-scroll rounded-lg bg-white bg-clip-border text-gray-700 shadow-md">
+      <div className="relative flex w-full flex-col overflow-scroll rounded-lg bg-white bg-clip-border p-4 text-gray-700 shadow-md">
+        <Typography
+          variant="h3"
+          className="mb-3 text-xl font-bold md:text-3xl"
+          color="blue-gray"
+        >
+          Liste des utilisateurs
+        </Typography>
+        <div className="flex-column mb-4 flex flex-wrap items-center justify-center space-y-4 sm:flex-row sm:space-y-4 md:justify-between">
+          <SearchInput handleSearch={handleSearch} searchQuery={searchQuery} />
+        </div>
         <table className="w-full min-w-max table-auto text-left">
-          <thead className="bg-gray-300 text-gray-700 dark:bg-gray-700 dark:text-gray-400">
+          <thead className="bg-[#F9FAFB] text-gray-700 dark:bg-gray-700 dark:text-gray-400">
             <tr>
               <th className="border-slate-200 bg-slate-50 border-b p-4">
                 <p className="text-slate-500 text-sm font-normal leading-none">

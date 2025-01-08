@@ -107,7 +107,7 @@ const AddRemise = () => {
   };
 
   return (
-    <div className="container mx-auto">
+    <div className="container mx-auto rounded-md bg-white p-4 shadow-md">
       <h1 className="mb-4 text-2xl font-bold">Ajouter une Remise</h1>
       <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
         <div className="mb-4">
@@ -160,9 +160,6 @@ const AddRemise = () => {
           /> */}
 
         <div className="mb-4 inline-flex items-center">
-          <label className="cursor-pointer text-sm" htmlFor="isGlobal">
-            Appliquer la remise globale
-          </label>
           <label
             className="relative flex cursor-pointer items-center rounded-full p-3"
             htmlFor="ripple-on"
@@ -192,6 +189,9 @@ const AddRemise = () => {
                 ></path>
               </svg>
             </span>
+          </label>
+          <label className="cursor-pointer text-sm" htmlFor="isGlobal">
+            Appliquer la remise globale
           </label>
         </div>
       </div>

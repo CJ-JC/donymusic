@@ -15,7 +15,6 @@ import Loading from "@/widgets/utils/Loading";
 export default function Instructors() {
   const navigate = useNavigate();
   const [instructors, setInstructors] = useState([]);
-  const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [deleteDialog, setDeleteDialog] = useState(false);
   const [selectedInstructor, setSelectedInstructor] = useState(null);
@@ -27,9 +26,6 @@ export default function Instructors() {
       setInstructors(response.data);
     } catch (err) {
       setError("Erreur lors de la récupération des instructeurs");
-      console.error(err);
-    } finally {
-      setLoading(false);
     }
   };
 
@@ -48,7 +44,6 @@ export default function Instructors() {
       fetchInstructors();
     } catch (err) {
       setError("Erreur lors de la suppression de l'instructeur");
-      console.error(err);
     }
   };
 
@@ -57,14 +52,14 @@ export default function Instructors() {
     setDeleteDialog(true);
   };
 
-  if (loading) {
-    return <Loading />;
-  }
-
   return (
-    <div className="container mx-auto">
+    <div className="relative flex w-full flex-col overflow-scroll rounded-lg bg-white bg-clip-border p-4 text-gray-700 shadow-md">
       <div className="mb-4 flex items-center justify-between">
-        <Typography variant="h4" color="blue-gray">
+        <Typography
+          variant="h3"
+          className="text-xl font-bold md:text-3xl"
+          color="blue-gray"
+        >
           Liste des Instructeurs
         </Typography>
         <Link to={"/administrator/instructor/create"}>
@@ -84,90 +79,87 @@ export default function Instructors() {
           {error}
         </div>
       )}
-
-      <div className="relative flex w-full flex-col overflow-scroll rounded-lg bg-white bg-clip-border text-gray-700 shadow-md">
-        <table className="w-full min-w-max table-auto text-left">
-          <thead className="bg-gray-300 text-gray-700 dark:bg-gray-700 dark:text-gray-400">
-            <tr>
-              <th className="border-slate-200 bg-slate-50 border-b p-4">
-                <p className="text-slate-500 text-sm font-normal leading-none">
-                  Nom
+      <table className="w-full min-w-max table-auto text-left">
+        <thead className="bg-[#F9FAFB] text-gray-700 dark:bg-gray-700 dark:text-gray-400">
+          <tr>
+            <th className="border-slate-200 bg-slate-50 border-b p-4">
+              <p className="text-slate-500 text-sm font-normal leading-none">
+                Nom
+              </p>
+            </th>
+            <th className="border-slate-200 bg-slate-50 border-b p-4">
+              <p className="text-slate-500 text-sm font-normal leading-none">
+                Prénom
+              </p>
+            </th>
+            <th className="border-slate-200 bg-slate-50 border-b p-4">
+              <p className="text-slate-500 text-sm font-normal leading-none">
+                Email
+              </p>
+            </th>
+            <th className="border-slate-200 bg-slate-50 border-b p-4">
+              <p className="text-slate-500 text-sm font-normal leading-none">
+                Action
+              </p>
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          {instructors.map((instructor) => (
+            <tr
+              className="hover:bg-slate-50 border-slate-200 border-b"
+              key={instructor.id}
+            >
+              <td className="p-4">
+                {instructor?.imageUrl ? (
+                  <img
+                    src={`${BASE_URL}${instructor?.imageUrl}`}
+                    alt={instructor?.name}
+                    className="h-14 w-14 rounded-full object-cover"
+                  />
+                ) : (
+                  <div className="rounded-full bg-gray-400">
+                    <User className="h-14 w-14" />
+                  </div>
+                )}
+              </td>
+              <td className="p-4 py-5">
+                <p className="text-slate-800 block text-sm font-semibold">
+                  {instructor.name}
                 </p>
-              </th>
-              <th className="border-slate-200 bg-slate-50 border-b p-4">
-                <p className="text-slate-500 text-sm font-normal leading-none">
-                  Prénom
+              </td>
+              <td className="p-4 py-5">
+                <p className="text-slate-500 text-sm">
+                  {instructor.biography.length > 120
+                    ? instructor.biography.substring(
+                        0,
+                        instructor.biography.lastIndexOf(" ", 120),
+                      ) + "..."
+                    : instructor.biography}
                 </p>
-              </th>
-              <th className="border-slate-200 bg-slate-50 border-b p-4">
-                <p className="text-slate-500 text-sm font-normal leading-none">
-                  Email
-                </p>
-              </th>
-              <th className="border-slate-200 bg-slate-50 border-b p-4">
-                <p className="text-slate-500 text-sm font-normal leading-none">
-                  Action
-                </p>
-              </th>
+              </td>
+              <td className="flex items-center gap-2 p-4 py-5">
+                <Button
+                  onClick={() => handleEdit(instructor)}
+                  size="sm"
+                  title="Modifier"
+                  className="flex items-center bg-blue-500 text-white focus:outline-none"
+                >
+                  <PencilIcon className="h-4 w-4" />
+                </Button>
+                <Button
+                  onClick={() => openDeleteDialog(instructor)}
+                  size="sm"
+                  title="Supprimer"
+                  className="flex items-center bg-red-600 text-white focus:outline-none"
+                >
+                  <Trash className="h-4 w-4" />
+                </Button>
+              </td>
             </tr>
-          </thead>
-          <tbody>
-            {instructors.map((instructor) => (
-              <tr
-                className="hover:bg-slate-50 border-slate-200 border-b"
-                key={instructor.id}
-              >
-                <td className="p-4">
-                  {instructor?.imageUrl ? (
-                    <img
-                      src={`${BASE_URL}${instructor?.imageUrl}`}
-                      alt={instructor?.name}
-                      className="h-14 w-14 rounded-full object-cover"
-                    />
-                  ) : (
-                    <div className="rounded-full bg-gray-400">
-                      <User className="h-14 w-14" />
-                    </div>
-                  )}
-                </td>
-                <td className="p-4 py-5">
-                  <p className="text-slate-800 block text-sm font-semibold">
-                    {instructor.name}
-                  </p>
-                </td>
-                <td className="p-4 py-5">
-                  <p className="text-slate-500 text-sm">
-                    {instructor.biography.length > 120
-                      ? instructor.biography.substring(
-                          0,
-                          instructor.biography.lastIndexOf(" ", 120),
-                        ) + "..."
-                      : instructor.biography}
-                  </p>
-                </td>
-                <td className="flex items-center gap-2 p-4 py-5">
-                  <Button
-                    onClick={() => handleEdit(instructor)}
-                    size="sm"
-                    title="Modifier"
-                    className="flex items-center bg-blue-500 text-white focus:outline-none"
-                  >
-                    <PencilIcon className="h-4 w-4" />
-                  </Button>
-                  <Button
-                    onClick={() => openDeleteDialog(instructor)}
-                    size="sm"
-                    title="Supprimer"
-                    className="flex items-center bg-red-600 text-white focus:outline-none"
-                  >
-                    <Trash className="h-4 w-4" />
-                  </Button>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
+          ))}
+        </tbody>
+      </table>
 
       <Dialog open={deleteDialog} handler={() => setDeleteDialog(false)}>
         <DialogHeader>Confirmer la suppression</DialogHeader>

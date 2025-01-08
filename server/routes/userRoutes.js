@@ -18,4 +18,8 @@ router.post("/logout", logoutUser);
 
 router.get("/check-auth", checkAuth);
 
+router.get("/protected-route", checkAuth, (req, res) => {
+    return res.status(200).json({ isAuthenticated: true, user: req.session.user });
+});
+
 export default router;

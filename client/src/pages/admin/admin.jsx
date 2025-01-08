@@ -1,16 +1,14 @@
-import { Button, Typography } from "@material-tailwind/react";
+import { Button } from "@material-tailwind/react";
 import React, { useEffect, useState } from "react";
 import { Link, Outlet, useLocation, useNavigate } from "react-router-dom";
-
-import { Discount } from "@mui/icons-material";
 import axios from "axios";
 import { loggedOut } from "@/reducer/auth";
 import { useDispatch, useSelector } from "react-redux";
 import { checkAuthStatus } from "@/widgets/utils/CheckAuthStatus";
 import Loading from "@/widgets/utils/Loading";
-import ShowCourses from "./course/Show-courses";
 import Aside from "@/widgets/layout/aside";
 import { LogOut } from "lucide-react";
+import Dashboard from "./Dashboard";
 
 const Admin = () => {
   const [authLoading, setAuthLoading] = useState(true);
@@ -21,30 +19,11 @@ const Admin = () => {
 
   const isMainAdminPage = location.pathname === "/administrator";
 
-  const [courses, setCourses] = useState([]);
   const { isLoggedIn, user } = useSelector((state) => state.auth);
 
   useEffect(() => {
     checkAuthStatus(dispatch, setAuthLoading);
-  }, [dispatch]);
-
-  useEffect(() => {
-    const fetchCourses = async () => {
-      try {
-        const response = await axios.get("/api/course");
-        const sortedCourses = response.data.sort(
-          (a, b) => new Date(a.createdAt) - new Date(b.createdAt),
-        );
-        setCourses(sortedCourses);
-      } catch (error) {
-        console.error("Erreur lors de la récupération des cours :", error);
-      }
-    };
-
-    if (!authLoading && isLoggedIn && user.role === "admin") {
-      fetchCourses();
-    }
-  }, [authLoading, isLoggedIn, user]);
+  }, [dispatch, authLoading, isLoggedIn, user]);
 
   const logout = () => {
     axios.post("/api/user/logout");
@@ -73,7 +52,7 @@ const Admin = () => {
         setIsSidebarOpen={setIsSidebarOpen}
         user={user}
       />
-      <div className="h-full md:pl-80">
+      <div className="h-screen bg-[#f1f5f99f] md:pl-80">
         <div className="sticky inset-x-0 top-0 z-40 flex h-20 w-full items-center justify-between border-b bg-white p-4">
           <div className="flex items-center">
             <button
@@ -119,7 +98,7 @@ const Admin = () => {
           <div className="m-4">
             {isMainAdminPage ? (
               <div className="h-screen">
-                <ShowCourses courses={courses} />
+                <Dashboard />
               </div>
             ) : (
               <Outlet />

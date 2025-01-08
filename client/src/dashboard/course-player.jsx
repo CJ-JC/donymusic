@@ -60,7 +60,10 @@ const CoursePlayer = () => {
   }, [dispatch]);
 
   useEffect(() => {
-    if (!authLoading && (!isLoggedIn || !user || user.role !== "admin")) {
+    if (
+      !authLoading &&
+      (!isLoggedIn || !user || (user.role !== "admin" && user.role !== "user"))
+    ) {
       return navigate("/sign-in");
     }
   }, [authLoading, isLoggedIn, user, navigate]);
@@ -87,9 +90,7 @@ const CoursePlayer = () => {
       }
     };
 
-    if (!authLoading && isLoggedIn && user.role === "admin") {
-      fetchCourses();
-    }
+    fetchCourses();
   }, [authLoading, isLoggedIn, user, courseId]);
 
   useEffect(() => {

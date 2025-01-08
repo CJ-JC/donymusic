@@ -8,17 +8,64 @@ import userRoutes from "./routes/userRoutes.js";
 import remiseRoutes from "./routes/remiseRoutes.js";
 import userProgressRoutes from "./routes/userProgressRoutes.js";
 import masterclassRoutes from "./routes/masterclassRoutes.js";
+import paymentRoutes from "./routes/paymentRoutes.js";
 import session from "express-session";
 import crypto from "crypto";
 import categoryRoutes from "./routes/categoryRoutes.js";
 import instructorRoutes from "./routes/instructorRoutes.js";
+import Stripe from "stripe";
+import { Payment } from "./models/Payment.js";
+import { Purchase } from "./models/Purchase.js";
+const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
 
 const app = express();
+app.use(cors());
+
+app.post("/api/payment/webhook", express.raw({ type: "application/json" }), async (req, res) => {
+    const signature = req.headers["stripe-signature"];
+    let event;
+
+    try {
+        event = stripe.webhooks.constructEvent(req.body, signature, process.env.STRIPE_WEBHOOK_SECRET);
+    } catch (err) {
+        return res.status(400).send(`Webhook Error: ${err.message}`);
+    }
+
+    if (event.type === "checkout.session.completed") {
+        const session = event.data.object;
+
+        try {
+            // Mettre à jour le paiement
+            const payment = await Payment.findOne({
+                where: { transactionId: session.id },
+            });
+
+            if (payment) {
+                await payment.update({
+                    status: "completed",
+                });
+
+                // Mettre à jour l'achat
+                const purchase = await Purchase.findOne({
+                    where: { id: payment.purchaseId },
+                });
+
+                if (purchase) {
+                    await purchase.update({
+                        status: "completed",
+                    });
+                }
+            }
+
+            res.json({ received: true });
+        } catch (error) {
+            res.status(500).json({ error: "Erreur lors du traitement du paiement" });
+        }
+    }
+});
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-
-app.use(cors());
 
 // const secretKey = crypto.randomBytes(32).toString("hex");
 // console.log(secretKey);
@@ -74,5 +121,7 @@ app.use("/api/course-player/course/:courseId/chapters/:chapterId", courseRoutes)
 app.use("/api/category", categoryRoutes);
 
 app.use("/api/instructor", instructorRoutes);
+
+app.use("/api/payment", paymentRoutes);
 
 export default app;

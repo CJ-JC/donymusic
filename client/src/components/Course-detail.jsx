@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import Vimeo from "@u-wave/react-vimeo";
-import { Link, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
 import { Button } from "@material-tailwind/react";
 import {
@@ -10,6 +10,7 @@ import {
 } from "@material-tailwind/react";
 import Loading from "@/widgets/utils/Loading";
 import ReactQuill from "react-quill";
+import { useDispatch, useSelector } from "react-redux";
 
 function Icon({ id, open }) {
   return (
@@ -44,6 +45,11 @@ const Coursedetail = () => {
   const [discountPercentage, setDiscountPercentage] = useState(null);
   const [globalDiscount, setGlobalDiscount] = useState(null);
   const [availableRemises, setAvailableRemises] = useState([]);
+  // const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PUBLIC_KEY);
+
+  const { isLoggedIn, user } = useSelector((state) => state.auth);
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   useEffect(() => {
     const fetchCourse = async () => {
@@ -142,6 +148,43 @@ const Coursedetail = () => {
     (acc, chapter) => acc + chapter.videos.length,
     0,
   );
+
+  const handleCheckout = async () => {
+    if (!isLoggedIn) {
+      navigate("/sign-in");
+      return;
+    }
+
+    try {
+      // Calculer le prix final en tenant compte des remises
+      const finalPrice = discountedPrice || course.price;
+
+      // Créer la session de paiement
+      const response = await axios.post(
+        "/api/payment/create-checkout-session",
+        {
+          courseId: course.id,
+          courseName: course.title,
+          coursePrice: Math.round(finalPrice * 100), // Convertir en centimes pour Stripe
+          courseImageUrl: course.imageUrl,
+          courseSlug: course.slug,
+        },
+      );
+
+      // Vérifier que nous avons bien reçu l'ID de session
+      if (!response.data || !response.data.id) {
+        console.error("Réponse invalide du serveur:", response.data);
+        throw new Error("Pas d'ID de session reçu du serveur");
+      }
+
+      if (response.data.url) {
+        window.location.href = response.data.url;
+      }
+    } catch (error) {
+      setError("Réponse du serveur en cas d'erreur:", error.response?.data);
+      // Vous pouvez ajouter ici une notification à l'utilisateur
+    }
+  };
 
   return (
     <div className="mx-auto my-6 h-screen max-w-screen-xl px-2">
@@ -362,39 +405,35 @@ const Coursedetail = () => {
 
               {/* Bouton de paiement */}
               <div>
-                <Link
-                  to={`/payment/course/${course.id}`}
-                  className="mt-5 block"
+                <Button
+                  variant="gradient"
+                  className="checkout-button flex w-full items-center justify-center rounded-lg py-3 transition"
+                  onClick={handleCheckout}
                 >
-                  <Button
-                    variant="gradient"
-                    className="flex w-full items-center justify-center rounded-lg py-3 transition"
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="24"
+                    height="24"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    className="lucide lucide-credit-card mr-2 h-5 w-5"
                   >
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      width="24"
-                      height="24"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      strokeWidth="2"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      className="lucide lucide-credit-card mr-2 h-5 w-5"
-                    >
-                      <rect
-                        x="1"
-                        y="4"
-                        width="22"
-                        height="16"
-                        rx="2"
-                        ry="2"
-                      ></rect>
-                      <line x1="1" y1="10" x2="23" y2="10"></line>
-                    </svg>
-                    Procéder au paiement
-                  </Button>
-                </Link>
+                    <rect
+                      x="1"
+                      y="4"
+                      width="22"
+                      height="16"
+                      rx="2"
+                      ry="2"
+                    ></rect>
+                    <line x1="1" y1="10" x2="23" y2="10"></line>
+                  </svg>
+                  Procéder au paiement
+                </Button>
               </div>
             </div>
 

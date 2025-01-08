@@ -190,7 +190,7 @@ const MasterClass = () => {
           <Typography
             variant="h2"
             color="blue-gray"
-            className="mb-6 text-center text-2xl font-extrabold"
+            className="mb-6 p-4 text-center text-2xl font-extrabold"
           >
             Pas de sessions disponibles pour le moment.
           </Typography>

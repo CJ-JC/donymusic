@@ -44,6 +44,8 @@ const AccountAdmin = () => {
           firstName: response.data.firstName,
           lastName: response.data.lastName,
           email: response.data.email,
+          password: "",
+          confirmPassword: "",
         });
       } catch (error) {
         console.error("Erreur:", error);
@@ -181,7 +183,7 @@ const AccountAdmin = () => {
                 <Input
                   type={showPassword ? "text" : "password"}
                   name="password"
-                  value={formData.password}
+                  value={formData.password || ""}
                   onChange={handleChange}
                   className="pr-10"
                 />
@@ -205,7 +207,7 @@ const AccountAdmin = () => {
                 <Input
                   type={showPassword ? "text" : "password"}
                   name="confirmPassword"
-                  value={formData.confirmPassword}
+                  value={formData.confirmPassword || ""}
                   onChange={handleChange}
                 />
               </div>

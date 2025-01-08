@@ -1,11 +1,25 @@
 import { Button } from "@material-tailwind/react";
 import { PencilIcon, PlusCircle } from "lucide-react";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import SearchInput from "@/components/search/search-input";
 import { Typography } from "@material-tailwind/react";
+import axios from "axios";
 
-const ShowCourses = ({ courses }) => {
+const ShowCourses = () => {
+  const [courses, setCourses] = useState([]);
+  useEffect(() => {
+    const fetchCourses = async () => {
+      try {
+        const response = await axios.get("/api/course");
+        setCourses(response.data);
+      } catch (error) {
+        console.error("Erreur lors de la récupération des cours :", error);
+      }
+    };
+    fetchCourses();
+  }, []);
+
   const [currentPage, setCurrentPage] = useState(1);
   const coursesPerPage = 10;
   const [searchQuery, setSearchQuery] = useState("");
@@ -34,31 +48,30 @@ const ShowCourses = ({ courses }) => {
 
   return (
     <>
-      <Typography
-        variant="h3"
-        className="mb-3 text-xl font-bold md:text-3xl"
-        color="blue-gray"
-      >
-        Liste des formations
-      </Typography>
-      <div className="flex-column mb-4 flex flex-wrap items-center justify-center space-y-4 sm:flex-row sm:space-y-4 md:justify-between">
-        <SearchInput handleSearch={handleSearch} searchQuery={searchQuery} />
-        <Link to={"/administrator/create-course"}>
-          <Button
-            variant="gradient"
-            size="sm"
-            className="flex items-center text-white focus:outline-none"
-          >
-            <PlusCircle className="mr-2 h-4 w-4" />
-            Nouvelle formation
-          </Button>
-        </Link>
-      </div>
-
       {/* Table of Courses */}
-      <div className="relative flex w-full flex-col overflow-scroll rounded-lg bg-white bg-clip-border text-gray-700 shadow-md">
+      <div className="relative flex w-full flex-col overflow-scroll rounded-lg bg-white bg-clip-border p-4 text-gray-700 shadow-md">
+        <Typography
+          variant="h3"
+          className="mb-3 text-xl font-bold md:text-3xl"
+          color="blue-gray"
+        >
+          Liste des formations
+        </Typography>
+        <div className="flex-column mb-4 flex flex-wrap items-center justify-center space-y-4 sm:flex-row sm:space-y-4 md:justify-between">
+          <SearchInput handleSearch={handleSearch} searchQuery={searchQuery} />
+          <Link to={"/administrator/create-course"}>
+            <Button
+              variant="gradient"
+              size="sm"
+              className="flex items-center text-white focus:outline-none"
+            >
+              <PlusCircle className="mr-2 h-4 w-4" />
+              Nouvelle formation
+            </Button>
+          </Link>
+        </div>
         <table className="w-full min-w-max table-auto text-left">
-          <thead className="bg-gray-300 text-gray-700 dark:bg-gray-700 dark:text-gray-400">
+          <thead className="bg-[#F9FAFB] text-gray-700 dark:bg-gray-700 dark:text-gray-400">
             <tr>
               <th className="border-slate-200 bg-slate-50 border-b p-4">
                 <p className="text-slate-500 text-sm font-normal leading-none">

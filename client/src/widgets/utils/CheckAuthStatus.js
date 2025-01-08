@@ -3,7 +3,7 @@ import { loggedFaillure, loggedInSuccess, loggedOut } from "../../reducer/auth";
 
 export const checkAuthStatus = async (dispatch, setAuthLoading) => {
   try {
-    const response = await axios.get("/api/user/check-auth", {
+    const response = await axios.get("/api/user/protected-route", {
       withCredentials: true,
     });
 

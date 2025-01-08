@@ -1,14 +1,16 @@
 import React from "react";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 const PublishButton = ({ courseId, isPublished, onStatusChange, inputs }) => {
+  const navigate = useNavigate();
   const handlePublish = async () => {
     try {
       const response = await axios.put(`/api/course/${courseId}/publish`, {
         isPublished: !isPublished,
       });
       onStatusChange(response.data.isPublished);
-      window.location.reload();
+      navigate("/administrator/courses");
     } catch (error) {
       console.error("Erreur lors de la mise à jour :", error);
     }

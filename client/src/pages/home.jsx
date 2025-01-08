@@ -22,15 +22,10 @@ import Loading from "@/widgets/utils/Loading";
 import axios from "axios";
 import ReactQuill from "react-quill";
 
-function getTargetDate(daysFromNow) {
-  const now = new Date();
-  now.setDate(now.getDate() + daysFromNow);
-  return now.toISOString();
-}
 export function Home() {
   const { courses, discountedCourses, globalDiscount, availableRemises } =
     useCourses();
-  const targetDate = getTargetDate(10);
+
   const [masterclasses, setMasterclasses] = useState([]);
   const [error, setError] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
@@ -90,55 +85,56 @@ export function Home() {
 
       <section className="mx-auto -mt-28 max-w-screen-xl bg-white px-4 pb-20 pt-4">
         <div className="container mx-auto">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-1">
-            <Card className="rounded-lg shadow-lg shadow-gray-500/10">
-              <CardBody className="px-4 py-6">
-                <div className="flex flex-col items-center justify-between gap-x-10 md:flex-row">
-                  <div>
-                    <Typography
-                      variant="h5"
-                      className="px-2 font-bold text-blue-gray-900"
-                    >
-                      {firstMasterclass.title}
-                    </Typography>
-                    <ReactQuill
-                      value={
-                        firstMasterclass.description.length > 200
-                          ? firstMasterclass.description.substring(
-                              0,
-                              firstMasterclass.description.lastIndexOf(
-                                " ",
-                                200,
-                              ),
-                            ) + "..."
-                          : firstMasterclass.description
-                      }
-                      readOnly={true}
-                      theme="bubble"
-                    />
+          {firstMasterclass && (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-1">
+              <Card className="rounded-lg shadow-lg shadow-gray-500/10">
+                <CardBody className="px-4 py-6">
+                  <div className="flex flex-col items-center justify-between gap-x-10 md:flex-row">
+                    <div>
+                      <Typography
+                        variant="h5"
+                        className="px-2 font-bold text-blue-gray-900"
+                      >
+                        {firstMasterclass?.title}
+                      </Typography>
+                      <ReactQuill
+                        value={
+                          firstMasterclass?.description.length > 200
+                            ? firstMasterclass?.description.substring(
+                                0,
+                                firstMasterclass?.description.lastIndexOf(
+                                  " ",
+                                  200,
+                                ),
+                              ) + "..."
+                            : firstMasterclass?.description
+                        }
+                        readOnly={true}
+                        theme="bubble"
+                      />
+                    </div>
+                    <div>
+                      <Typography variant="h6" className="text-gray-500">
+                        Début dans :
+                      </Typography>
+                      <Countdown
+                        targetDate={firstMasterclass?.startDate}
+                        startDate={firstMasterclass?.startDate}
+                        endDate={firstMasterclass?.endDate}
+                      />
+                    </div>
                   </div>
-                  <div>
-                    <Typography variant="h6" className="text-gray-500">
-                      Début dans :
-                    </Typography>
-                    <Countdown
-                      targetDate={firstMasterclass.startDate}
-                      startDate={firstMasterclass.startDate}
-                      endDate={firstMasterclass.endDate}
-                    />
+                  <div className="flex w-full justify-center">
+                    <Link to="/masterclass">
+                      <Button variant="gradient" size="md" className="mt-4">
+                        En savoir plus
+                      </Button>
+                    </Link>
                   </div>
-                </div>
-                <div className="flex w-full justify-center">
-                  <Link to="/masterclass">
-                    <Button variant="gradient" size="md" className="mt-4">
-                      En savoir plus
-                    </Button>
-                  </Link>
-                </div>
-              </CardBody>
-            </Card>
-          </div>
-
+                </CardBody>
+              </Card>
+            </div>
+          )}
           <section className="mt-32 flex flex-wrap items-center">
             <div className="container mx-auto">
               <PageTitle
@@ -283,7 +279,7 @@ export function Home() {
             Complete this form and we will get back to you in 24 hours.
           </PageTitle>
           <form className="mx-auto mt-12 w-full lg:w-5/12">
-            <div className="mb-8 flex gap-8">
+            <div className="mb-8 flex flex-col justify-center gap-8 md:flex-row">
               <Input variant="outlined" size="lg" label="Full Name" />
               <Input variant="outlined" size="lg" label="Email Address" />
             </div>

@@ -7,7 +7,18 @@ const Editor = ({ name, value, onChange }) => {
     onChange({ target: { name, value: content } });
   };
 
-  return <ReactQuill value={value} onChange={handleEditorChange} />;
+  const modules = {
+    toolbar: [
+      [{ header: [1, 2, false] }],
+      ["bold", "italic", "underline", "strike"],
+      [{ list: "ordered" }, { list: "bullet" }],
+      ["link"],
+    ],
+  };
+
+  return (
+    <ReactQuill value={value} onChange={handleEditorChange} modules={modules} />
+  );
 };
 
 export default Editor;
