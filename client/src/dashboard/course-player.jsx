@@ -1,8 +1,8 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
 import { Button, Progress, Typography } from "@material-tailwind/react";
-import { Check, Lock, LogOut, PlayCircleIcon } from "lucide-react";
+import { Check, LogOut, PlayCircleIcon } from "lucide-react";
 import CloseIcon from "@mui/icons-material/Close";
 import {
   Accordion,
@@ -47,13 +47,13 @@ const CoursePlayer = () => {
   const [progress, setProgress] = useState(0);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const { chapterId } = useParams();
   const { isLoggedIn, user } = useSelector((state) => state.auth);
   const [open, setOpen] = useState(0);
   const [videoProgress, setVideoProgress] = useState({});
   const handleOpen = (value) => setOpen(open === value ? 0 : value);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [showConfetti, setShowConfetti] = useState(false);
+  const [activeTab, setActiveTab] = useState("presentation");
 
   useEffect(() => {
     checkAuthStatus(dispatch, setAuthLoading);
@@ -72,21 +72,38 @@ const CoursePlayer = () => {
     const fetchCourses = async () => {
       if (courseId) {
         setLoading(true);
-        axios
-          .get(`/api/course/${courseId}`)
-          .then((res) => {
-            setCourse(res.data);
-            if (res.data?.chapters?.[0]?.videos?.[0]) {
-              setSelectedVideo(res.data.chapters[0].videos[0]);
+
+        try {
+          const res = await axios.get(`/api/course/${courseId}`);
+          setCourse(res.data);
+
+          // Prioriser le dernier chapitre et vidéo vus
+          if (res.data.lastViewedVideoId) {
+            const lastViewedVideo = res.data.chapters
+              .flatMap((chapter) => chapter.videos)
+              .find((video) => video.id === res.data.lastViewedVideoId);
+
+            if (lastViewedVideo) {
+              setSelectedVideo(lastViewedVideo);
+              return;
             }
-          })
-          .catch((error) => {
-            console.error("Erreur lors de la récupération du cours", error);
-            setError("Impossible de charger le cours");
-          })
-          .finally(() => {
-            setLoading(false);
-          });
+          }
+
+          // Trouver la première vidéo non visionnée
+          const unwatchedVideo = res.data.chapters
+            .flatMap((chapter) => chapter.videos)
+            .find((video) => !videoProgress[video.id]?.isComplete);
+
+          if (unwatchedVideo) {
+            setSelectedVideo(unwatchedVideo);
+          } else if (res.data?.chapters?.[0]?.videos?.[0]) {
+            setSelectedVideo(res.data.chapters[0].videos[0]);
+          }
+        } catch (error) {
+          setError("Impossible de charger le cours");
+        } finally {
+          setLoading(false);
+        }
       }
     };
 
@@ -134,11 +151,17 @@ const CoursePlayer = () => {
     }
 
     try {
+      // Vérifier l'état actuel de la progression
+      const currentProgress = videoProgress[selectedVideo.id]?.isComplete;
+
+      // Inverser l'état de complétion
+      const newIsComplete = !currentProgress;
+
       const response = await axios.post(`/api/user-progress/create`, {
         userId: user.id,
         chapterId: chapter.id,
-        progress: 100,
-        isComplete: true,
+        progress: newIsComplete ? 100 : 0,
+        isComplete: newIsComplete,
         videoId: selectedVideo.id,
       });
 
@@ -167,9 +190,9 @@ const CoursePlayer = () => {
 
   useEffect(() => {
     const fetchUserProgress = async () => {
-      if (chapterId) {
+      if (courseId) {
         try {
-          const response = await axios.get(`/api/user-progress/${chapterId}`);
+          const response = await axios.get(`/api/user-progress/${courseId}`);
           const { progress } = response.data;
           setProgress(progress);
         } catch (error) {
@@ -183,12 +206,28 @@ const CoursePlayer = () => {
     };
 
     fetchUserProgress();
-  }, [chapterId]);
+  }, [courseId]);
+
+  useEffect(() => {
+    const fetchCourse = async () => {
+      try {
+        await axios.get(`/api/course/${courseId}`);
+      } catch (error) {
+        if (error.response?.status === 401 || error.response?.status === 403) {
+          navigate("/");
+        } else {
+          navigate("/");
+        }
+      }
+    };
+
+    fetchCourse();
+  }, [courseId, navigate]);
 
   if (loading) {
     return <Loading />;
   }
-
+  // http://localhost:5173/course-player/course/1/chapters/1
   if (error) {
     return <div className="p-8 text-center text-red-500">{error}</div>;
   }
@@ -196,8 +235,16 @@ const CoursePlayer = () => {
   if (!course) {
     return <Loading />;
   }
+  // https://vimeo.com/1042814950
+  // https://vimeo.com/878479641
+  // https://vimeo.com/1042812947
+  // https://vimeo.com/855651404
 
-  let isLocked = false;
+  const tabs = [
+    { id: "presentation", label: "Présentation" },
+    { id: "qa", label: "Question - Réponse" },
+    { id: "notes", label: "Prise de note" },
+  ];
 
   return (
     <>
@@ -218,7 +265,7 @@ const CoursePlayer = () => {
               <Progress value={progress} size="sm" color="green" />
             </div>
             <CloseIcon
-              className={`absolute right-4 top-6 h-6 w-6 rounded-sm text-gray-500 opacity-70 transition-colors hover:text-gray-700 md:opacity-0 ${
+              className={`absolute right-4 top-3 h-6 w-6 rounded-sm text-gray-500 opacity-70 transition-colors hover:text-gray-700 md:opacity-0 ${
                 isSidebarOpen ? "cursor-pointer" : "disabled"
               }`}
               onClick={() => setIsSidebarOpen(false)}
@@ -246,11 +293,8 @@ const CoursePlayer = () => {
                           <li key={video.id}>
                             <button
                               onClick={() => {
-                                if (!isLocked) {
-                                  setSelectedVideo(video);
-                                }
+                                setSelectedVideo(video);
                               }}
-                              disabled={isLocked}
                               className={`my-1 flex w-full items-center gap-x-2 p-3 text-sm font-bold transition
                                 ${
                                   isCompleted
@@ -312,48 +356,22 @@ const CoursePlayer = () => {
               </svg>
             </button>
           </div>
-          <div className="flex items-center pr-4">
+          <div className="flex items-center space-x-4">
             <Link to={"/detail/slug/" + course.slug}>
               <button className="flex items-center text-gray-900 hover:text-gray-700 focus:text-gray-700 focus:outline-none">
                 <LogOut className="mr-1 h-4 w-4" /> Retour
               </button>
             </Link>
+            <Link to={"#"}>
+              <Button variant="outlined" color="red" size="sm">
+                Déconnexion
+              </Button>
+            </Link>
           </div>
         </div>
         <div className="mx-auto flex flex-col pb-20 xl:max-w-7xl">
           <div className="m-2">
-            <div className="border-yellow-30 text-primary flex w-full items-center border bg-yellow-200/80 p-4 text-sm">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width="24"
-                height="24"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                className="lucide lucide-triangle-alert mr-2 h-4 w-4"
-              >
-                <path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3"></path>
-                <path d="M12 9v4"></path>
-                <path d="M12 17h.01"></path>
-              </svg>
-              Vous devez acheter cette formation pour regarder ce chapitre.
-            </div>
             <div className="relative aspect-video">
-              {/* {!isReady && !isLocked && (
-                  <div className="absolute inset-0 flex items-center justify-center bg-slate-800">
-                    <Loader2 className="h-8 w-8 animate-spin text-white" />
-                  </div>
-                )}
-                */}
-              {isLocked && (
-                <div className="absolute inset-0 flex flex-col items-center justify-center gap-y-2 bg-[#1E293B] text-white">
-                  <Lock className="h-8 w-8" />
-                  <p className="text-sm">Ce chapitre est verouillé</p>
-                </div>
-              )}
               {selectedVideo && (
                 <ReactPlayer
                   url={selectedVideo.url}
@@ -374,36 +392,80 @@ const CoursePlayer = () => {
                 />
               )}
             </div>
+            <div className="mx-auto my-4">
+              <div className="flex justify-center border-b border-gray-200">
+                {tabs.map((tab) => (
+                  <button
+                    key={tab.id}
+                    onClick={() => setActiveTab(tab.id)}
+                    className={`px-6 py-2 text-sm font-medium focus:outline-none ${
+                      activeTab === tab.id
+                        ? "border-b-2 border-blue-gray-500 font-semibold text-blue-gray-600"
+                        : "text-gray-500 hover:text-gray-700"
+                    }`}
+                  >
+                    {tab.label}
+                  </button>
+                ))}
+              </div>
+              {/* Tabs Content */}
+              <div className="mt-4">
+                {activeTab === "presentation" && (
+                  <div className="h-[600px]">
+                    <div className="flex flex-col items-center justify-between py-4 md:flex-row">
+                      <Typography
+                        variant="h4"
+                        className="font-bold"
+                        color="blue-gray"
+                      >
+                        {selectedVideo?.title}
+                      </Typography>
+                      <Button
+                        variant="gradient"
+                        color={
+                          videoProgress[selectedVideo?.id]?.isComplete
+                            ? "blue-gray"
+                            : "green"
+                        }
+                        size="sm"
+                        onClick={handleVideoEnd}
+                      >
+                        {videoProgress[selectedVideo?.id]?.isComplete
+                          ? "Complété"
+                          : "Terminer la vidéo"}
+                      </Button>
+                    </div>
+                    <hr />
 
-            <div className="flex flex-col items-center justify-between py-4 md:flex-row">
-              <Typography variant="h4" className="font-bold" color="blue-gray">
-                {selectedVideo?.title}
-              </Typography>
-              <Button
-                variant="gradient"
-                color={
-                  videoProgress[selectedVideo?.id]?.isComplete
-                    ? "blue-gray"
-                    : "green"
-                }
-                size="sm"
-                onClick={handleVideoEnd}
-                disabled={videoProgress[selectedVideo?.id]?.isComplete}
-              >
-                {videoProgress[selectedVideo?.id]?.isComplete
-                  ? "Complété"
-                  : "Terminer la vidéo"}
-              </Button>
+                    <Typography variant="h6" className="mt-4 font-medium">
+                      <ReactQuill
+                        value={course.description}
+                        readOnly={true}
+                        theme="bubble"
+                      />
+                    </Typography>
+                  </div>
+                )}
+                {activeTab === "qa" && (
+                  <div className="h-[600px]">
+                    <h2 className="text-xl font-bold">Question - Réponse</h2>
+                    <p className="mt-2 text-gray-700">
+                      Posez vos questions et obtenez des réponses ici.
+                    </p>
+                  </div>
+                )}
+                {activeTab === "notes" && (
+                  <div className="h-[600px]">
+                    <h2 className="text-xl font-bold">Prise de note</h2>
+                    <textarea
+                      className="mt-2 w-full rounded-md border border-gray-300 p-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      rows="6"
+                      placeholder="Prenez vos notes ici..."
+                    ></textarea>
+                  </div>
+                )}
+              </div>
             </div>
-            <hr />
-
-            <Typography variant="h6" className="mt-4 font-medium">
-              <ReactQuill
-                value={course.description}
-                readOnly={true}
-                theme="bubble"
-              />
-            </Typography>
           </div>
         </div>
       </div>

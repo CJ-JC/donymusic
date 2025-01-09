@@ -63,7 +63,7 @@ export function Courses() {
         {/* Course list */}
         {/* <CourseList courses={currentCourses} /> */}
 
-        <div className="h-screen">
+        <div className="h-auto md:h-screen">
           <CourseList courses={currentItems} />
         </div>
 

@@ -46,30 +46,23 @@ export const getPurchases = async (req, res) => {
     }
 };
 
-export const getUserPurchases = async (req, res) => {
+export const checkUserPurchase = async (req, res) => {
     try {
         const userId = req.user.id;
+        const { id } = req.query;
 
-        // Récupérer les achats de l'utilisateur
-        const purchases = await Purchase.findAll({
-            where: { userId: userId }, // Filtrer par userId
-            include: [
-                {
-                    model: Course, // Assurez-vous que Course est bien importé et associé
-                    as: "course", // Vous pouvez personnaliser cela en fonction de vos associations
-                },
-            ],
+        const purchase = await Purchase.findOne({
+            where: { userId, itemId: id, itemType: "course", status: "completed" },
         });
 
-        if (purchases.length === 0) {
-            return res.status(404).json({ message: "Aucun achat trouvé pour cet utilisateur" });
+        if (purchase) {
+            return res.status(200).json({ hasPurchased: true });
         }
 
-        // Retourner les achats
-        return res.status(200).json({ purchases });
+        return res.status(200).json({ hasPurchased: false });
     } catch (error) {
-        console.error("Erreur lors de la récupération des achats:", error);
-        return res.status(500).json({ error: "Erreur interne lors de la récupération des achats" });
+        console.error("Erreur lors de la vérification de l'achat:", error);
+        return res.status(500).json({ error: "Erreur interne" });
     }
 };
 
@@ -101,11 +94,6 @@ export const createCheckoutSession = async (req, res) => {
                 courseId: courseId,
                 userId: userId,
             },
-        });
-
-        console.log("Session Stripe créée:", {
-            sessionId: session.id,
-            url: session.url,
         });
 
         // Créer un enregistrement d'achat en attente

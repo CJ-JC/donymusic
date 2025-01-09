@@ -52,7 +52,7 @@ const Admin = () => {
         setIsSidebarOpen={setIsSidebarOpen}
         user={user}
       />
-      <div className="h-screen bg-[#f1f5f99f] md:pl-80">
+      <div className="h-auto bg-[#f1f5f99f] md:h-screen md:pl-80">
         <div className="sticky inset-x-0 top-0 z-40 flex h-20 w-full items-center justify-between border-b bg-white p-4">
           <div className="flex items-center">
             <button
@@ -97,7 +97,7 @@ const Admin = () => {
         <div className="mx-auto flex flex-col pb-20 xl:max-w-7xl">
           <div className="m-4">
             {isMainAdminPage ? (
-              <div className="h-screen">
+              <div className="h-auto md:h-screen">
                 <Dashboard />
               </div>
             ) : (

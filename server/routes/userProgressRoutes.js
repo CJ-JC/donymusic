@@ -1,9 +1,9 @@
 import express from "express";
-import { getUserProgress, updateUserProgress, upsertUserProgress, getVideoProgress } from "../controllers/userProgress.js";
+import { updateUserProgress, upsertUserProgress, getVideoProgress, getUserCourseProgress } from "../controllers/userProgress.js";
 
 const router = express.Router();
 
-router.get("/:chapterId", getUserProgress);
+router.get("/:courseId", getUserCourseProgress);
 
 router.post("/create", upsertUserProgress);
 

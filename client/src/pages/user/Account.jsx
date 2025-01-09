@@ -62,7 +62,7 @@ const Account = () => {
   ];
 
   return (
-    <section className="mx-auto min-h-screen max-w-screen-xl px-4 py-5">
+    <section className="mx-auto h-auto max-w-screen-xl px-4 py-5 md:h-screen">
       <div className="container mx-auto space-y-10">
         <div className="text-center">
           <h1 className="text-3xl font-bold text-blue-gray-900">Mon Profil</h1>

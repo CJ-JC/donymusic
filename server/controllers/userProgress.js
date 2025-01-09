@@ -12,10 +12,8 @@ export const upsertUserProgress = async (req, res) => {
         });
 
         if (userProgress) {
-            // Mettre à jour uniquement si la progression est meilleure
-            if (progress > userProgress.progress || isComplete) {
-                userProgress = await userProgress.update({ progress, isComplete });
-            }
+            // Mettre à jour la progression (permet d'augmenter ou diminuer)
+            userProgress = await userProgress.update({ progress, isComplete });
         } else {
             // Créer un nouvel enregistrement
             userProgress = await UserProgress.create({
@@ -34,10 +32,18 @@ export const upsertUserProgress = async (req, res) => {
     }
 };
 
-export const getUserProgress = async (req, res) => {
+export const getUserCourseProgress = async (req, res) => {
     try {
         const userId = req.session.user?.id;
-        const chapterId = req.params.chapterId;
+        const courseId = req.params.courseId;
+
+        if (!courseId) {
+            return res.status(400).json({
+                progress: 0,
+                isComplete: false,
+                message: "L'identifiant du cours est manquant",
+            });
+        }
 
         if (!userId) {
             return res.status(200).json({
@@ -47,25 +53,38 @@ export const getUserProgress = async (req, res) => {
             });
         }
 
-        // Récupérer toutes les vidéos du chapitre
-        const totalVideos = await Video.findAll({ where: { chapterId } });
+        // Récupérer tous les chapitres du cours
+        const chapters = await Chapter.findAll({ where: { courseId } });
+        if (chapters.length === 0) {
+            return res.status(200).json({
+                progress: 0,
+                isComplete: false,
+                message: "Aucun chapitre trouvé pour ce cours",
+            });
+        }
+
+        // Récupérer toutes les vidéos du cours
+        const chapterIds = chapters.map((chapter) => chapter.id);
+        const totalVideos = await Video.findAll({
+            where: { chapterId: chapterIds },
+        });
 
         if (totalVideos.length === 0) {
             return res.status(200).json({
                 progress: 0,
                 isComplete: false,
-                message: "Aucune vidéo dans ce chapitre",
+                message: "Aucune vidéo trouvée pour ce cours",
             });
         }
 
         // Récupérer les vidéos complétées par l'utilisateur
         const userProgresses = await UserProgress.findAll({
-            where: { userId, chapterId, isComplete: true },
+            where: { userId, videoId: totalVideos.map((video) => video.id), isComplete: true },
         });
 
         const completedVideosCount = userProgresses.length;
 
-        // Calculer la progression
+        // Calculer la progression globale
         const progressPercentage = Math.round((completedVideosCount / totalVideos.length) * 100);
 
         res.status(200).json({

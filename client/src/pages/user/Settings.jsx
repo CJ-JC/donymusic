@@ -28,7 +28,7 @@ const Settings = () => {
   };
 
   return (
-    <div className="mx-auto h-screen max-w-screen-xl py-8">
+    <div className="mx-auto h-auto max-w-screen-xl py-8 md:h-screen">
       <div className="mx-auto max-w-4xl rounded-lg bg-white p-6 shadow-md">
         <Typography variant="h4" color="blue-gray" className="mb-6 text-center">
           Paramètres de votre compte

@@ -3,6 +3,8 @@ import { Chapter } from "../models/Chapter.js";
 import { Video } from "../models/Video.js";
 import fs from "fs";
 import { Category } from "../models/Category.js";
+import { Purchase } from "../models/Purchase.js";
+import { UserProgress } from "../models/UserProgress.js";
 
 export const getCourses = async (req, res) => {
     try {
@@ -38,7 +40,28 @@ export const getCourses = async (req, res) => {
 
 export const getCourseById = async (req, res) => {
     try {
-        const { id } = req.params;
+        const userId = req.session.user?.id; // ID de l'utilisateur connecté
+        const { id } = req.params; // ID du cours demandé
+
+        if (!userId) {
+            return res.status(401).json({ message: "Non autorisé. Veuillez vous connecter." });
+        }
+
+        // Vérifier si l'utilisateur a acheté le cours
+        const purchase = await Purchase.findOne({
+            where: {
+                userId,
+                itemId: id,
+                itemType: "course",
+                status: "completed", // Seuls les achats complétés sont valides
+            },
+        });
+
+        if (!purchase) {
+            return res.status(403).json({ message: "Accès interdit. Cours non acheté." });
+        }
+
+        // Récupérer les détails du cours
         const course = await Course.findOne({
             where: { id },
             include: [
@@ -63,9 +86,32 @@ export const getCourseById = async (req, res) => {
             return res.status(404).json({ message: "Cours non trouvé" });
         }
 
-        res.status(200).json(course);
+        // Récupérer le dernier progrès de l'utilisateur
+        const lastViewedProgress = await UserProgress.findOne({
+            where: { userId },
+            include: [
+                {
+                    model: Video,
+                    attributes: ["id", "chapterId"],
+                    include: [
+                        {
+                            model: Chapter,
+                            attributes: ["id"],
+                            where: { courseId: id },
+                        },
+                    ],
+                },
+            ],
+            order: [["updatedAt", "DESC"]],
+            attributes: ["videoId", "chapterId"],
+        });
+
+        res.status(200).json({
+            ...course.toJSON(),
+            lastViewedVideoId: lastViewedProgress?.videoId || null,
+            lastViewedChapterId: lastViewedProgress?.chapterId || null,
+        });
     } catch (error) {
-        console.error("Erreur lors de la récupération du cours:", error);
         res.status(500).json({ message: "Erreur serveur" });
     }
 };

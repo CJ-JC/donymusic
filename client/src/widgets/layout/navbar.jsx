@@ -49,7 +49,7 @@ export function Navbar({ brandName, action }) {
   const logout = () => {
     axios.post("/api/user/logout");
     dispatch(loggedOut());
-    navigate("/");
+    window.location.reload();
   };
 
   const navList = (

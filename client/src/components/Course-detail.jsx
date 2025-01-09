@@ -46,10 +46,11 @@ const Coursedetail = () => {
   const [globalDiscount, setGlobalDiscount] = useState(null);
   const [availableRemises, setAvailableRemises] = useState([]);
   // const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PUBLIC_KEY);
-
+  const [hasPurchased, setHasPurchased] = useState(false);
+  const [selectedVideo, setSelectedVideo] = useState(null);
+  const [progress, setProgress] = useState(0);
   const { isLoggedIn, user } = useSelector((state) => state.auth);
   const navigate = useNavigate();
-  const dispatch = useDispatch();
 
   useEffect(() => {
     const fetchCourse = async () => {
@@ -96,6 +97,22 @@ const Coursedetail = () => {
       }
     };
 
+    const fetchProgress = async () => {
+      try {
+        const response = await axios.get(`/api/user-progress/${id}`, {
+          withCredentials: true,
+        });
+        setProgress(response.data.progress);
+      } catch (error) {
+        console.error(
+          "Erreur lors de la récupération de la progression:",
+          error,
+        );
+      }
+    };
+
+    fetchProgress();
+
     fetchRemises();
     fetchRemise();
   }, [id]);
@@ -127,6 +144,26 @@ const Coursedetail = () => {
       setDiscountPercentage(appliedDiscountPercentage);
     }
   }, [course, globalDiscount, availableRemises]);
+
+  useEffect(() => {
+    const checkPurchase = async () => {
+      try {
+        if (course) {
+          const response = await axios.get(
+            `/api/payment/check-purchase?id=${course.id}`,
+            {
+              withCredentials: true,
+            },
+          );
+
+          setHasPurchased(response.data.hasPurchased);
+        }
+      } catch (error) {
+        console.error("Erreur lors de la vérification de l'achat:", error);
+      }
+    };
+    checkPurchase();
+  }, [course]);
 
   const [open, setOpen] = React.useState(0);
 
@@ -187,7 +224,7 @@ const Coursedetail = () => {
   };
 
   return (
-    <div className="mx-auto my-6 h-screen max-w-screen-xl px-2">
+    <div className="mx-auto my-6 h-auto max-w-screen-xl px-2 md:h-screen">
       <div className="grid grid-cols-1 gap-6 lg:grid-cols-5">
         <div className="order-1 col-span-1 flex flex-col space-y-6 lg:col-span-3">
           <div className="overflow-hidden rounded-md border p-2">
@@ -210,7 +247,7 @@ const Coursedetail = () => {
           </div>
           <div className="relative rounded-md border p-3">
             <div className="mb-3 flex items-center justify-between gap-x-2">
-              <h3 className="mb-4 text-2xl font-semibold text-blue-gray-900">
+              <h3 className="text-2xl font-semibold text-blue-gray-900">
                 {course.title}
               </h3>
               <div className="focus:ring-ring inline-flex items-center rounded-md border border-transparent bg-green-500/10 px-2.5 py-0.5 text-xs font-medium text-green-800 transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2">
@@ -256,7 +293,7 @@ const Coursedetail = () => {
                   </p>
                   <p className="text-sm text-gray-800">
                     {countVideos}{" "}
-                    {countVideos.length === 1 ? "vidéo" : "vidéos"}
+                    {countVideos.length === 1 ? "session" : "sessions"}
                   </p>
                 </div>
                 <div className="mt-4">
@@ -300,165 +337,192 @@ const Coursedetail = () => {
         </div>
 
         <div className="order-2 flex flex-col space-y-6 lg:col-span-2">
-          {/* <div className="rounded-md border bg-white p-6 shadow-md">
-            <div className="mb-6">
-              <h3 className="mb-4 text-2xl font-semibold text-blue-gray-900">
-                Accédez à votre cours
-              </h3>
-              <p className="text-sm text-blue-gray-700">
-                Prêt à commencer votre apprentissage ? Cliquez sur le bouton
-                ci-dessous pour visionner le cours.
-              </p>
-            </div>
+          {hasPurchased ? (
+            <div className="rounded-md border bg-white p-6 shadow-md">
+              <div className="mb-6">
+                <h3 className="mb-4 text-xl font-semibold text-blue-gray-900">
+                  Continuez là où vous vous êtes arrêté.
+                </h3>
+                <p className="text-muted-foreground text-sm">
+                  {progress === 0
+                    ? "Commencez dès maintenant à visionner le cours."
+                    : "Regardez à partir du dernier chapitre terminé."}
+                </p>
+              </div>
 
-            <div className="flex items-center justify-center">
-              <Link
-                to={`/course-player/course/${course.id}/chapters/${course.chapters[0].id}`}
-                className="rounded-full"
-              >
-                <Button
-                  variant="gradient"
-                  className="flex items-center justify-center rounded-lg px-6 py-3 transition"
-                >
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    width="24"
-                    height="24"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    className="lucide lucide-play-circle mr-2 h-5 w-5"
+              <div className="flex items-center justify-center">
+                {progress === 0 ? (
+                  <Link
+                    to={`/course-player/course/${course.id}/chapters/${course.chapters[0].id}`}
+                    className="rounded-full"
                   >
-                    <circle cx="12" cy="12" r="10"></circle>
-                    <polygon points="10 8 16 12 10 16 10 8"></polygon>
-                  </svg>
-                  Visionner le cours
-                </Button>
-              </Link>
-            </div>
-
-            <div className="mt-6 border-t pt-4 text-sm text-blue-gray-600">
-              <p className="flex items-center gap-x-2">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="20"
-                  height="20"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  className="lucide lucide-info text-blue-500"
-                >
-                  <circle cx="12" cy="12" r="10"></circle>
-                  <line x1="12" y1="16" x2="12" y2="12"></line>
-                  <line x1="12" y1="8" x2="12.01" y2="8"></line>
-                </svg>
-                Vous pouvez reprendre là où vous vous êtes arrêté(e).
-              </p>
-            </div>
-          </div> */}
-
-          <div className="rounded-md border bg-white p-6 shadow-md">
-            <div className="mb-6">
-              <h3 className="mb-4 text-2xl font-semibold text-blue-gray-900">
-                Accédez à votre formation maintenant
-              </h3>
-              <p className="text-sm text-blue-gray-700">
-                Bénéficiez d’un accès immédiat à tous les contenus de la
-                formation en procédant au paiement sécurisé.
-              </p>
-            </div>
-
-            <div className="space-y-4">
-              {/* Affichage du prix et des réductions */}
-              <div className="flex items-center gap-x-4">
-                {discountedPrice && discountedPrice < course.price ? (
-                  <>
-                    <span className="text-lg font-bold text-blue-gray-900 line-through">
-                      {course.price}€
-                    </span>
-                    <span className="text-lg font-bold text-red-600">
-                      {discountedPrice}€
-                    </span>
-                    <span className="text-sm text-green-600">
-                      ({discountPercentage}% de réduction)
-                    </span>
-                  </>
+                    <Button
+                      variant="gradient"
+                      className="flex items-center justify-center rounded-lg px-6 py-3 transition"
+                    >
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="24"
+                        height="24"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        className="lucide lucide-play-circle mr-2 h-4 w-4"
+                      >
+                        <circle cx="12" cy="12" r="10"></circle>
+                        <polygon points="10 8 16 12 10 16 10 8"></polygon>
+                      </svg>
+                      Commencer le cours
+                    </Button>
+                  </Link>
                 ) : (
-                  <span className="text-lg font-bold text-blue-gray-900">
-                    {course.price}€
-                  </span>
+                  <Button
+                    variant="gradient"
+                    className="flex items-center justify-center rounded-lg px-6 py-3 transition"
+                  >
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="24"
+                      height="24"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      className="lucide lucide-play-circle mr-2 h-4 w-4"
+                    >
+                      <circle cx="12" cy="12" r="10"></circle>
+                      <polygon points="10 8 16 12 10 16 10 8"></polygon>
+                    </svg>
+                    Continuer le cours
+                  </Button>
                 )}
               </div>
 
-              {/* Points de valeur ajoutée */}
-              <ul className="list-disc space-y-2 pl-5 text-sm text-blue-gray-700">
-                <li>Accès à vie à la formation.</li>
-                <li>Garantie satisfait ou remboursé sous 14 jours.</li>
-                <li>Support pédagogique 24/7.</li>
-              </ul>
-
-              {/* Bouton de paiement */}
-              <div>
-                <Button
-                  variant="gradient"
-                  className="checkout-button flex w-full items-center justify-center rounded-lg py-3 transition"
-                  onClick={handleCheckout}
-                >
+              <div className="mt-6 border-t pt-4 text-sm text-blue-gray-600">
+                <p className="flex items-center gap-x-2">
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
-                    width="24"
-                    height="24"
+                    width="20"
+                    height="20"
                     viewBox="0 0 24 24"
                     fill="none"
                     stroke="currentColor"
                     strokeWidth="2"
                     strokeLinecap="round"
                     strokeLinejoin="round"
-                    className="lucide lucide-credit-card mr-2 h-5 w-5"
+                    className="lucide lucide-info text-blue-500"
                   >
-                    <rect
-                      x="1"
-                      y="4"
-                      width="22"
-                      height="16"
-                      rx="2"
-                      ry="2"
-                    ></rect>
-                    <line x1="1" y1="10" x2="23" y2="10"></line>
+                    <circle cx="12" cy="12" r="10"></circle>
+                    <line x1="12" y1="16" x2="12" y2="12"></line>
+                    <line x1="12" y1="8" x2="12.01" y2="8"></line>
                   </svg>
-                  Procéder au paiement
-                </Button>
+                  Vous pouvez reprendre là où vous vous êtes arrêté(e).
+                </p>
               </div>
             </div>
+          ) : (
+            <div className="rounded-md border bg-white p-6 shadow-md">
+              <div className="mb-6">
+                <h3 className="mb-4 text-2xl font-semibold text-blue-gray-900">
+                  Accédez à votre formation maintenant
+                </h3>
+                <p className="text-sm text-blue-gray-700">
+                  Bénéficiez d’un accès immédiat à tous les contenus de la
+                  formation en procédant au paiement sécurisé.
+                </p>
+              </div>
 
-            {/* Section de garantie ou de confiance */}
-            <div className="mt-6 border-t pt-4 text-sm text-blue-gray-600">
-              <p className="flex items-center gap-x-2">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="20"
-                  height="20"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  className="lucide lucide-shield-check text-green-500"
-                >
-                  <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10Z"></path>
-                  <path d="m9 12 2 2 4-4"></path>
-                </svg>
-                Paiement sécurisé & protégé.
-              </p>
+              <div className="space-y-4">
+                {/* Affichage du prix et des réductions */}
+                <div className="flex items-center gap-x-4">
+                  {discountedPrice && discountedPrice < course.price ? (
+                    <>
+                      <span className="text-lg font-bold text-blue-gray-900 line-through">
+                        {course.price}€
+                      </span>
+                      <span className="text-lg font-bold text-red-600">
+                        {discountedPrice}€
+                      </span>
+                      <span className="text-sm text-green-600">
+                        ({discountPercentage}% de réduction)
+                      </span>
+                    </>
+                  ) : (
+                    <span className="text-lg font-bold text-blue-gray-900">
+                      {course.price}€
+                    </span>
+                  )}
+                </div>
+
+                {/* Points de valeur ajoutée */}
+                <ul className="list-disc space-y-2 pl-5 text-sm text-blue-gray-700">
+                  <li>Accès à vie à la formation.</li>
+                  <li>Garantie satisfait ou remboursé sous 14 jours.</li>
+                  <li>Support pédagogique 24/7.</li>
+                </ul>
+
+                {/* Bouton de paiement */}
+                <div>
+                  <Button
+                    variant="gradient"
+                    className="checkout-button flex w-full items-center justify-center rounded-lg py-3 transition"
+                    onClick={handleCheckout}
+                  >
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="24"
+                      height="24"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      className="lucide lucide-credit-card mr-2 h-5 w-5"
+                    >
+                      <rect
+                        x="1"
+                        y="4"
+                        width="22"
+                        height="16"
+                        rx="2"
+                        ry="2"
+                      ></rect>
+                      <line x1="1" y1="10" x2="23" y2="10"></line>
+                    </svg>
+                    Procéder au paiement
+                  </Button>
+                </div>
+              </div>
+
+              {/* Section de garantie ou de confiance */}
+              <div className="mt-6 border-t pt-4 text-sm text-blue-gray-600">
+                <p className="flex items-center gap-x-2">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="20"
+                    height="20"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    className="lucide lucide-shield-check text-green-500"
+                  >
+                    <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10Z"></path>
+                    <path d="m9 12 2 2 4-4"></path>
+                  </svg>
+                  Paiement sécurisé & protégé.
+                </p>
+              </div>
             </div>
-          </div>
+          )}
         </div>
       </div>
     </div>

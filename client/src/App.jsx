@@ -106,7 +106,7 @@ function App() {
   }
 
   return (
-    <div className="mx-auto h-screen">
+    <div className="mx-auto h-auto md:h-screen">
       <ScrollToTop />
       <Routes>
         {/* Routes principales */}
