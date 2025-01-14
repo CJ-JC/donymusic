@@ -32,7 +32,7 @@ const MasterClass = () => {
   }
 
   return (
-    <div className="container mx-auto max-w-screen-xl py-4">
+    <div className="container mx-auto h-auto max-w-screen-xl p-4 py-4 md:h-screen">
       {/* Hero Section */}
       {masterclasses.length !== 0 ? (
         <>
@@ -70,7 +70,7 @@ const MasterClass = () => {
                     <div className="mt-2 h-56 w-1 bg-gray-500"></div>
                   </div>
 
-                  <Card className="flex-1 bg-gray-50 text-white shadow-md">
+                  <Card className="flex-1 text-white shadow">
                     <CardBody className="flex flex-col items-center gap-6 p-4 md:flex-row">
                       <div className="overflow-hidden rounded-md">
                         <img
@@ -84,10 +84,10 @@ const MasterClass = () => {
                           <div>
                             <div className="flex flex-col gap-2 px-2">
                               <div className="flex items-center gap-2">
-                                <span className="font-medium text-blue-gray-900">
+                                <span className="font-medium text-blue-gray-500">
                                   Début :
                                 </span>
-                                <Typography className="text-md font-medium text-blue-gray-900">
+                                <Typography className="text-md font-medium text-blue-gray-500">
                                   {new Date(
                                     masterclass.startDate,
                                   ).toLocaleDateString("fr-FR", {
@@ -101,10 +101,10 @@ const MasterClass = () => {
                                 </Typography>
                               </div>
                               <div className="flex items-center gap-2">
-                                <span className="font-medium text-blue-gray-900">
+                                <span className="font-medium text-blue-gray-500">
                                   Fin :
                                 </span>
-                                <Typography className="text-md font-medium text-blue-gray-900">
+                                <Typography className="text-md font-medium text-blue-gray-500">
                                   {new Date(
                                     masterclass.endDate,
                                   ).toLocaleDateString("fr-FR", {
@@ -127,7 +127,7 @@ const MasterClass = () => {
                         </div>
                         <Typography
                           variant="h5"
-                          className="px-2 font-medium text-gray-900"
+                          className="px-2 font-medium text-blue-gray-900"
                         >
                           {masterclass.title}
                         </Typography>
@@ -143,7 +143,7 @@ const MasterClass = () => {
                           }
                           readOnly={true}
                           theme="bubble"
-                          className="text-gray-700"
+                          className="text-blue-gray-500"
                         />
                         <hr className="my-4" />
                         <div className="flex items-center justify-between gap-2">
@@ -163,7 +163,10 @@ const MasterClass = () => {
 
                               <Mic className="absolute bottom-0 right-0 h-6 w-6 rounded-full border-2 border-white bg-red-400" />
                             </div>
-                            <Typography variant="h6" className=" text-gray-900">
+                            <Typography
+                              variant="h6"
+                              className="text-blue-gray-500"
+                            >
                               {masterclass.instructor?.name}
                             </Typography>
                           </div>

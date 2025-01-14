@@ -1,27 +1,20 @@
-// Composant Dashboard
 import React from "react";
-import { Card, Typography } from "@material-tailwind/react";
-const Dashboard = ({ user }) => {
+import Loading from "@/widgets/utils/Loading";
+import CourseList from "@/components/Course-list";
+import { Typography } from "@material-tailwind/react";
+
+const Dashboard = ({ courseData, loading }) => {
+  if (loading) {
+    return <Loading />;
+  }
   return (
-    <Card className="p-6">
-      <Typography variant="h4" className="mb-4">
-        Informations Personnelles
-      </Typography>
-      <div className="space-y-4">
-        <div>
-          <Typography variant="h6">Nom</Typography>
-          <Typography>{user?.lastName}</Typography>
-        </div>
-        <div>
-          <Typography variant="h6">Prénom</Typography>
-          <Typography>{user?.firstName}</Typography>
-        </div>
-        <div>
-          <Typography variant="h6">Email</Typography>
-          <Typography>{user?.email}</Typography>
-        </div>
-      </div>
-    </Card>
+    <div className="container mx-auto">
+      <Typography variant="h4">Vos formations</Typography>
+      <p className="text-gray-600">
+        Les formations que vous avez souscrit sont affichées ci-dessous.
+      </p>
+      <CourseList courses={courseData} />
+    </div>
   );
 };
 export default Dashboard;

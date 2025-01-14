@@ -46,6 +46,37 @@ export const getPurchases = async (req, res) => {
     }
 };
 
+export const getUserPurchases = async (req, res) => {
+    try {
+        const userId = req.session.user?.id;
+
+        if (!userId) {
+            return res.status(401).json({ message: "Utilisateur non connecté" });
+        }
+
+        // Récupérer les achats de l'utilisateur connecté
+        const purchases = await Purchase.findAll({
+            where: { userId },
+            include: [
+                {
+                    model: Course,
+                    as: "course",
+                    attributes: ["id", "title", "description", "imageUrl"],
+                },
+                {
+                    model: Masterclass,
+                    as: "masterclass",
+                    attributes: ["id", "title", "description", "imageUrl"],
+                },
+            ],
+        });
+
+        res.status(200).json({ purchases });
+    } catch (error) {
+        res.status(500).json({ message: "Erreur serveur lors de la récupération des achats." });
+    }
+};
+
 export const checkUserPurchase = async (req, res) => {
     try {
         const userId = req.user.id;
@@ -61,15 +92,24 @@ export const checkUserPurchase = async (req, res) => {
 
         return res.status(200).json({ hasPurchased: false });
     } catch (error) {
-        console.error("Erreur lors de la vérification de l'achat:", error);
         return res.status(500).json({ error: "Erreur interne" });
     }
 };
 
 export const createCheckoutSession = async (req, res) => {
     try {
-        const { courseId, courseName, coursePrice, courseSlug, courseImageUrl } = req.body;
+        const { courseId, courseName, coursePrice, courseSlug, courseImageUrl, masterclassId, masterclassName, masterclassPrice, masterclassSlug, masterclassImageUrl } = req.body;
+
         const userId = req.user.id;
+
+        // Déterminer si l'utilisateur achète un cours ou une masterclass
+        const isMasterclass = !!masterclassId;
+
+        const productName = isMasterclass ? masterclassName : courseName;
+        const productPrice = isMasterclass ? masterclassPrice : coursePrice;
+        const productSlug = isMasterclass ? masterclassSlug : courseSlug;
+        const productImageUrl = isMasterclass ? masterclassImageUrl : courseImageUrl;
+        const itemId = isMasterclass ? masterclassId : courseId;
 
         // Créer une session de paiement Stripe
         const session = await stripe.checkout.sessions.create({
@@ -79,30 +119,31 @@ export const createCheckoutSession = async (req, res) => {
                     price_data: {
                         currency: "eur",
                         product_data: {
-                            name: courseName,
-                            images: ["https://donymusic.fr" + courseImageUrl],
+                            name: productName,
+                            images: ["https://donymusic.fr" + productImageUrl],
                         },
-                        unit_amount: coursePrice,
+                        unit_amount: productPrice,
                     },
                     quantity: 1,
                 },
             ],
             mode: "payment",
             success_url: `${process.env.CLIENT_URL}/success?session_id={CHECKOUT_SESSION_ID}`,
-            cancel_url: `${process.env.CLIENT_URL}/detail/slug/${courseSlug}`,
+            cancel_url: `${process.env.CLIENT_URL}/detail/slug/${productSlug}`,
             metadata: {
-                courseId: courseId,
+                itemId: itemId,
                 userId: userId,
+                type: isMasterclass ? "masterclass" : "course",
             },
         });
 
         // Créer un enregistrement d'achat en attente
         const purchase = await Purchase.create({
             userId: userId,
-            itemId: courseId,
-            itemType: "course",
+            itemId: itemId,
+            itemType: isMasterclass ? "masterclass" : "course",
             status: "pending",
-            amount: coursePrice / 100,
+            amount: productPrice / 100,
         });
 
         // Créer un enregistrement de paiement en attente
@@ -110,17 +151,15 @@ export const createCheckoutSession = async (req, res) => {
             purchaseId: purchase.id,
             paymentMethod: "credit_card",
             transactionId: session.id,
-            amount: coursePrice / 100,
+            amount: productPrice / 100,
             status: "pending",
         });
 
-        // S'assurer que l'ID de session est bien envoyé
         res.json({
             id: session.id,
             url: session.url,
         });
     } catch (error) {
-        console.error("Erreur détaillée:", error);
         res.status(500).json({
             error: "Erreur lors de la création de la session de paiement",
             details: error.message,
@@ -142,8 +181,8 @@ export const verifyPayment = async (req, res) => {
                         as: "purchase",
                         include: [
                             {
-                                model: Course,
-                                as: "course",
+                                model: Course, // Assurez-vous de gérer les deux modèles (Course et Masterclass)
+                                as: session.metadata.type === "masterclass" ? "masterclass" : "course",
                             },
                         ],
                     },
@@ -153,7 +192,7 @@ export const verifyPayment = async (req, res) => {
             if (payment && payment.purchase) {
                 res.json({
                     success: true,
-                    course: payment.purchase.course,
+                    item: payment.purchase.course || payment.purchase.masterclass,
                 });
             } else {
                 res.status(404).json({ error: "Paiement non trouvé" });
@@ -162,7 +201,6 @@ export const verifyPayment = async (req, res) => {
             res.status(400).json({ error: "Le paiement n'a pas été effectué" });
         }
     } catch (error) {
-        console.error("Erreur lors de la vérification du paiement:", error);
         res.status(500).json({ error: "Erreur lors de la vérification du paiement" });
     }
 };

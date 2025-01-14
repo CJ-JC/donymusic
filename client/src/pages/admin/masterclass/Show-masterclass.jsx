@@ -1,5 +1,11 @@
-import { Button } from "@material-tailwind/react";
-import { PencilIcon, PlusCircle } from "lucide-react";
+import {
+  Button,
+  Dialog,
+  DialogBody,
+  DialogFooter,
+  DialogHeader,
+} from "@material-tailwind/react";
+import { PencilIcon, PlusCircle, Trash } from "lucide-react";
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import SearchInput from "@/components/search/search-input";
@@ -23,6 +29,8 @@ const ShowMasterclass = () => {
   const masterclassesPerPage = 10;
   const [searchQuery, setSearchQuery] = useState("");
   const [masterclasses, setMasterclasses] = useState([]);
+  const [deleteDialog, setDeleteDialog] = useState(false);
+  const [selectedMasterclass, setMasterclass] = useState(null);
 
   useEffect(() => {
     const fetchCourses = async () => {
@@ -38,6 +46,20 @@ const ShowMasterclass = () => {
     };
     fetchCourses();
   }, []);
+
+  const handleDelete = async () => {
+    try {
+      await axios.delete(`/api/masterclass/delete/${selectedMasterclass.id}`);
+      setDeleteDialog(false);
+    } catch (err) {
+      setError("Erreur lors de la suppression de l'instructeur");
+    }
+  };
+
+  const openDeleteDialog = (masterclass) => {
+    setMasterclass(masterclass);
+    setDeleteDialog(true);
+  };
 
   // Filtrer les cours en fonction de la recherche et des dates
   const filteredMasterclasses = masterclasses.filter((masterclass) => {
@@ -145,14 +167,21 @@ const ShowMasterclass = () => {
                     {formatDateTime(masterclass.endDate)}
                   </p>
                 </td>
-                <td className="p-4 py-5">
+                <td className="flex items-center gap-2 p-4 py-5">
                   <Link
                     to={`/administrator/edit-masterclass/${masterclass.id}`}
-                    className="flex w-min items-center gap-1 rounded-lg border p-1 text-sm font-medium text-black hover:bg-gray-200 dark:text-blue-500"
+                    className="flex w-min items-center gap-1 rounded-lg bg-blue-gray-100 p-2 text-sm font-medium text-black hover:bg-gray-200 dark:text-blue-500"
                   >
-                    <PencilIcon className="h-4 w-4 flex-shrink-0 text-gray-500 transition duration-75 group-hover:text-gray-900 dark:text-gray-400 dark:group-hover:text-white" />
-                    Modifier
+                    <PencilIcon className="h-4 w-4" />
                   </Link>
+                  <Button
+                    size="sm"
+                    color="red"
+                    onClick={() => openDeleteDialog(masterclass)}
+                    className="flex items-center gap-1 rounded-lg p-2 dark:text-red-500"
+                  >
+                    <Trash className="h-4 w-4" />
+                  </Button>
                 </td>
               </tr>
             ))}
@@ -215,6 +244,26 @@ const ShowMasterclass = () => {
             </button>
           </div>
         </div>
+        <Dialog open={deleteDialog} handler={() => setDeleteDialog(false)}>
+          <DialogHeader>Confirmer la suppression</DialogHeader>
+          <DialogBody>
+            Êtes-vous sûr de vouloir supprimer la masterclasse{" "}
+            {selectedMasterclass?.name} ? Cette action est irréversible.
+          </DialogBody>
+          <DialogFooter>
+            <Button
+              variant="text"
+              color="gray"
+              onClick={() => setDeleteDialog(false)}
+              className="mr-1"
+            >
+              Annuler
+            </Button>
+            <Button variant="gradient" color="red" onClick={handleDelete}>
+              Confirmer
+            </Button>
+          </DialogFooter>
+        </Dialog>
       </div>
     </>
   );

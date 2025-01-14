@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { Typography, Button, Card, CardBody } from "@material-tailwind/react";
+import { Typography, Card, CardBody } from "@material-tailwind/react";
 import Countdown from "../widgets/utils/Countdown";
 import {
   Calendar,
@@ -14,8 +14,8 @@ import ReactQuill from "react-quill";
 import FormatHour from "@/widgets/utils/FormatHour";
 import Loading from "@/widgets/utils/Loading";
 import { CalculateDuration } from "@/widgets/utils/calculateDuration";
-import parse from "html-react-parser";
 import MasterclassRegistration from "@/widgets/utils/MasterclassRegistration";
+import axios from "axios";
 
 const MasterclassDetail = () => {
   const BASE_URL = import.meta.env.VITE_API_URL;
@@ -23,6 +23,7 @@ const MasterclassDetail = () => {
   const { slug } = useParams();
   const [masterclass, setMasterclass] = useState(null);
   const [error, setError] = useState();
+  const [hasPurchased, setHasPurchased] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -45,12 +46,32 @@ const MasterclassDetail = () => {
     fetchMasterclassDetails();
   }, [slug]);
 
+  useEffect(() => {
+    const checkPurchase = async () => {
+      try {
+        if (masterclass) {
+          const response = await axios.get(
+            `/api/payment/check-purchase?id=${masterclass.id}`,
+            {
+              withCredentials: true,
+            },
+          );
+
+          setHasPurchased(response.data.hasPurchased);
+        }
+      } catch (error) {
+        setError("Erreur lors de la vérification de l'achat:", error);
+      }
+    };
+    checkPurchase();
+  }, [masterclass]);
+
   if (!masterclass) {
     return <Loading />;
   }
 
   return (
-    <div className="container mx-auto max-w-screen-xl py-4">
+    <div className="container mx-auto max-w-screen-xl p-4">
       {/* En-tête de la masterclass */}
       <div className="mx-auto max-w-7xl">
         <div className="grid grid-cols-1 gap-8 md:grid-cols-2">
@@ -69,39 +90,43 @@ const MasterclassDetail = () => {
             </Typography>
 
             {/* Compte à rebours */}
-            <div className="rounded-lg bg-blue-50 p-4">
+            <div className="rounded-lg bg-[#F9FAFB] p-4">
               <Typography variant="h6" className="mb-2">
                 Début de la masterclass dans :
               </Typography>
-              <Countdown targetDate={masterclass.startDate} />
+              <Countdown
+                targetDate={masterclass.startDate}
+                startDate={masterclass.startDate}
+                endDate={masterclass.endDate}
+              />
             </div>
 
             {/* Informations clés */}
             <div className="grid grid-cols-2 gap-4">
-              <div className="flex items-center space-x-2">
-                <Calendar className="h-5 w-5 text-blue-gray-900" />
+              <div className="flex items-center space-x-2 text-blue-gray-500">
+                <Calendar className="h-5 w-5" />
                 <Typography>
                   {new Date(masterclass.startDate).toLocaleDateString()}
                 </Typography>
               </div>
-              <div className="flex items-center space-x-2">
-                <Clock className="h-5 w-5 text-blue-gray-900" />
+              <div className="flex items-center space-x-2 text-blue-gray-500">
+                <Clock className="h-5 w-5" />
                 <Typography>
                   <FormatHour masterclass={masterclass} />
                 </Typography>
               </div>
-              <div className="flex items-center space-x-2">
-                <Users className="h-5 w-5 text-blue-gray-900" />
+              <div className="flex items-center space-x-2 text-blue-gray-500">
+                <Users className="h-5 w-5" />
                 <Typography>
                   {masterclass.maxParticipants} participants max
                 </Typography>
               </div>
-              <div className="flex items-center space-x-2">
-                <Euro className="h-5 w-5 text-blue-gray-900" />
+              <div className="flex items-center space-x-2 text-blue-gray-500">
+                <Euro className="h-5 w-5" />
                 <Typography>{masterclass.price}</Typography>
               </div>
-              <div className="flex items-center space-x-2">
-                <Hourglass className="h-5 w-5 text-blue-gray-900" />
+              <div className="flex items-center space-x-2 text-blue-gray-500">
+                <Hourglass className="h-5 w-5" />
                 <Typography>
                   Pendant{" "}
                   <CalculateDuration
@@ -110,31 +135,70 @@ const MasterclassDetail = () => {
                   />
                 </Typography>
               </div>
-              <div className="flex items-center space-x-2">
-                <CalendarClock className="h-5 w-5 text-blue-gray-900" />
+              <div className="flex items-center space-x-2 text-blue-gray-500">
+                <CalendarClock className="h-5 w-5" />
                 <Typography>
-                  Durée de la réunion {masterclass.duration}h
+                  Durée de chaque réunion {masterclass.duration}h
                 </Typography>
               </div>
             </div>
 
             {/* Bouton d'inscription */}
-
-            <MasterclassRegistration endDate={masterclass.endDate} />
+            {hasPurchased ? (
+              new Date() < new Date(masterclass.startDate) ? (
+                <div className="rounded-lg bg-green-500/10 p-4 text-center">
+                  <p className="text-lg font-bold text-green-700">
+                    Félicitations ! 🎉
+                  </p>
+                  <p className="mt-2 text-gray-700">
+                    Vous êtes déjà inscrit(e) à cette masterclass. Rendez-vous
+                    le{" "}
+                    <span className="font-semibold text-green-700">
+                      {new Date(masterclass.startDate).toLocaleDateString()}
+                    </span>{" "}
+                    pour commencer.
+                  </p>
+                </div>
+              ) : (
+                <div className="rounded-lg bg-blue-500/10 p-4 text-center">
+                  <p className="text-lg font-bold text-blue-700">
+                    Masterclass disponible !
+                  </p>
+                  <p className="mt-2 text-gray-700">
+                    La masterclass a déjà commencé ou est terminée. Vous pouvez
+                    accéder aux ressources en cliquant ci-dessous.
+                  </p>
+                  <button
+                    onClick={() => navigate(`/masterclass/${masterclass.id}`)}
+                    className="mt-4 rounded bg-blue-600 px-4 py-2 text-white hover:bg-blue-700"
+                  >
+                    Accéder à la Masterclass
+                  </button>
+                </div>
+              )
+            ) : (
+              <MasterclassRegistration
+                endDate={masterclass.endDate}
+                masterclass={masterclass}
+              />
+            )}
           </div>
         </div>
 
         {/* Description détaillée */}
         <Card className="mt-12">
           <CardBody>
-            <Typography variant="h4" className="px-2">
+            <Typography
+              variant="h4"
+              className="px-2 font-bold text-blue-gray-900"
+            >
               À propos de cette masterclass
             </Typography>
             <ReactQuill
               value={masterclass.description}
               readOnly={true}
               theme="bubble"
-              className="text-gray-700"
+              className="text-blue-gray-500"
             />
           </CardBody>
         </Card>
@@ -142,7 +206,7 @@ const MasterclassDetail = () => {
         {/* Instructeur */}
         <Card className="mt-8">
           <CardBody>
-            <Typography variant="h4" className="mb-4">
+            <Typography variant="h4" className="mb-4 text-blue-gray-900">
               Votre instructeur
             </Typography>
             <div className="flex items-center space-x-4">
@@ -152,10 +216,10 @@ const MasterclassDetail = () => {
                 className="h-16 w-16 rounded-full object-cover"
               />
               <div>
-                <Typography variant="h6">
+                <Typography variant="h6" className="text-blue-gray-500">
                   {masterclass.instructor?.name}
                 </Typography>
-                <Typography className="text-gray-600">
+                <Typography className="text-blue-gray-600">
                   {masterclass.instructor?.biography}
                 </Typography>
               </div>

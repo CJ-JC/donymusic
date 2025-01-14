@@ -16,6 +16,7 @@ import instructorRoutes from "./routes/instructorRoutes.js";
 import Stripe from "stripe";
 import { Payment } from "./models/Payment.js";
 import { Purchase } from "./models/Purchase.js";
+import { sendEmail } from "./controllers/email.js";
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
 
 const app = express();
@@ -123,5 +124,11 @@ app.use("/api/category", categoryRoutes);
 app.use("/api/instructor", instructorRoutes);
 
 app.use("/api/payment", paymentRoutes);
+
+app.use("/api/email", (req, res) => {
+    sendEmail(req.query)
+        .then((response) => res.send(response.message))
+        .catch((error) => res.status(500).send(error.message));
+});
 
 export default app;

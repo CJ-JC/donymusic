@@ -19,6 +19,7 @@ const CourseCard = ({
   const [color, setColor] = useState("#FF6C02");
   const [hasPurchased, setHasPurchased] = useState(false);
   const [progress, setProgress] = useState(null);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
     const checkPurchase = async () => {
@@ -31,7 +32,7 @@ const CourseCard = ({
         );
         setHasPurchased(response.data.hasPurchased);
       } catch (error) {
-        console.error("Erreur lors de la vérification de l'achat:", error);
+        setError("Erreur lors de la vérification de l'achat:", error);
       }
     };
 
@@ -42,10 +43,7 @@ const CourseCard = ({
         });
         setProgress(response.data.progress);
       } catch (error) {
-        console.error(
-          "Erreur lors de la récupération de la progression:",
-          error,
-        );
+        setError("Erreur lors de la récupération de la progression:", error);
       }
     };
 

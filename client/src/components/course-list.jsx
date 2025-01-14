@@ -1,6 +1,6 @@
 import CourseCard from "./Course-card";
 
-const courseList = ({ courses }) => {
+const CourseList = ({ courses }) => {
   return (
     <>
       <div className="my-10 grid gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
@@ -27,4 +27,4 @@ const courseList = ({ courses }) => {
   );
 };
 
-export default courseList;
+export default CourseList;

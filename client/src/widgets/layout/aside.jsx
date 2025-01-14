@@ -137,7 +137,7 @@ const Aside = ({ logout, isSidebarOpen, setIsSidebarOpen, user }) => {
           </li>
           <li className="my-1">
             <NavLink
-              to={`/administrator/profile/${user.id}`}
+              to={`/administrator/profile`}
               end
               className={({ isActive }) =>
                 `group flex items-center rounded-lg p-2 ${

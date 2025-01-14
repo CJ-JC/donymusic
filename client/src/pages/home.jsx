@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import {
   Card,
   CardBody,
@@ -21,6 +21,9 @@ import Countdown from "@/widgets/utils/Countdown";
 import Loading from "@/widgets/utils/Loading";
 import axios from "axios";
 import ReactQuill from "react-quill";
+import { motion } from "framer-motion";
+import { Monitor, Rocket, UsersRound } from "lucide-react";
+import Contact from "@/components/Contact";
 
 export function Home() {
   const { courses, discountedCourses, globalDiscount, availableRemises } =
@@ -29,6 +32,7 @@ export function Home() {
   const [masterclasses, setMasterclasses] = useState([]);
   const [error, setError] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchMasterclass = async () => {
@@ -97,24 +101,26 @@ export function Home() {
                       >
                         {firstMasterclass?.title}
                       </Typography>
-                      <ReactQuill
-                        value={
-                          firstMasterclass?.description.length > 200
-                            ? firstMasterclass?.description.substring(
-                                0,
-                                firstMasterclass?.description.lastIndexOf(
-                                  " ",
-                                  200,
-                                ),
-                              ) + "..."
-                            : firstMasterclass?.description
-                        }
-                        readOnly={true}
-                        theme="bubble"
-                      />
+                      <div className="text-sm text-blue-gray-500">
+                        <ReactQuill
+                          value={
+                            firstMasterclass?.description.length > 200
+                              ? firstMasterclass?.description.substring(
+                                  0,
+                                  firstMasterclass?.description.lastIndexOf(
+                                    " ",
+                                    200,
+                                  ),
+                                ) + "..."
+                              : firstMasterclass?.description
+                          }
+                          readOnly={true}
+                          theme="bubble"
+                        />
+                      </div>
                     </div>
                     <div>
-                      <Typography variant="h6" className="text-gray-500">
+                      <Typography variant="h6" className="text-blue-gray-500">
                         Début dans :
                       </Typography>
                       <Countdown
@@ -153,160 +159,184 @@ export function Home() {
 
               <div className="my-24 flex justify-center">
                 <Link to={`/courses`} className="rounded-full">
-                  <Button variant="filled">Voir tous les cours</Button>
+                  <Button variant="gradient">Voir tous les cours</Button>
                 </Link>
               </div>
             </div>
           </section>
-          <div className="mt-32 flex flex-wrap items-center">
-            <div className="mx-auto -mt-8 w-full px-4 md:w-5/12">
-              <div className="mb-6 inline-flex h-16 w-16 items-center justify-center rounded-full bg-blue-gray-900 p-2 text-center shadow-lg">
-                <FingerPrintIcon className="h-8 w-8 text-white" />
-              </div>
-              <Typography
-                variant="h3"
-                className="mb-3 font-bold"
-                color="blue-gray"
-              >
-                Working with us is a pleasure
-              </Typography>
-              <Typography className="mb-8 font-normal text-blue-gray-500">
-                Don't let your uses guess by attaching tooltips and popoves to
-                any element. Just make sure you enable them first via
-                JavaScript.
-                <br />
-                <br />
-                The kit comes with three pre-built pages to help you get started
-                faster. You can change the text and images and you're good to
-                go. Just make sure you enable them first via JavaScript.
-              </Typography>
-              <Button variant="filled">read more</Button>
-            </div>
-            <div className="mx-auto mt-24 flex w-full justify-center px-4 md:w-4/12 lg:mt-0">
-              <Card className="rounded-lg border shadow-lg shadow-gray-500/10">
-                <CardHeader floated={false} className="relative h-56">
-                  <img
-                    alt="Card Image"
-                    src="/img/teamwork.png"
-                    className="h-full w-full"
-                  />
-                </CardHeader>
-                <CardBody>
-                  <Typography
-                    variant="small"
-                    color="blue-gray"
-                    className="font-normal"
-                  >
-                    Enterprise
-                  </Typography>
-                  <Typography
-                    variant="h5"
-                    color="blue-gray"
-                    className="mb-3 mt-2 font-bold"
-                  >
-                    Top Notch Services
-                  </Typography>
-                  <Typography className="font-normal text-blue-gray-500">
-                    The Arctic Ocean freezes every winter and much of the
-                    sea-ice then thaws every summer, and that process will
-                    continue whatever happens.
-                  </Typography>
-                </CardBody>
-              </Card>
-            </div>
-          </div>
         </div>
       </section>
+      {/* About */}
+      <section className="mx-auto -mt-28 max-w-screen-xl px-4 py-20">
+        {/* <PageTitle section="" heading=""></PageTitle>
+        <div className="relative mt-16 overflow-hidden">
+          <div className="mx-auto">
+            <div className="relative z-10 bg-white pb-8 sm:pb-16 md:pb-20 lg:w-full lg:max-w-2xl lg:pb-28 xl:pb-32">
+              <svg
+                className="absolute inset-y-0 right-0 hidden h-full w-48 translate-x-1/2 transform text-white lg:block"
+                fill="currentColor"
+                viewBox="0 0 100 100"
+                preserveAspectRatio="none"
+                aria-hidden="true"
+              >
+                <polygon points="50,0 100,0 50,100 0,100"></polygon>
+              </svg>
+              <div className="pt-1"></div>
 
-      <section className="px-4 pb-48 pt-20">
+              <div className="mx-auto mt-10 max-w-7xl sm:mt-12 sm:px-6 md:mt-16 lg:mt-20 lg:px-8 xl:mt-28">
+                <div className="text-blue-gray-500 sm:text-center lg:text-left">
+                  <p>
+                    Donec porttitor, enim ut dapibus lobortis, lectus sem
+                    tincidunt dui, eget ornare lectus ex non libero. Nam rhoncus
+                    diam ultrices porttitor laoreet. Ut mollis fermentum ex, vel
+                    viverra lorem volutpat sodales. In ornare porttitor odio sit
+                    amet laoreet. Sed laoreet, nulla a posuere ultrices, purus
+                    nulla tristique turpis, hendrerit rutrum augue quam ut est.
+                    Fusce malesuada posuere libero, vitae dapibus eros facilisis
+                    euismod. Sed sed lobortis justo, ut tincidunt velit. Mauris
+                    in maximus eros.
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div className="lg:absolute lg:inset-y-0 lg:right-0 lg:w-1/2">
+            <img
+              className="h-56 w-full object-cover object-top sm:h-72 md:h-96 lg:h-full lg:w-full"
+              src="https://cdn.pixabay.com/photo/2016/03/23/04/01/woman-1274056_960_720.jpg"
+              alt=""
+            />
+          </div>
+        </div> */}
         <div className="container mx-auto">
-          <PageTitle section="Our Team" heading="Here are our heroes">
-            According to the National Oceanic and Atmospheric Administration,
-            Ted, Scambos, NSIDClead scentist, puts the potentially record
-            maximum.
+          <PageTitle
+            section="À propos de nous"
+            heading="Découvrez notre engagement"
+          >
+            Découvrez votre formateur
           </PageTitle>
-          <div className="mt-24 grid grid-cols-1 gap-12 gap-x-24 md:grid-cols-2 xl:grid-cols-4">
-            {teamData.map(({ img, name, position, socials }) => (
-              <TeamCard
-                key={name}
-                img={img}
-                name={name}
-                position={position}
-                socials={
-                  <div className="flex items-center gap-2">
-                    {socials.map(({ color, name }) => (
-                      <IconButton key={name} color={color} variant="text">
-                        <i className={`fa-brands text-xl fa-${name}`} />
-                      </IconButton>
-                    ))}
-                  </div>
-                }
+
+          <div className="mt-12 grid items-center gap-12 md:grid-cols-2">
+            {/* Texte avec animation */}
+            <motion.div
+              initial={{ opacity: 0, x: -50 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.8 }}
+              className="space-y-6"
+            >
+              <h2 className="text-2xl font-bold text-blue-gray-900">
+                Une approche moderne de l'éducation
+              </h2>
+              <p className="leading-relaxed text-blue-gray-500">
+                Nous croyons en l'innovation pour rendre l'apprentissage
+                accessible et impactant. Nos cours sont conçus pour répondre aux
+                besoins actuels, tout en anticipant les défis de demain.
+              </p>
+              <ul className="list-disc space-y-2 pl-5 text-blue-gray-500">
+                <li>Apprentissage personnalisé et interactif.</li>
+                <li>Contenus actualisés par des experts renommés.</li>
+                <li>Certifications reconnues pour booster votre carrière.</li>
+              </ul>
+            </motion.div>
+
+            {/* Image avec effet de zoom */}
+            <motion.div
+              whileHover={{ scale: 1.05 }}
+              transition={{ duration: 0.3 }}
+              className="relative"
+            >
+              <img
+                src="https://cdn.pixabay.com/photo/2016/03/23/04/01/woman-1274056_960_720.jpg"
+                alt="Équipe en action"
+                className="rounded-lg shadow-lg"
               />
-            ))}
+            </motion.div>
+          </div>
+
+          {/* Section chiffres clés avec animation */}
+          <motion.div
+            initial={{ opacity: 0 }}
+            whileInView={{ opacity: 1 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.8, delay: 0.2 }}
+            className="mt-16 text-center"
+          >
+            <Typography
+              className="text-xl font-bold text-blue-gray-900"
+              variant="h4"
+            >
+              Ce que propose Donymusic
+            </Typography>
+            <div className="mt-8 grid gap-8 sm:grid-cols-3">
+              <motion.div
+                whileHover={{ scale: 1.1 }}
+                transition={{ type: "spring", stiffness: 300 }}
+              >
+                <div className="flex flex-col items-center justify-center text-blue-gray-500">
+                  <div className="rounded-full bg-blue-gray-900 p-2 text-white">
+                    <Monitor className="h-8 w-8" />
+                  </div>
+                  <p className="mt-2 text-blue-gray-500">
+                    <strong>Formation en ligne</strong>: Accédez à des cours
+                    interactifs et flexibles, disponibles 24/7 pour s'adapter à
+                    votre emploi du temps.
+                  </p>
+                </div>
+              </motion.div>
+              <motion.div
+                whileHover={{ scale: 1.1 }}
+                transition={{ type: "spring", stiffness: 300 }}
+              >
+                <div className="flex flex-col items-center justify-center text-blue-gray-500">
+                  <div className="rounded-full bg-blue-gray-900 p-2 text-white">
+                    <UsersRound className="h-8 w-8" />
+                  </div>
+                  <p className="mt-2 text-blue-gray-500">
+                    <strong>Communauté dynamique</strong>: Rejoignez une
+                    communauté d'apprenants et partagez vos expériences.
+                  </p>
+                </div>
+              </motion.div>
+              <motion.div
+                whileHover={{ scale: 1.1 }}
+                transition={{ type: "spring", stiffness: 300 }}
+              >
+                <div className="flex flex-col items-center justify-center text-blue-gray-500">
+                  <div className="rounded-full bg-blue-gray-900 p-2 text-white">
+                    <Rocket className="h-8 w-8" />
+                  </div>
+                  <p className="mt-2 text-blue-gray-500">
+                    <strong>Atteignez de nouveaux sommets</strong>: Progresser
+                    n’a jamais été aussi simple. Développez vos compétences et
+                    avancez vers vos rêves.
+                  </p>
+                </div>
+              </motion.div>
+            </div>
+          </motion.div>
+          <div className="mt-12 flex justify-center">
+            <Button
+              variant="gradient"
+              size="md"
+              onClick={() => navigate("/sign-up")}
+              className="px-6 py-3 text-white"
+            >
+              Rejoignez-nous aujourd'hui
+            </Button>
           </div>
         </div>
       </section>
-      <section className="relative bg-white px-4 py-24">
-        <div className="container mx-auto">
-          <PageTitle section="Co-Working" heading="Build something">
-            Put the potentially record low maximum sea ice extent tihs year down
-            to low ice. According to the National Oceanic and Atmospheric
-            Administration, Ted, Scambos.
-          </PageTitle>
-          <div className="mx-auto mb-48 mt-20 grid max-w-5xl grid-cols-1 gap-16 md:grid-cols-2 lg:grid-cols-3">
-            {contactData.map(({ title, icon, description }) => (
-              <Card
-                key={title}
-                color="transparent"
-                shadow={false}
-                className="text-center text-blue-gray-900"
-              >
-                <div className="mx-auto mb-6 grid h-14 w-14 place-items-center rounded-full bg-blue-gray-900 shadow-lg shadow-gray-500/20">
-                  {React.createElement(icon, {
-                    className: "w-5 h-5 text-white",
-                  })}
-                </div>
-                <Typography variant="h5" color="blue-gray" className="mb-2">
-                  {title}
-                </Typography>
-                <Typography className="font-normal text-blue-gray-500">
-                  {description}
-                </Typography>
-              </Card>
-            ))}
-          </div>
-          <PageTitle section="Contact Us" heading="Want to work with us?">
-            Complete this form and we will get back to you in 24 hours.
-          </PageTitle>
-          <form className="mx-auto mt-12 w-full lg:w-5/12">
-            <div className="mb-8 flex flex-col justify-center gap-8 md:flex-row">
-              <Input variant="outlined" size="lg" label="Full Name" />
-              <Input variant="outlined" size="lg" label="Email Address" />
-            </div>
-            <Textarea variant="outlined" size="lg" label="Message" rows={8} />
-            <Checkbox
-              label={
-                <Typography
-                  variant="small"
-                  color="gray"
-                  className="flex items-center font-normal"
-                >
-                  I agree the
-                  <a
-                    href="#"
-                    className="font-medium transition-colors hover:text-gray-900"
-                  >
-                    &nbsp;Terms and Conditions
-                  </a>
-                </Typography>
-              }
-              containerProps={{ className: "-ml-2.5" }}
-            />
-            <Button variant="gradient" size="lg" className="mt-8" fullWidth>
-              Send Message
-            </Button>
-          </form>
-        </div>
+      {/* bg-[#F9FAFB] */}
+
+      <section className="mx-auto px-4 py-24">
+        <motion.div
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.8, delay: 0.2 }}
+        >
+          <Contact />
+        </motion.div>
       </section>
     </>
   );

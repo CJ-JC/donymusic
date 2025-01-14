@@ -10,7 +10,8 @@ import {
 } from "@material-tailwind/react";
 import Loading from "@/widgets/utils/Loading";
 import ReactQuill from "react-quill";
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
+import { handleCheckout } from "@/widgets/utils/PaymentService";
 
 function Icon({ id, open }) {
   return (
@@ -45,9 +46,7 @@ const Coursedetail = () => {
   const [discountPercentage, setDiscountPercentage] = useState(null);
   const [globalDiscount, setGlobalDiscount] = useState(null);
   const [availableRemises, setAvailableRemises] = useState([]);
-  // const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PUBLIC_KEY);
   const [hasPurchased, setHasPurchased] = useState(false);
-  const [selectedVideo, setSelectedVideo] = useState(null);
   const [progress, setProgress] = useState(0);
   const { isLoggedIn, user } = useSelector((state) => state.auth);
   const navigate = useNavigate();
@@ -159,7 +158,7 @@ const Coursedetail = () => {
           setHasPurchased(response.data.hasPurchased);
         }
       } catch (error) {
-        console.error("Erreur lors de la vérification de l'achat:", error);
+        setError("Erreur lors de la vérification de l'achat:", error);
       }
     };
     checkPurchase();
@@ -186,41 +185,13 @@ const Coursedetail = () => {
     0,
   );
 
-  const handleCheckout = async () => {
-    if (!isLoggedIn) {
-      navigate("/sign-in");
-      return;
-    }
-
-    try {
-      // Calculer le prix final en tenant compte des remises
-      const finalPrice = discountedPrice || course.price;
-
-      // Créer la session de paiement
-      const response = await axios.post(
-        "/api/payment/create-checkout-session",
-        {
-          courseId: course.id,
-          courseName: course.title,
-          coursePrice: Math.round(finalPrice * 100), // Convertir en centimes pour Stripe
-          courseImageUrl: course.imageUrl,
-          courseSlug: course.slug,
-        },
-      );
-
-      // Vérifier que nous avons bien reçu l'ID de session
-      if (!response.data || !response.data.id) {
-        console.error("Réponse invalide du serveur:", response.data);
-        throw new Error("Pas d'ID de session reçu du serveur");
-      }
-
-      if (response.data.url) {
-        window.location.href = response.data.url;
-      }
-    } catch (error) {
-      setError("Réponse du serveur en cas d'erreur:", error.response?.data);
-      // Vous pouvez ajouter ici une notification à l'utilisateur
-    }
+  const handleCheckoutClick = () => {
+    handleCheckout({
+      course,
+      isLoggedIn,
+      navigate,
+      setError,
+    });
   };
 
   return (
@@ -273,7 +244,7 @@ const Coursedetail = () => {
               </div>
             </div>
 
-            <div className="my-3 text-sm text-blue-gray-700">
+            <div className="my-3 text-sm text-blue-gray-500">
               <ReactQuill
                 value={course.description}
                 readOnly={true}
@@ -340,7 +311,7 @@ const Coursedetail = () => {
           {hasPurchased ? (
             <div className="rounded-md border bg-white p-6 shadow-md">
               <div className="mb-6">
-                <h3 className="mb-4 text-xl font-semibold text-blue-gray-900">
+                <h3 className="mb-4 text-xl font-semibold text-blue-gray-500">
                   Continuez là où vous vous êtes arrêté.
                 </h3>
                 <p className="text-muted-foreground text-sm">
@@ -403,7 +374,7 @@ const Coursedetail = () => {
                 )}
               </div>
 
-              <div className="mt-6 border-t pt-4 text-sm text-blue-gray-600">
+              <div className="mt-6 border-t pt-4 text-sm text-blue-gray-500">
                 <p className="flex items-center gap-x-2">
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
@@ -431,7 +402,7 @@ const Coursedetail = () => {
                 <h3 className="mb-4 text-2xl font-semibold text-blue-gray-900">
                   Accédez à votre formation maintenant
                 </h3>
-                <p className="text-sm text-blue-gray-700">
+                <p className="text-sm text-blue-gray-500">
                   Bénéficiez d’un accès immédiat à tous les contenus de la
                   formation en procédant au paiement sécurisé.
                 </p>
@@ -442,7 +413,7 @@ const Coursedetail = () => {
                 <div className="flex items-center gap-x-4">
                   {discountedPrice && discountedPrice < course.price ? (
                     <>
-                      <span className="text-lg font-bold text-blue-gray-900 line-through">
+                      <span className="text-lg font-bold text-blue-gray-500 line-through">
                         {course.price}€
                       </span>
                       <span className="text-lg font-bold text-red-600">
@@ -453,14 +424,14 @@ const Coursedetail = () => {
                       </span>
                     </>
                   ) : (
-                    <span className="text-lg font-bold text-blue-gray-900">
+                    <span className="text-lg font-bold text-blue-gray-500">
                       {course.price}€
                     </span>
                   )}
                 </div>
 
                 {/* Points de valeur ajoutée */}
-                <ul className="list-disc space-y-2 pl-5 text-sm text-blue-gray-700">
+                <ul className="list-disc space-y-2 pl-5 text-sm text-blue-gray-500">
                   <li>Accès à vie à la formation.</li>
                   <li>Garantie satisfait ou remboursé sous 14 jours.</li>
                   <li>Support pédagogique 24/7.</li>
@@ -471,7 +442,7 @@ const Coursedetail = () => {
                   <Button
                     variant="gradient"
                     className="checkout-button flex w-full items-center justify-center rounded-lg py-3 transition"
-                    onClick={handleCheckout}
+                    onClick={handleCheckoutClick}
                   >
                     <svg
                       xmlns="http://www.w3.org/2000/svg"

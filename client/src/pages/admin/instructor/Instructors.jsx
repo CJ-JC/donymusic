@@ -143,9 +143,9 @@ export default function Instructors() {
                   onClick={() => handleEdit(instructor)}
                   size="sm"
                   title="Modifier"
-                  className="flex items-center bg-blue-500 text-white focus:outline-none"
+                  className="flex items-center bg-blue-gray-100 focus:outline-none"
                 >
-                  <PencilIcon className="h-4 w-4" />
+                  <PencilIcon className="h-4 w-4 text-black" />
                 </Button>
                 <Button
                   onClick={() => openDeleteDialog(instructor)}

@@ -43,13 +43,6 @@ export function SignUp() {
   return (
     <>
       <section className="mx-auto flex w-full max-w-screen-xl items-center justify-center p-4 md:py-4 lg:justify-around">
-        {/* <div className="hidden h-full w-2/5 lg:block">
-          <img
-            src="/img/piano.jpg"
-            className="h-full w-full rounded-3xl object-cover"
-            alt="Image de la guitare"
-          />
-        </div> */}
         <div className="hidden w-2/5 overflow-hidden lg:block">
           <img
             src="/img/piano.jpg"
@@ -137,7 +130,7 @@ export function SignUp() {
               <Typography
                 variant="small"
                 color="gray"
-                className="flex items-center justify-start font-medium"
+                className="flex flex-wrap items-center justify-start font-medium"
               >
                 J'accepte les&nbsp;
                 <a

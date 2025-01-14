@@ -19,6 +19,7 @@ const AccountAdmin = () => {
     firstName: "",
     lastName: "",
     email: "",
+    passwordCurrent: "",
     password: "",
     confirmPassword: "",
   });
@@ -44,6 +45,7 @@ const AccountAdmin = () => {
           firstName: response.data.firstName,
           lastName: response.data.lastName,
           email: response.data.email,
+          passwordCurrent: "",
           password: "",
           confirmPassword: "",
         });
@@ -61,7 +63,7 @@ const AccountAdmin = () => {
     if (isLoggedIn && !authLoading) {
       fetchUserData();
     }
-  }, [isLoggedIn, authLoading, user]);
+  }, [authLoading, isLoggedIn]);
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -92,7 +94,6 @@ const AccountAdmin = () => {
         confirmPassword: "",
       }));
     } catch (error) {
-      console.error("Erreur:", error);
       setMessage({
         type: "error",
         content:
@@ -130,7 +131,11 @@ const AccountAdmin = () => {
 
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <Typography variant="small" color="blue-gray" className="mb-2">
+            <Typography
+              variant="small"
+              color="blue-gray"
+              className="mb-2 font-medium"
+            >
               Prénom
             </Typography>
             <Input
@@ -145,7 +150,11 @@ const AccountAdmin = () => {
           </div>
 
           <div>
-            <Typography variant="small" color="blue-gray" className="mb-2">
+            <Typography
+              variant="small"
+              color="blue-gray"
+              className="mb-2 font-medium"
+            >
               Nom
             </Typography>
             <Input
@@ -160,7 +169,11 @@ const AccountAdmin = () => {
           </div>
 
           <div>
-            <Typography variant="small" color="blue-gray" className="mb-2">
+            <Typography
+              variant="small"
+              color="blue-gray"
+              className="mb-2 font-medium"
+            >
               Email
             </Typography>
             <Input
@@ -176,13 +189,34 @@ const AccountAdmin = () => {
 
           {isEditing && (
             <>
+              <div>
+                <Typography
+                  variant="small"
+                  color="blue-gray"
+                  className="mb-2 font-medium"
+                >
+                  Mot de passe actuel
+                </Typography>
+                <Input
+                  type={showPassword ? "text" : "password"}
+                  name="passwordCurrent"
+                  value={formData.passwordCurrent || ""}
+                  onChange={handleChange}
+                  placeholder="Mot de passe actuel"
+                />
+              </div>
               <div className="relative">
-                <Typography variant="small" color="blue-gray" className="mb-2">
+                <Typography
+                  variant="small"
+                  color="blue-gray"
+                  className="mb-2 font-medium"
+                >
                   Nouveau mot de passe
                 </Typography>
                 <Input
                   type={showPassword ? "text" : "password"}
                   name="password"
+                  placeholder="Nouveau mot de passe"
                   value={formData.password || ""}
                   onChange={handleChange}
                   className="pr-10"
@@ -201,12 +235,17 @@ const AccountAdmin = () => {
               </div>
 
               <div>
-                <Typography variant="small" color="blue-gray" className="mb-2">
+                <Typography
+                  variant="small"
+                  color="blue-gray"
+                  className="mb-2 font-medium"
+                >
                   Confirmer le mot de passe
                 </Typography>
                 <Input
                   type={showPassword ? "text" : "password"}
                   name="confirmPassword"
+                  placeholder="Confirmer le mot de passe"
                   value={formData.confirmPassword || ""}
                   onChange={handleChange}
                 />

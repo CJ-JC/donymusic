@@ -112,7 +112,7 @@ const CreateMasterclass = () => {
     <div className="mx-auto max-w-screen-xl">
       <div className="px-2">
         <h2 className="text-xl font-medium md:text-2xl">
-          Mise en place d'une masterclasse
+          Mise en place d'une masterclass
         </h2>
         <AlertError error={error} />
         <form onSubmit={handleSubmit}>
@@ -138,14 +138,14 @@ const CreateMasterclass = () => {
                     <rect width="7" height="5" x="3" y="16" rx="1"></rect>
                   </svg>
                 </div>
-                <h2 className="text-xl">Personnalisez votre masterclasse</h2>
+                <h2 className="text-xl">Personnalisez votre masterclass</h2>
               </div>
               <div className="mt-6 space-y-2 rounded-md border p-4">
                 <Input
                   type="text"
                   id="title"
                   name="title"
-                  label="Titre de la masterclasse"
+                  label="Titre de la masterclass"
                   required
                   value={inputs.title}
                   onChange={handleChange}
@@ -156,7 +156,7 @@ const CreateMasterclass = () => {
                   htmlFor="description"
                   className="text-sm font-medium text-blue-gray-900"
                 >
-                  Description de la masterclasse
+                  Description de la masterclass
                 </label>
                 <Editor
                   name="description"
@@ -184,14 +184,14 @@ const CreateMasterclass = () => {
                     <path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21" />
                   </svg>
                 </div>
-                <h2 className="text-xl">Image de la masterclasse</h2>
+                <h2 className="text-xl">Image de la masterclass</h2>
               </div>
               <div className="my-6 space-y-2 rounded-md border p-4">
                 <label
                   htmlFor="image"
                   className="text-sm font-medium text-blue-gray-900"
                 >
-                  Image de la masterclasse
+                  Image de la masterclass
                 </label>
                 <div className="bg-grey-lighter flex w-full items-center justify-between">
                   <label className="flex w-52 cursor-pointer flex-col items-center rounded-lg border bg-white px-4 py-6 tracking-wide shadow-sm hover:text-gray-700">
@@ -281,17 +281,17 @@ const CreateMasterclass = () => {
                       <path d="M12 18V6"></path>
                     </svg>
                   </div>
-                  <h2 className="text-xl">Vendre votre masterclasse</h2>
+                  <h2 className="text-xl">Vendre votre masterclass</h2>
                 </div>
                 <div className="mt-6 space-y-2 rounded-md border p-4">
                   <label
                     htmlFor="price"
                     className="text-sm font-medium text-blue-gray-900"
                   >
-                    Prix de la masterclasse
+                    Prix de la masterclass
                   </label>
                   <Input
-                    placeholder="Exemple: Prix de la masterclasse"
+                    placeholder="Exemple: Prix de la masterclass"
                     required
                     name="price"
                     id="price"
@@ -342,7 +342,7 @@ const CreateMasterclass = () => {
                   htmlFor="duration"
                   className="text-sm font-medium text-blue-gray-900"
                 >
-                  Durer de la masterclasse
+                  Durer de la masterclass
                 </label>
                 <Input
                   placeholder="Exemple: 2"

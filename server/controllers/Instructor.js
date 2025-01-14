@@ -33,7 +33,6 @@ export const createInstructor = async (req, res) => {
 
         res.status(201).json(instructor);
     } catch (error) {
-        console.error("Erreur lors de la création de l'instructeur :", error);
         res.status(500).json({ message: "Erreur lors de la création de l'instructeur" });
     }
 };
@@ -82,7 +81,7 @@ export const updateInstructor = async (req, res) => {
             imagePath = `/uploads/instructors/${req.file.filename}`;
             // Supprime l'ancienne image si elle existe
             if (instructor.imageUrl && fs.existsSync(`public${instructor.imageUrl}`)) {
-                fs.unlinkSync(`public${instructor.imageUrl}`);
+                fs.unlinkSync(`public/uploads/instructors/${instructor.imageUrl}`);
             }
         }
 
@@ -100,7 +99,6 @@ export const updateInstructor = async (req, res) => {
 
         res.status(200).json({ message: "Instructeur mis à jour avec succès", result: instructor });
     } catch (error) {
-        console.error("Erreur lors de la mise à jour de l'instructeur :", error);
         res.status(500).json({ message: "Erreur lors de la mise à jour de l'instructeur" });
     }
 };
@@ -112,6 +110,8 @@ export const deleteInstructor = async (req, res) => {
         if (!instructor) {
             return res.status(404).json({ message: "Instructeur non trouvé" });
         }
+
+        fs.unlinkSync(`public${instructor.imageUrl}`);
 
         await instructor.destroy();
 

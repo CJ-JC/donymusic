@@ -11,6 +11,8 @@ const storage = multer.diskStorage({
             // Déterminer le dossier de destination en fonction de la route
             if (req.originalUrl.includes("/instructor")) {
                 uploadDir = "public/uploads/instructors";
+            } else if (req.originalUrl.includes("/masterclass")) {
+                uploadDir = "public/uploads/masterclass";
             } else {
                 uploadDir = "public/uploads/images";
             }

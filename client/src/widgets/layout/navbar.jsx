@@ -104,13 +104,25 @@ export function Navbar({ brandName, action }) {
     >
       <div className="container mx-auto flex items-center justify-between text-black">
         <Link to="/" onClick={handleLinkClick}>
-          {brandName}
+          <img src={logo} alt="Logo" className="h-14 w-auto" />
         </Link>
         <div className="hidden lg:block">{navList}</div>
         <div className="hidden gap-2 lg:flex">
           {isLoggedIn && user ? (
             <>
-              <AccountDropdown user={user} logout={logout} />
+              {/* <AccountDropdown user={user} logout={logout} /> */}
+              <Link
+                to={user.role === "admin" ? "/administrator" : "/user/account"}
+              >
+                <Button variant="outlined" size="sm">
+                  Mon compte
+                </Button>
+              </Link>
+              <Link to={"#"}>
+                <Button variant="gradient" size="sm" onClick={logout}>
+                  Déconnexion
+                </Button>
+              </Link>
             </>
           ) : (
             <>
@@ -147,35 +159,39 @@ export function Navbar({ brandName, action }) {
       >
         <div className="container mx-auto border bg-white px-4 pb-4 pt-2">
           {navList}
-          <a
-            href="https://www.material-tailwind.com/blocks/react?ref=mtkr"
-            target="_blank"
-            className="mb-2 block text-black"
-          >
-            <Button variant="gradient" size="sm" fullWidth>
-              pro version
-            </Button>
-          </a>
-          {React.cloneElement(action, {
-            className: "w-full block",
-          })}
+          {isLoggedIn && user ? (
+            <>
+              <Link
+                to={user.role === "admin" ? "/administrator" : "/user/account"}
+              >
+                <Button variant="outlined" size="sm">
+                  Mon compte
+                </Button>
+              </Link>
+              <Link to={"#"}>
+                <Button variant="gradient" size="sm" onClick={logout}>
+                  Déconnexion
+                </Button>
+              </Link>
+            </>
+          ) : (
+            <>
+              <Link to="/sign-in">
+                <Button variant="outlined" size="sm" fullWidth className="my-2">
+                  Connexion
+                </Button>
+              </Link>
+              <Link to="/sign-up">
+                <Button variant="gradient" size="sm" fullWidth>
+                  S'inscrire
+                </Button>
+              </Link>
+            </>
+          )}
         </div>
       </Collapse>
     </MTNavbar>
   );
 }
-
-Navbar.defaultProps = {
-  brandName: <img src={logo} alt="Logo" className="h-14 w-auto" />,
-  action: (
-    <Link to="/sign-in">
-      <Button variant="gradient" size="sm" fullWidth>
-        S'authentifier
-      </Button>
-    </Link>
-  ),
-};
-
-Navbar.displayName = "/src/widgets/layout/navbar.jsx";
 
 export default Navbar;

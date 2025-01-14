@@ -23,7 +23,7 @@ export const getMasterclasses = async (req, res) => {
 export const createMasterclass = async (req, res) => {
     try {
         const { title, description, startDate, endDate, price, duration, maxParticipants, instructorId } = req.body;
-        const imagePath = req.file ? `/uploads/images/${req.file.filename}` : null;
+        const imagePath = req.file ? `/uploads/masterclass/${req.file.filename}` : null;
 
         // Vérifier les champs obligatoires
         if (!title || !description || !startDate || !endDate || !price || !duration || !maxParticipants || !instructorId) {
@@ -65,7 +65,6 @@ export const createMasterclass = async (req, res) => {
 
         res.status(201).json(masterclass);
     } catch (error) {
-        console.error("Erreur lors de la création de la masterclass :", error);
         res.status(500).json({ message: "Erreur lors de la création de la masterclass" });
     }
 };
@@ -90,7 +89,6 @@ export const getMasterclassById = async (req, res) => {
 
         res.status(200).json(masterclass);
     } catch (error) {
-        console.error("Erreur lors de la récupération du masterclass :", error);
         res.status(500).json({ message: "Erreur lors de la récupération du masterclass" });
     }
 };
@@ -103,7 +101,7 @@ export const updateMasterclass = async (req, res) => {
         // Vérification des champs obligatoires
         if (!title || !description || !startDate || !endDate || !price || !duration || !maxParticipants || !instructorId) {
             if (req.file) {
-                fs.unlinkSync(`public/uploads/images/${req.file.filename}`);
+                fs.unlinkSync(`public/uploads/masterclass/${req.file.filename}`);
             }
             return res.status(400).json({ message: "Tous les champs sont obligatoires" });
         }
@@ -117,7 +115,7 @@ export const updateMasterclass = async (req, res) => {
         const masterclass = await Masterclass.findByPk(id);
         if (!masterclass) {
             if (req.file) {
-                fs.unlinkSync(`public/uploads/images/${req.file.filename}`);
+                fs.unlinkSync(`public${req.file.filename}`);
             }
             return res.status(404).json({ error: "Masterclass non trouvé" });
         }
@@ -134,7 +132,7 @@ export const updateMasterclass = async (req, res) => {
 
         let imagePath = masterclass.imageUrl;
         if (req.file) {
-            imagePath = `/uploads/images/${req.file.filename}`;
+            imagePath = `/uploads/masterclass/${req.file.filename}`;
             // Supprimer l'ancienne image si elle existe
             if (masterclass.imageUrl && fs.existsSync(`public${masterclass.imageUrl}`)) {
                 fs.unlinkSync(`public${masterclass.imageUrl}`);
@@ -162,7 +160,6 @@ export const updateMasterclass = async (req, res) => {
 
         res.status(200).json({ message: "Masterclass mis à jour avec succès", result: updatedMasterclass });
     } catch (error) {
-        console.error("Erreur lors de la mise à jour du masterclass :", error);
         res.status(500).json({ message: "Erreur lors de la mise à jour du masterclass" });
     }
 };
@@ -199,12 +196,12 @@ export const deleteMasterclass = async (req, res) => {
         if (!masterclass) {
             return res.status(404).json({ message: "Masterclass introuvable" });
         }
+        fs.unlinkSync(`public${masterclass.imageUrl}`);
 
         await masterclass.destroy();
 
         res.status(200).json({ message: "Masterclass supprimé avec succès" });
     } catch (error) {
-        console.error("Erreur lors de la suppression du masterclass :", error);
         res.status(500).json({ message: "Erreur lors de la suppression du masterclass" });
     }
 };

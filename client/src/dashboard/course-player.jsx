@@ -369,7 +369,7 @@ const CoursePlayer = () => {
             </Link>
           </div>
         </div>
-        <div className="mx-auto flex flex-col pb-20 xl:max-w-7xl">
+        <div className="mx-auto flex flex-col pb-20 xl:max-w-5xl">
           <div className="m-2">
             <div className="relative aspect-video">
               {selectedVideo && (
@@ -398,9 +398,9 @@ const CoursePlayer = () => {
                   <button
                     key={tab.id}
                     onClick={() => setActiveTab(tab.id)}
-                    className={`px-6 py-2 text-sm font-medium focus:outline-none ${
+                    className={`px-6 py-1 text-sm font-medium focus:outline-none ${
                       activeTab === tab.id
-                        ? "border-b-2 border-blue-gray-500 font-semibold text-blue-gray-600"
+                        ? "border-b-2 border-blue-gray-900 font-semibold text-blue-gray-900"
                         : "text-gray-500 hover:text-gray-700"
                     }`}
                   >
@@ -412,7 +412,7 @@ const CoursePlayer = () => {
               <div className="mt-4">
                 {activeTab === "presentation" && (
                   <div className="h-[600px]">
-                    <div className="flex flex-col items-center justify-between py-4 md:flex-row">
+                    <div className="mb-4 flex flex-col items-center justify-between md:flex-row">
                       <Typography
                         variant="h4"
                         className="font-bold"
@@ -435,9 +435,8 @@ const CoursePlayer = () => {
                           : "Terminer la vidéo"}
                       </Button>
                     </div>
-                    <hr />
 
-                    <Typography variant="h6" className="mt-4 font-medium">
+                    <Typography className="font-medium text-gray-700">
                       <ReactQuill
                         value={course.description}
                         readOnly={true}
@@ -448,7 +447,13 @@ const CoursePlayer = () => {
                 )}
                 {activeTab === "qa" && (
                   <div className="h-[600px]">
-                    <h2 className="text-xl font-bold">Question - Réponse</h2>
+                    <Typography
+                      variant="h4"
+                      className="font-bold"
+                      color="blue-gray"
+                    >
+                      Question - Réponse
+                    </Typography>
                     <p className="mt-2 text-gray-700">
                       Posez vos questions et obtenez des réponses ici.
                     </p>
@@ -456,7 +461,13 @@ const CoursePlayer = () => {
                 )}
                 {activeTab === "notes" && (
                   <div className="h-[600px]">
-                    <h2 className="text-xl font-bold">Prise de note</h2>
+                    <Typography
+                      variant="h4"
+                      className="font-bold"
+                      color="blue-gray"
+                    >
+                      Prise de note
+                    </Typography>
                     <textarea
                       className="mt-2 w-full rounded-md border border-gray-300 p-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
                       rows="6"

@@ -116,6 +116,57 @@ export const getCourseById = async (req, res) => {
     }
 };
 
+export const getUserSubscribedCourses = async (req, res) => {
+    try {
+        const userId = req.session.user?.id; // ID de l'utilisateur connecté
+
+        if (!userId) {
+            return res.status(401).json({ message: "Non autorisé. Veuillez vous connecter." });
+        }
+
+        // Récupérer les IDs des cours souscrits via les achats complétés
+        const purchases = await Purchase.findAll({
+            where: {
+                userId,
+                itemType: "course",
+                status: "completed",
+            },
+            attributes: ["itemId", "createdAt"],
+        });
+
+        const courseIds = purchases.map((purchase) => purchase.itemId);
+
+        if (courseIds.length === 0) {
+            return res.status(200).json({ message: "Aucun cours souscrit.", courses: [] });
+        }
+
+        // Récupérer les détails des cours souscrits
+        const courses = await Course.findAll({
+            where: { id: courseIds },
+            include: [
+                {
+                    model: Chapter,
+                    include: [
+                        {
+                            model: Video,
+                            attributes: ["id", "title", "url"],
+                        },
+                    ],
+                },
+                {
+                    model: Category,
+                    as: "category",
+                    attributes: ["id", "title"],
+                },
+            ],
+        });
+
+        res.status(200).json({ courses, purchases, courseIds });
+    } catch (error) {
+        res.status(500).json({ message: "Erreur serveur" });
+    }
+};
+
 export const createCourse = async (req, res) => {
     try {
         const { title, slug, description, price, videoUrl, categoryId } = req.body;
@@ -151,8 +202,6 @@ export const createCourse = async (req, res) => {
 
         res.status(201).json({ message: "Cours créé avec succès", result: newCourse });
     } catch (error) {
-        console.error("Erreur Sequelize :", error);
-
         if (error.name === "SequelizeUniqueConstraintError") {
             const details = error.errors.map((e) => e.message);
             return res.status(400).json({ error: `Erreur de validation : ${details.join(", ")}` });

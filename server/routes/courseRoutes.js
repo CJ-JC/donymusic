@@ -1,5 +1,5 @@
 import express from "express";
-import { getCourses, createCourse, getCourseBySlug, getCourseById, updateCourse, deleteCourse, togglePublishCourse } from "../controllers/course.js";
+import { getCourses, createCourse, getCourseBySlug, getCourseById, updateCourse, deleteCourse, togglePublishCourse, getUserSubscribedCourses } from "../controllers/course.js";
 import upload from "../middlewares/multer-config.js";
 
 const router = express.Router();
@@ -7,6 +7,8 @@ const router = express.Router();
 router.get("/", getCourses);
 
 router.post("/create", upload.single("image"), createCourse);
+
+router.get("/my-courses", getUserSubscribedCourses);
 
 router.get("/:id", getCourseById);
 

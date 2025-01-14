@@ -90,7 +90,7 @@ const Dashboard = () => {
                 </th>
                 <th className="border-slate-200 bg-slate-50 border-b p-4">
                   <p className="text-slate-500 text-sm font-normal leading-none">
-                    Status
+                    Statut
                   </p>
                 </th>
                 <th className="border-slate-200 bg-slate-50 border-b p-4">
@@ -130,9 +130,7 @@ const Dashboard = () => {
                     </p>
                   </td>
                   <td className="p-4 py-5">
-                    <p className="text-slate-500 text-sm">
-                      {purchase.course.price}€
-                    </p>
+                    <p className="text-slate-500 text-sm">{purchase.amount}€</p>
                   </td>
                   <td className="p-4 py-5">
                     <p className="text-slate-500 text-sm">

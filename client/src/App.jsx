@@ -11,7 +11,6 @@ import CreateChapter from "./pages/admin/course/Create-chapter";
 import EditChapter from "./pages/admin/course/Edit-chapter";
 import Home from "./pages/home";
 import Account from "./pages/user/Account";
-import CoursesUser from "./pages/user/Courses";
 import SignIn from "./pages/auth/sign-in";
 import SignUp from "./pages/auth/sign-up";
 import Remise from "./pages/admin/Remise";
@@ -32,11 +31,12 @@ import Users from "./pages/admin/Users/Users";
 import AccountAdmin from "./pages/admin/Users/Account-admin";
 import Setting from "./pages/user/Settings";
 import Success from "./pages/Success";
+import InvoicePdf from "./pages/user/Invoice-pdf";
 
 const Layout = ({ hasGlobalDiscount, discountPercentage }) => (
   <>
     {hasGlobalDiscount && (
-      <div className="border-orange-30 text-primary text-md flex w-full items-center justify-center border bg-orange-700/80 p-4">
+      <div className="border-orange-30 text-primary text-md flex w-full items-center justify-center border bg-orange-700/60 p-4">
         <svg
           xmlns="http://www.w3.org/2000/svg"
           width="24"
@@ -128,11 +128,11 @@ function App() {
             path="masterclass/slug/:slug"
             element={<MasterclassDetail />}
           />
+          <Route path="/invoice-pdf" element={<InvoicePdf />} />
 
           {/* compte */}
           <Route path="user/account" element={<Account />} />
           <Route path="user/account/settings" element={<Setting />} />
-          <Route path="user/account/my-courses" element={<CoursesUser />} />
 
           {/* s'authentifier */}
           <Route path="sign-in" element={<SignIn />} />
@@ -164,7 +164,8 @@ function App() {
           <Route path="instructor/edit/:id" element={<EditInstructor />} />
           {/* users */}
           <Route path="users" element={<Users />} />
-          <Route path="profile/:id" element={<AccountAdmin />} />
+
+          <Route path="profile" element={<AccountAdmin />} />
           {/* remise */}
           <Route path="remise" element={<Remise />} />
         </Route>

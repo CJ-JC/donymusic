@@ -137,10 +137,9 @@ const ShowCourses = () => {
                 <td className="p-4 py-5">
                   <Link
                     to={`/administrator/edit-course/${course.id}`}
-                    className="flex w-min items-center gap-1 rounded-lg border p-1 text-sm font-medium text-black hover:bg-gray-200 dark:text-blue-500"
+                    className="flex w-min items-center gap-1 rounded-lg border bg-blue-gray-100 p-2 text-sm font-medium text-black dark:text-blue-500"
                   >
-                    <PencilIcon className="h-4 w-4 flex-shrink-0 text-gray-500 transition duration-75 group-hover:text-gray-900 dark:text-gray-400 dark:group-hover:text-white" />
-                    Modifier
+                    <PencilIcon className="h-4 w-4" />
                   </Link>
                 </td>
               </tr>

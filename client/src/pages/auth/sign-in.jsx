@@ -101,18 +101,6 @@ export function SignIn() {
           </Button>
 
           <div className="mt-6 flex flex-col items-center justify-between gap-2 md:flex-row">
-            <Checkbox
-              label={
-                <Typography
-                  variant="small"
-                  color="gray"
-                  className="flex items-center justify-start font-medium"
-                >
-                  Subscribe me to newsletter
-                </Typography>
-              }
-              containerProps={{ className: "-ml-2.5" }}
-            />
             <Typography variant="small" className="font-medium text-gray-900">
               <a href="#">Mot de passe oublié</a>
             </Typography>

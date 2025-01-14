@@ -8,7 +8,8 @@ const Success = () => {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [course, setCourse] = useState(null);
+  const [item, setItem] = useState(null);
+  const [itemType, setItemType] = useState(null); // Pour différencier cours/masterclass
 
   useEffect(() => {
     const verifyPayment = async () => {
@@ -23,7 +24,8 @@ const Success = () => {
           `/api/payment/verify?sessionId=${sessionId}`,
         );
         if (response.data.success) {
-          setCourse(response.data.course);
+          setItem(response.data.item);
+          setItemType(response.data.item?.type || "course"); // Détermine le type
         }
       } catch (error) {
         setError("Erreur lors de la vérification du paiement");
@@ -70,31 +72,44 @@ const Success = () => {
             Paiement réussi !
           </h1>
           <p className="text-gray-600">
-            Merci pour votre achat. Vous avez maintenant accès au cours.
+            Merci pour votre achat. Vous avez maintenant accès à votre{" "}
+            {itemType === "masterclass" ? "masterclass" : "cours"}.
           </p>
         </div>
 
-        {course && (
+        {item && (
           <div className="mb-6 rounded-lg bg-gray-50 p-4">
-            <h2 className="font-semibold text-gray-800">Détails du cours :</h2>
-            <p className="text-gray-600">{course.title}</p>
-            <p className="text-gray-600">{course.price} €</p>
+            <h2 className="font-semibold text-gray-800">Détails :</h2>
+            <p className="text-gray-600">{item.title}</p>
+            <p className="text-gray-600">{item.price} €</p>
           </div>
         )}
 
         <div className="flex justify-center space-x-4">
           <Button
             variant="gradient"
-            onClick={() => navigate(`/course-player/course/${course.id}`)}
+            onClick={() =>
+              navigate(
+                itemType === "masterclass"
+                  ? `/masterclass-player/${item.id}`
+                  : `/course-player/course/${item.id}`,
+              )
+            }
           >
-            Accéder au cours
+            Accéder à votre{" "}
+            {itemType === "masterclass" ? "masterclass" : "cours"}
           </Button>
           <Button
             color="gray"
             variant="outlined"
-            onClick={() => navigate("/courses")}
+            onClick={() =>
+              navigate(
+                itemType === "masterclass" ? "/masterclasses" : "/courses",
+              )
+            }
           >
-            Voir tous les cours
+            Voir tous les{" "}
+            {itemType === "masterclass" ? "masterclasses" : "cours"}
           </Button>
         </div>
       </div>
