@@ -33,9 +33,9 @@ import Setting from "./pages/user/Settings";
 import Success from "./pages/Success";
 import InvoicePdf from "./pages/user/Invoice-pdf";
 
-const Layout = ({ hasGlobalDiscount, discountPercentage }) => (
+const Layout = ({ globalDiscount, discountPercentage, isExpired }) => (
   <>
-    {hasGlobalDiscount && (
+    {!isExpired && globalDiscount && (
       <div className="border-orange-30 text-primary text-md flex w-full items-center justify-center border bg-orange-700/60 p-4">
         <svg
           xmlns="http://www.w3.org/2000/svg"
@@ -64,9 +64,11 @@ const Layout = ({ hasGlobalDiscount, discountPercentage }) => (
 );
 
 function App() {
-  const [hasGlobalDiscount, setHasGlobalDiscount] = useState(false);
+  const [globalDiscount, setGlobalDiscount] = useState(false);
   const [discountPercentage, setDiscountPercentage] = useState(null);
   const [authLoading, setAuthLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [isExpired, setIsExpired] = useState(false);
 
   useEffect(() => {
     const fetchRemises = async () => {
@@ -75,22 +77,38 @@ function App() {
         const remises = response.data;
 
         if (!remises || remises.length === 0) {
-          setHasGlobalDiscount(false);
+          setGlobalDiscount(false);
           setDiscountPercentage(0);
+          setIsExpired(false);
           setAuthLoading(false);
           return;
         }
 
         const globalRemise = remises.find((remise) => remise.isGlobal);
 
-        setHasGlobalDiscount(!!globalRemise);
-        setDiscountPercentage(
-          globalRemise ? globalRemise.discountPercentage : 0,
-        );
+        if (globalRemise) {
+          const expirationDate = new Date(globalRemise.expirationDate);
+          const now = new Date();
+
+          if (expirationDate > now) {
+            setGlobalDiscount(true);
+            setDiscountPercentage(globalRemise.discountPercentage);
+            setIsExpired(false); // La remise n'est pas expirée
+          } else {
+            setGlobalDiscount(false);
+            setDiscountPercentage(0);
+            setIsExpired(true); // La remise est expirée
+          }
+        } else {
+          setGlobalDiscount(false);
+          setDiscountPercentage(0);
+          setIsExpired(false);
+        }
 
         setAuthLoading(false);
       } catch (error) {
-        console.error("Erreur lors de la récupération des remises :", error);
+        setError("Erreur lors de la récupération des remises :", error);
+        setAuthLoading(false);
       }
     };
 
@@ -115,8 +133,9 @@ function App() {
           path="/"
           element={
             <Layout
-              hasGlobalDiscount={hasGlobalDiscount}
+              globalDiscount={globalDiscount}
               discountPercentage={discountPercentage}
+              isExpired={isExpired}
             />
           }
         >

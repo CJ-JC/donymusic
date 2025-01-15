@@ -9,7 +9,7 @@ const Success = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [item, setItem] = useState(null);
-  const [itemType, setItemType] = useState(null); // Pour différencier cours/masterclass
+  const [itemType, setItemType] = useState(null);
 
   useEffect(() => {
     const verifyPayment = async () => {
@@ -25,7 +25,7 @@ const Success = () => {
         );
         if (response.data.success) {
           setItem(response.data.item);
-          setItemType(response.data.item?.type || "course"); // Détermine le type
+          setItemType(response.data.item ? "masterclass" : "course");
         }
       } catch (error) {
         setError("Erreur lors de la vérification du paiement");
@@ -79,9 +79,9 @@ const Success = () => {
 
         {item && (
           <div className="mb-6 rounded-lg bg-gray-50 p-4">
-            <h2 className="font-semibold text-gray-800">Détails :</h2>
+            {/* <h2 className="font-semibold text-gray-800">Détails :</h2> */}
             <p className="text-gray-600">{item.title}</p>
-            <p className="text-gray-600">{item.price} €</p>
+            {/* <p className="text-gray-600">{item.price} €</p> */}
           </div>
         )}
 
@@ -91,8 +91,8 @@ const Success = () => {
             onClick={() =>
               navigate(
                 itemType === "masterclass"
-                  ? `/masterclass-player/${item.id}`
-                  : `/course-player/course/${item.id}`,
+                  ? `/masterclass/slug/${item.slug}`
+                  : `/detail/slug/${item.slug}`,
               )
             }
           >

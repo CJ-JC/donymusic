@@ -26,7 +26,6 @@ const Account = () => {
   const { isLoggedIn, user } = useSelector((state) => state.auth);
   const [authLoading, setAuthLoading] = useState(true);
   const [isEditing, setIsEditing] = useState(false);
-
   const navigate = useNavigate();
   const [courseData, setCourseData] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -49,6 +48,18 @@ const Account = () => {
     password: "",
     confirmPassword: "",
   });
+
+  const [activeTab, setActiveTab] = useState(() => {
+    return localStorage.getItem("activeTab") || "dashboard";
+  });
+
+  useEffect(() => {
+    localStorage.setItem("activeTab", activeTab);
+  }, [activeTab]);
+
+  const handleTabChange = (value) => {
+    setActiveTab(value);
+  };
 
   useEffect(() => {
     checkAuthStatus(dispatch, setAuthLoading);
@@ -198,7 +209,7 @@ const Account = () => {
       label: "Historique d'achat",
       value: "invoice",
       icon: ReceiptTextIcon,
-      component: <Invoice purchases={purchases} />,
+      component: <Invoice purchases={purchases} formData={formData} />,
     },
     {
       label: "Profil",
@@ -239,15 +250,19 @@ const Account = () => {
     <section className="mx-auto h-auto max-w-screen-xl px-4 py-5 md:h-screen">
       <div className="container mx-auto h-auto space-y-10 md:h-screen">
         <div className="text-center">
-          <h1 className="text-3xl font-bold text-blue-gray-900">Mon Profil</h1>
+          <h1 className="text-3xl font-bold text-blue-gray-900">Mon compte</h1>
           <p className="mt-2 text-sm text-gray-600">
             Gérez vos informations, formations et achats.
           </p>
         </div>
-        <Tabs value="dashboard">
+        <Tabs value={activeTab}>
           <TabsHeader className="overflow-auto pb-2">
             {data.map(({ label, value, icon }) => (
-              <Tab key={value} value={value}>
+              <Tab
+                key={value}
+                value={value}
+                onClick={() => handleTabChange(value)}
+              >
                 <div className="flex items-center gap-2 whitespace-nowrap">
                   {React.createElement(icon, { className: "w-5 h-5" })}
                   {label}

@@ -38,7 +38,6 @@ function sendEmail({ email, fullname, message }) {
             email,
             message,
         });
-        console.log(message);
 
         const mail_configs = {
             from: email,

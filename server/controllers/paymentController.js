@@ -6,6 +6,8 @@ import { Category } from "../models/Category.js";
 import dotenv from "dotenv";
 import { Masterclass } from "../models/Masterclass.js";
 import { User } from "../models/User.js";
+import nodemailer from "nodemailer";
+import generateInvoiceEmailTemplate from "../email/generateInvoiceEmailTemplate.js";
 dotenv.config();
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
@@ -83,7 +85,23 @@ export const checkUserPurchase = async (req, res) => {
         const { id } = req.query;
 
         const purchase = await Purchase.findOne({
-            where: { userId, itemId: id, itemType: "course", status: "completed" },
+            where: {
+                userId,
+                itemId: id,
+                status: "completed",
+            },
+            include: [
+                {
+                    model: Course,
+                    as: "course", // Si c'est un cours
+                    required: false, // Cours optionnel, pour ne pas exiger la présence d'un cours
+                },
+                {
+                    model: Masterclass,
+                    as: "masterclass", // Si c'est une masterclass
+                    required: false, // Masterclass optionnelle
+                },
+            ],
         });
 
         if (purchase) {
@@ -111,6 +129,45 @@ export const createCheckoutSession = async (req, res) => {
         const productImageUrl = isMasterclass ? masterclassImageUrl : courseImageUrl;
         const itemId = isMasterclass ? masterclassId : courseId;
 
+        // Vérifier s'il existe déjà une ligne "pending" pour cet utilisateur et cet item
+        let purchase = await Purchase.findOne({
+            where: {
+                userId: userId,
+                itemId: itemId,
+                itemType: isMasterclass ? "masterclass" : "course",
+                status: "pending",
+            },
+        });
+
+        if (purchase) {
+            // Si une remise n'est plus applicable, mettre à jour le prix dans la ligne "pending"
+            if (purchase.amount !== productPrice / 100) {
+                purchase.amount = productPrice / 100;
+                await purchase.save();
+
+                // Mettre à jour le prix dans la table Payment associée
+                await Payment.update({ amount: productPrice / 100 }, { where: { purchaseId: purchase.id } });
+            }
+        } else {
+            // Créer un nouvel enregistrement d'achat en attente
+            purchase = await Purchase.create({
+                userId: userId,
+                itemId: itemId,
+                itemType: isMasterclass ? "masterclass" : "course",
+                status: "pending",
+                amount: productPrice / 100,
+            });
+
+            // Créer un enregistrement de paiement en attente
+            await Payment.create({
+                purchaseId: purchase.id,
+                paymentMethod: "credit_card",
+                transactionId: null, // La transaction sera liée lors du paiement réussi
+                amount: productPrice / 100,
+                status: "pending",
+            });
+        }
+
         // Créer une session de paiement Stripe
         const session = await stripe.checkout.sessions.create({
             payment_method_types: ["card"],
@@ -129,7 +186,7 @@ export const createCheckoutSession = async (req, res) => {
             ],
             mode: "payment",
             success_url: `${process.env.CLIENT_URL}/success?session_id={CHECKOUT_SESSION_ID}`,
-            cancel_url: `${process.env.CLIENT_URL}/detail/slug/${productSlug}`,
+            cancel_url: `${isMasterclass ? `${process.env.CLIENT_URL}/masterclass/slug/${productSlug}` : `${process.env.CLIENT_URL}/detail/slug/${productSlug}`}`,
             metadata: {
                 itemId: itemId,
                 userId: userId,
@@ -137,23 +194,8 @@ export const createCheckoutSession = async (req, res) => {
             },
         });
 
-        // Créer un enregistrement d'achat en attente
-        const purchase = await Purchase.create({
-            userId: userId,
-            itemId: itemId,
-            itemType: isMasterclass ? "masterclass" : "course",
-            status: "pending",
-            amount: productPrice / 100,
-        });
-
-        // Créer un enregistrement de paiement en attente
-        await Payment.create({
-            purchaseId: purchase.id,
-            paymentMethod: "credit_card",
-            transactionId: session.id,
-            amount: productPrice / 100,
-            status: "pending",
-        });
+        // Mettre à jour la transactionId pour l'achat
+        await Payment.update({ transactionId: session.id }, { where: { purchaseId: purchase.id } });
 
         res.json({
             id: session.id,
@@ -167,12 +209,57 @@ export const createCheckoutSession = async (req, res) => {
     }
 };
 
+// export const verifyPayment = async (req, res) => {
+//     try {
+//         const { sessionId } = req.query;
+//         const session = await stripe.checkout.sessions.retrieve(sessionId);
+
+//         if (session.payment_status === "paid") {
+//             const modelAlias = session.metadata.type === "masterclass" ? "masterclass" : "course";
+
+//             const payment = await Payment.findOne({
+//                 where: { transactionId: sessionId },
+//                 include: [
+//                     {
+//                         model: Purchase,
+//                         as: "purchase",
+//                         include: [
+//                             {
+//                                 model: session.metadata.type === "masterclass" ? Masterclass : Course,
+//                                 as: modelAlias,
+//                             },
+//                         ],
+//                     },
+//                 ],
+//             });
+
+//             if (payment && payment.purchase) {
+//                 const item = modelAlias === "masterclass" ? payment.purchase.masterclass : payment.purchase.course;
+
+//                 res.json({
+//                     success: true,
+//                     item,
+//                 });
+//             } else {
+//                 res.status(404).json({ error: "Paiement non trouvé" });
+//             }
+//         } else {
+//             res.status(400).json({ error: "Le paiement n'a pas été effectué" });
+//         }
+//     } catch (error) {
+//         console.error(error);
+//         res.status(500).json({ error: "Erreur lors de la vérification du paiement" });
+//     }
+// };
+
 export const verifyPayment = async (req, res) => {
     try {
         const { sessionId } = req.query;
         const session = await stripe.checkout.sessions.retrieve(sessionId);
 
         if (session.payment_status === "paid") {
+            const modelAlias = session.metadata.type === "masterclass" ? "masterclass" : "course";
+
             const payment = await Payment.findOne({
                 where: { transactionId: sessionId },
                 include: [
@@ -181,8 +268,8 @@ export const verifyPayment = async (req, res) => {
                         as: "purchase",
                         include: [
                             {
-                                model: Course, // Assurez-vous de gérer les deux modèles (Course et Masterclass)
-                                as: session.metadata.type === "masterclass" ? "masterclass" : "course",
+                                model: session.metadata.type === "masterclass" ? Masterclass : Course,
+                                as: modelAlias,
                             },
                         ],
                     },
@@ -190,9 +277,32 @@ export const verifyPayment = async (req, res) => {
             });
 
             if (payment && payment.purchase) {
+                const item = modelAlias === "masterclass" ? payment.purchase.masterclass : payment.purchase.course;
+
+                // Envoi de l'email après paiement confirmé
+                const userEmail = session.customer_email || "cherley95@hotmail.fr";
+                const fullname = payment.purchase.user?.fullname || "Cher utilisateur";
+
+                // Contenu de l'email
+                const subject = `Confirmation de votre achat : ${item.title}`;
+                const product = `${modelAlias === "masterclass" ? "la masterclass" : "la formation"}`;
+                const productTitle = `"${item.title}"`;
+
+                // Envoi de l'email
+                await sendInvoiceEmail({
+                    fullname,
+                    email: userEmail,
+                    subject,
+                    payment,
+                    item,
+                    product,
+                    productTitle,
+                });
+
+                // Réponse à l'API
                 res.json({
                     success: true,
-                    item: payment.purchase.course || payment.purchase.masterclass,
+                    item,
                 });
             } else {
                 res.status(404).json({ error: "Paiement non trouvé" });
@@ -201,6 +311,44 @@ export const verifyPayment = async (req, res) => {
             res.status(400).json({ error: "Le paiement n'a pas été effectué" });
         }
     } catch (error) {
+        console.error(error);
         res.status(500).json({ error: "Erreur lors de la vérification du paiement" });
+    }
+};
+
+const sendInvoiceEmail = async ({ fullname, email, subject, payment, item, product, productTitle }) => {
+    let transporter = nodemailer.createTransport({
+        host: process.env.EMAIL_HOST,
+        port: parseInt(process.env.EMAIL_PORT || "587", 10),
+        secure: false,
+        auth: {
+            user: process.env.EMAIL_USER,
+            pass: process.env.EMAIL_PASS,
+        },
+    });
+
+    const htmlContent = generateInvoiceEmailTemplate({
+        fullname,
+        subject,
+        email,
+        payment,
+        item,
+        product,
+        productTitle,
+    });
+
+    const mailOptions = {
+        from: `"donymusic@contact.com"`,
+        to: email,
+        subject,
+        html: htmlContent,
+    };
+
+    try {
+        await transporter.sendMail(mailOptions);
+        console.log(`Email envoyé à ${email}`);
+    } catch (error) {
+        console.error("Erreur lors de l'envoi de l'email :", error);
+        throw new Error("L'email n'a pas pu être envoyé");
     }
 };

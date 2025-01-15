@@ -87,12 +87,29 @@ const Coursedetail = () => {
         const response = await axios.get("/api/remise");
         const remises = response.data;
 
+        // Vérification pour les remises globales
         const globalRemise = remises.find((remise) => remise.isGlobal);
         if (globalRemise) {
-          setGlobalDiscount(globalRemise.discountPercentage);
+          const expirationDate = new Date(globalRemise.expirationDate);
+          const now = new Date();
+          if (expirationDate > now) {
+            setGlobalDiscount(globalRemise.discountPercentage);
+          } else {
+            setGlobalDiscount(null);
+          }
         }
+
+        // Filtrer et vérifier les remises spécifiques
+        const validSpecificRemises = remises
+          .filter((remise) => !remise.isGlobal)
+          .filter((remise) => {
+            const expirationDate = new Date(remise.expirationDate);
+            return expirationDate > new Date();
+          });
+
+        setAvailableRemises(validSpecificRemises);
       } catch (error) {
-        console.error("Erreur lors de la récupération des remises :", error);
+        setError("Erreur lors de la récupération des remises :", error);
       }
     };
 
@@ -191,6 +208,7 @@ const Coursedetail = () => {
       isLoggedIn,
       navigate,
       setError,
+      discountedPrice,
     });
   };
 
@@ -314,7 +332,7 @@ const Coursedetail = () => {
                 <h3 className="mb-4 text-xl font-semibold text-blue-gray-500">
                   Continuez là où vous vous êtes arrêté.
                 </h3>
-                <p className="text-muted-foreground text-sm">
+                <p className="text-sm text-blue-gray-500">
                   {progress === 0
                     ? "Commencez dès maintenant à visionner le cours."
                     : "Regardez à partir du dernier chapitre terminé."}

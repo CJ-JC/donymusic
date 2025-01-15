@@ -7,6 +7,7 @@ export const handleCheckout = async ({
   isLoggedIn,
   navigate,
   setError,
+  discountedPrice,
 }) => {
   if (!isLoggedIn) {
     navigate("/sign-in");
@@ -17,7 +18,7 @@ export const handleCheckout = async ({
     // Déterminer le type de produit
     const isMasterclass = !!masterclass;
 
-    const finalPrice = isMasterclass ? masterclass.price : course.price;
+    const finalPrice = isMasterclass ? masterclass.price : discountedPrice;
 
     // Créer la session de paiement
     const response = await axios.post(

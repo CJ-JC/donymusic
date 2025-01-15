@@ -1,12 +1,11 @@
 import { Button } from "@material-tailwind/react";
 import { useState, useEffect } from "react";
 import { handleCheckout } from "./PaymentService";
+import { useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
 
-const MasterclassRegistration = ({ endDate }) => {
+const MasterclassRegistration = ({ endDate, handleCheckoutClick }) => {
   const [isExpired, setIsExpired] = useState(false);
-  const [masterclass, setMasterclass] = useState(null);
-  const [authLoading, setAuthLoading] = useState(true);
-  const [error, setError] = useState(null);
 
   useEffect(() => {
     const checkExpiration = () => {
@@ -21,48 +20,6 @@ const MasterclassRegistration = ({ endDate }) => {
 
     return () => clearInterval(timer); // Nettoyage
   }, [endDate]);
-
-  useEffect(() => {
-    const fetchMasterclass = async () => {
-      try {
-        const response = await axios.get(`/api/masterclass/slug/${id}`);
-        setMasterclass(response.data);
-        setAuthLoading(false);
-      } catch (error) {
-        setError("Erreur lors de la récupération du cours");
-      }
-    };
-    fetchMasterclass();
-  }, [authLoading]);
-
-  useEffect(() => {
-    const checkPurchase = async () => {
-      try {
-        if (masterclass) {
-          const response = await axios.get(
-            `/api/payment/check-purchase?id=${masterclass.id}`,
-            {
-              withCredentials: true,
-            },
-          );
-
-          setHasPurchased(response.data.hasPurchased);
-        }
-      } catch (error) {
-        setError("Erreur lors de la vérification de l'achat:", error);
-      }
-    };
-    checkPurchase();
-  }, [masterclass]);
-
-  const handleCheckoutClick = () => {
-    handleCheckout({
-      course,
-      isLoggedIn,
-      navigate,
-      setError,
-    });
-  };
 
   return (
     <div className="text-center">

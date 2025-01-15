@@ -26,8 +26,7 @@ import { Monitor, Rocket, UsersRound } from "lucide-react";
 import Contact from "@/components/Contact";
 
 export function Home() {
-  const { courses, discountedCourses, globalDiscount, availableRemises } =
-    useCourses();
+  const { discountedCourses, globalDiscount, availableRemises } = useCourses();
 
   const [masterclasses, setMasterclasses] = useState([]);
   const [error, setError] = useState(null);
@@ -87,7 +86,7 @@ export function Home() {
         </div>
       </div>
 
-      <section className="mx-auto -mt-28 max-w-screen-xl bg-white px-4 pb-20 pt-4">
+      <section className="mx-auto -mt-28 max-w-screen-xl px-4 pb-20">
         <div className="container mx-auto">
           {firstMasterclass && (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-1">
@@ -143,117 +142,114 @@ export function Home() {
           )}
           <section className="mt-32 flex flex-wrap items-center">
             <div className="container mx-auto">
-              <PageTitle
-                section="Explorez Nos Cours"
-                heading="Maîtrisez Votre Instrument"
+              <motion.div
+                initial={{ opacity: 0 }}
+                whileInView={{ opacity: 1 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.8, delay: 0.2 }}
               >
-                Découvrez nos formations et perfectionnez vos compétences
-                musicales
-              </PageTitle>
+                <PageTitle
+                  section="Explorez Nos Cours"
+                  heading="Maîtrisez Votre Instrument"
+                >
+                  Découvrez nos formations et perfectionnez vos compétences
+                  musicales
+                </PageTitle>
 
-              <CourseList
-                courses={discountedCourses}
-                globalDiscount={globalDiscount}
-                availableRemises={availableRemises}
-              />
+                <CourseList
+                  courses={discountedCourses}
+                  globalDiscount={globalDiscount}
+                  availableRemises={availableRemises}
+                />
 
-              <div className="my-24 flex justify-center">
-                <Link to={`/courses`} className="rounded-full">
-                  <Button variant="gradient">Voir tous les cours</Button>
-                </Link>
-              </div>
+                <div className="my-24 flex justify-center">
+                  <Link to={`/courses`} className="rounded-full">
+                    <Button variant="gradient">Voir tous les cours</Button>
+                  </Link>
+                </div>
+              </motion.div>
             </div>
           </section>
         </div>
       </section>
       {/* About */}
       <section className="mx-auto -mt-28 max-w-screen-xl px-4 py-20">
-        {/* <PageTitle section="" heading=""></PageTitle>
-        <div className="relative mt-16 overflow-hidden">
-          <div className="mx-auto">
-            <div className="relative z-10 bg-white pb-8 sm:pb-16 md:pb-20 lg:w-full lg:max-w-2xl lg:pb-28 xl:pb-32">
-              <svg
-                className="absolute inset-y-0 right-0 hidden h-full w-48 translate-x-1/2 transform text-white lg:block"
-                fill="currentColor"
-                viewBox="0 0 100 100"
-                preserveAspectRatio="none"
-                aria-hidden="true"
-              >
-                <polygon points="50,0 100,0 50,100 0,100"></polygon>
-              </svg>
-              <div className="pt-1"></div>
-
-              <div className="mx-auto mt-10 max-w-7xl sm:mt-12 sm:px-6 md:mt-16 lg:mt-20 lg:px-8 xl:mt-28">
-                <div className="text-blue-gray-500 sm:text-center lg:text-left">
-                  <p>
-                    Donec porttitor, enim ut dapibus lobortis, lectus sem
-                    tincidunt dui, eget ornare lectus ex non libero. Nam rhoncus
-                    diam ultrices porttitor laoreet. Ut mollis fermentum ex, vel
-                    viverra lorem volutpat sodales. In ornare porttitor odio sit
-                    amet laoreet. Sed laoreet, nulla a posuere ultrices, purus
-                    nulla tristique turpis, hendrerit rutrum augue quam ut est.
-                    Fusce malesuada posuere libero, vitae dapibus eros facilisis
-                    euismod. Sed sed lobortis justo, ut tincidunt velit. Mauris
-                    in maximus eros.
-                  </p>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div className="lg:absolute lg:inset-y-0 lg:right-0 lg:w-1/2">
-            <img
-              className="h-56 w-full object-cover object-top sm:h-72 md:h-96 lg:h-full lg:w-full"
-              src="https://cdn.pixabay.com/photo/2016/03/23/04/01/woman-1274056_960_720.jpg"
-              alt=""
-            />
-          </div>
-        </div> */}
         <div className="container mx-auto">
           <PageTitle
-            section="À propos de nous"
-            heading="Découvrez notre engagement"
+            section="À propos du formateur"
+            heading="Découvrez votre formateur"
           >
-            Découvrez votre formateur
+            Apprenez à connaître votre formateur
           </PageTitle>
 
           <div className="mt-12 grid items-center gap-12 md:grid-cols-2">
-            {/* Texte avec animation */}
+            {/* Section du formateur avec animation */}
             <motion.div
-              initial={{ opacity: 0, x: -50 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.8 }}
-              className="space-y-6"
+              initial={{ opacity: 0 }}
+              whileInView={{ opacity: 1 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.8, delay: 0.2 }}
             >
-              <h2 className="text-2xl font-bold text-blue-gray-900">
-                Une approche moderne de l'éducation
-              </h2>
-              <p className="leading-relaxed text-blue-gray-500">
-                Nous croyons en l'innovation pour rendre l'apprentissage
-                accessible et impactant. Nos cours sont conçus pour répondre aux
-                besoins actuels, tout en anticipant les défis de demain.
-              </p>
-              <ul className="list-disc space-y-2 pl-5 text-blue-gray-500">
-                <li>Apprentissage personnalisé et interactif.</li>
-                <li>Contenus actualisés par des experts renommés.</li>
-                <li>Certifications reconnues pour booster votre carrière.</li>
-              </ul>
+              <div className="mt-4 flex items-center space-x-6">
+                <div>
+                  <h3 className="text-lg font-semibold text-blue-gray-900">
+                    Jean Dupont
+                  </h3>
+                  <p className="text-blue-gray-500">
+                    Pianiste expert, passionné par la musique et la transmission
+                    de son art. Avec plus de 10 ans d'expérience, il a donné des
+                    concerts à travers le monde et formé de nombreux élèves, les
+                    accompagnant dans leur parcours musical avec patience et
+                    expertise.
+                  </p>
+
+                  <div className="mt-4 flex space-x-4">
+                    <a
+                      href="https://www.linkedin.com/in/jeandupont"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      <motion.i
+                        whileHover={{ scale: 1.2 }}
+                        className="fab fa-facebook text-xl text-blue-600"
+                      ></motion.i>
+                    </a>
+                    <a
+                      href="https://www.youtube.com/@donymusic0"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      <motion.i
+                        whileHover={{ scale: 1.2 }}
+                        className="fab fa-youtube text-xl text-red-500"
+                      ></motion.i>
+                    </a>
+                  </div>
+                </div>
+              </div>
             </motion.div>
 
             {/* Image avec effet de zoom */}
             <motion.div
               whileHover={{ scale: 1.05 }}
-              transition={{ duration: 0.3 }}
+              initial={{ opacity: 0 }}
+              whileInView={{ opacity: 1 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.8, delay: 0.2 }}
               className="relative"
             >
               <img
-                src="https://cdn.pixabay.com/photo/2016/03/23/04/01/woman-1274056_960_720.jpg"
-                alt="Équipe en action"
+                src="/img/formateur.png"
+                alt="Formateur en action"
                 className="rounded-lg shadow-lg"
               />
             </motion.div>
           </div>
+        </div>
+      </section>
 
-          {/* Section chiffres clés avec animation */}
+      <section className="mx-auto -mt-28 max-w-screen-xl px-4 py-20">
+        <div className="container mx-auto">
           <motion.div
             initial={{ opacity: 0 }}
             whileInView={{ opacity: 1 }}
@@ -261,12 +257,13 @@ export function Home() {
             transition={{ duration: 0.8, delay: 0.2 }}
             className="mt-16 text-center"
           >
-            <Typography
-              className="text-xl font-bold text-blue-gray-900"
-              variant="h4"
+            <PageTitle
+              section="Nos Services"
+              heading="Ce que propose Donymusic"
             >
-              Ce que propose Donymusic
-            </Typography>
+              Découvrez une plateforme de formation pour développer vos
+              compétences musicales et professionnelles.
+            </PageTitle>
             <div className="mt-8 grid gap-8 sm:grid-cols-3">
               <motion.div
                 whileHover={{ scale: 1.1 }}
@@ -314,7 +311,7 @@ export function Home() {
               </motion.div>
             </div>
           </motion.div>
-          <div className="mt-12 flex justify-center">
+          <div className="mt-24 flex justify-center">
             <Button
               variant="gradient"
               size="md"
@@ -328,7 +325,7 @@ export function Home() {
       </section>
       {/* bg-[#F9FAFB] */}
 
-      <section className="mx-auto px-4 py-24">
+      <section className="mx-auto px-4 py-20">
         <motion.div
           initial={{ opacity: 0 }}
           whileInView={{ opacity: 1 }}

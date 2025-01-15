@@ -16,6 +16,8 @@ import Loading from "@/widgets/utils/Loading";
 import { CalculateDuration } from "@/widgets/utils/calculateDuration";
 import MasterclassRegistration from "@/widgets/utils/MasterclassRegistration";
 import axios from "axios";
+import { handleCheckout } from "@/widgets/utils/PaymentService";
+import { useSelector } from "react-redux";
 
 const MasterclassDetail = () => {
   const BASE_URL = import.meta.env.VITE_API_URL;
@@ -24,6 +26,8 @@ const MasterclassDetail = () => {
   const [masterclass, setMasterclass] = useState(null);
   const [error, setError] = useState();
   const [hasPurchased, setHasPurchased] = useState(false);
+  const { isLoggedIn, user } = useSelector((state) => state.auth);
+
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -65,6 +69,15 @@ const MasterclassDetail = () => {
     };
     checkPurchase();
   }, [masterclass]);
+
+  const handleCheckoutClick = () => {
+    handleCheckout({
+      masterclass,
+      isLoggedIn,
+      navigate,
+      setError,
+    });
+  };
 
   if (!masterclass) {
     return <Loading />;
@@ -179,7 +192,7 @@ const MasterclassDetail = () => {
             ) : (
               <MasterclassRegistration
                 endDate={masterclass.endDate}
-                masterclass={masterclass}
+                handleCheckoutClick={handleCheckoutClick}
               />
             )}
           </div>
