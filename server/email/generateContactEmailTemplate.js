@@ -2,19 +2,9 @@ const generateContactEmailTemplate = ({ fullname, subject, email, message }) => 
     const formattedMessage = message.replace(/\n/g, "<br>");
 
     return `
-      <section class="mx-auto max-w-2xl bg-white px-6 py-8 dark:bg-gray-900">
-        <header>
-          <a href="#">
-            <img
-              class="h-7 w-auto sm:h-8"
-              src="https://merakiui.com/images/full-logo.svg"
-              alt="Logo"
-            />
-          </a>
-        </header>
-  
+      <section class="mx-auto max-w-2xl bg-white px-6 py-8 dark:bg-gray-900">  
         <main class="mt-8">
-          <h2 class="text-gray-700 dark:text-gray-200">Bonjour,</h2>
+          <h4 class="text-gray-700 dark:text-gray-200">Bonjour,</h4>
   
           <p class="mt-2 leading-loose text-gray-600 dark:text-gray-300">
             Vous avez reçu un nouveau message de la part d'un utilisateur via votre site.
@@ -41,7 +31,7 @@ const generateContactEmailTemplate = ({ fullname, subject, email, message }) => 
           </p>
   
           <p class="mt-3 text-gray-500 dark:text-gray-400">
-            © Votre Site. Tous droits réservés.
+            © Donymusic. Tous droits réservés.
           </p>
         </footer>
       </section>`;

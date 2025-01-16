@@ -24,10 +24,9 @@ const MasterclassRegistration = ({ endDate, handleCheckoutClick }) => {
   return (
     <div className="text-center">
       <Button
-        variant="gradient"
         size="md"
         disabled={isExpired}
-        className="w-full"
+        className="w-full dark:bg-white dark:text-black dark:hover:bg-gray-400"
         onClick={handleCheckoutClick}
       >
         {isExpired ? "Inscription fermée" : "S'inscrire à la masterclass"}

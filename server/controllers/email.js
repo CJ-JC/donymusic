@@ -8,16 +8,17 @@ function sendEmail({ email, fullname, message }) {
         const trimEmail = email.trim().toLowerCase().replace(/\s+/g, "");
         const isValidEmail = emailRegexp.test(trimEmail);
 
-        // Vérification de la validité de l'email
-        if (!isValidEmail) {
-            return reject({
-                message: "L'email est invalide",
-            });
-        }
         // Vérification des champs obligatoires
         if (!email || !fullname || !message) {
             return reject({
                 message: "Tous les champs sont obligatoires.",
+            });
+        }
+
+        // Vérification de la validité de l'email
+        if (!isValidEmail) {
+            return reject({
+                message: "L'email est invalide",
             });
         }
 

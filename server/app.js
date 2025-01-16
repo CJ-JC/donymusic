@@ -91,7 +91,6 @@ app.use(
 sequelize
     .authenticate()
     .then(async () => {
-        console.log("Connection to the database successful");
         try {
             await sequelize.sync({ alter: true });
             console.log("Database & tables created!");

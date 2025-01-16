@@ -92,7 +92,7 @@ const MasterclassDetail = () => {
             <img
               src={masterclass.image || `${BASE_URL}${masterclass.imageUrl}`}
               alt={masterclass.title}
-              className="h-[400px] w-full object-cover"
+              className="h-[200px] w-full object-cover md:h-[400px]"
             />
           </div>
 
@@ -103,8 +103,8 @@ const MasterclassDetail = () => {
             </Typography>
 
             {/* Compte à rebours */}
-            <div className="rounded-lg bg-[#F9FAFB] p-4">
-              <Typography variant="h6" className="mb-2">
+            <div className="rounded-lg bg-[#F9FAFB] p-4 dark:bg-white/90">
+              <Typography variant="h6" className="mb-2 dark:text-black">
                 Début de la masterclass dans :
               </Typography>
               <Countdown
@@ -118,29 +118,31 @@ const MasterclassDetail = () => {
             <div className="grid grid-cols-2 gap-4">
               <div className="flex items-center space-x-2 text-blue-gray-500">
                 <Calendar className="h-5 w-5" />
-                <Typography>
+                <Typography className="dark:text-white">
                   {new Date(masterclass.startDate).toLocaleDateString()}
                 </Typography>
               </div>
               <div className="flex items-center space-x-2 text-blue-gray-500">
                 <Clock className="h-5 w-5" />
-                <Typography>
+                <Typography className="dark:text-white">
                   <FormatHour masterclass={masterclass} />
                 </Typography>
               </div>
               <div className="flex items-center space-x-2 text-blue-gray-500">
                 <Users className="h-5 w-5" />
-                <Typography>
+                <Typography className="dark:text-white">
                   {masterclass.maxParticipants} participants max
                 </Typography>
               </div>
               <div className="flex items-center space-x-2 text-blue-gray-500">
                 <Euro className="h-5 w-5" />
-                <Typography>{masterclass.price}</Typography>
+                <Typography className="dark:text-white">
+                  {masterclass.price}
+                </Typography>
               </div>
               <div className="flex items-center space-x-2 text-blue-gray-500">
                 <Hourglass className="h-5 w-5" />
-                <Typography>
+                <Typography className="dark:text-white">
                   Pendant{" "}
                   <CalculateDuration
                     startDate={masterclass.startDate}
@@ -150,7 +152,7 @@ const MasterclassDetail = () => {
               </div>
               <div className="flex items-center space-x-2 text-blue-gray-500">
                 <CalendarClock className="h-5 w-5" />
-                <Typography>
+                <Typography className="dark:text-white">
                   Durée de chaque réunion {masterclass.duration}h
                 </Typography>
               </div>
@@ -199,7 +201,7 @@ const MasterclassDetail = () => {
         </div>
 
         {/* Description détaillée */}
-        <Card className="mt-12">
+        <Card className="mt-12 dark:bg-white/90">
           <CardBody>
             <Typography
               variant="h4"
@@ -211,13 +213,13 @@ const MasterclassDetail = () => {
               value={masterclass.description}
               readOnly={true}
               theme="bubble"
-              className="text-blue-gray-500"
+              className="text-blue-gray-500 dark:text-black"
             />
           </CardBody>
         </Card>
 
         {/* Instructeur */}
-        <Card className="mt-8">
+        <Card className="mt-8 dark:bg-white/90">
           <CardBody>
             <Typography variant="h4" className="mb-4 text-blue-gray-900">
               Votre instructeur
@@ -229,10 +231,13 @@ const MasterclassDetail = () => {
                 className="h-16 w-16 rounded-full object-cover"
               />
               <div>
-                <Typography variant="h6" className="text-blue-gray-500">
+                <Typography
+                  variant="h6"
+                  className="text-blue-gray-500 dark:text-black"
+                >
                   {masterclass.instructor?.name}
                 </Typography>
-                <Typography className="text-blue-gray-600">
+                <Typography className="text-blue-gray-600 dark:text-black">
                   {masterclass.instructor?.biography}
                 </Typography>
               </div>

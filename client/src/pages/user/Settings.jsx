@@ -19,14 +19,16 @@ const Settings = ({
 }) => {
   return (
     <div className="container mx-auto h-auto md:h-screen">
-      <Typography variant="h4">Vos paramètres</Typography>
-      <p className="text-gray-600">
+      <Typography variant="h4" className="dark:text-white">
+        Vos paramètres
+      </Typography>
+      <p className="text-gray-600 dark:text-white">
         Changez votre mot de passe Laissez vide pour garder votre mot de passe
         actuel.
       </p>
 
       <div className="mx-auto my-4 grid grid-cols-1 gap-6 lg:grid-cols-2">
-        <Card className="p-6">
+        <Card className="p-6 dark:bg-white/90">
           <div className="mb-6 flex items-center justify-between">
             <Typography variant="h4" color="blue-gray">
               Mot de passe
@@ -111,7 +113,7 @@ const Settings = ({
             </Button>
           </form>
         </Card>
-        <div className="h-min rounded-lg bg-[#F9FAFB] p-4">
+        <div className="h-min rounded-lg bg-[#F9FAFB] p-4 dark:bg-white/90">
           <div>
             <Typography variant="h6" className="text-sm font-medium">
               Exigences en matière de mot de passe :

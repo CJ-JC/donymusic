@@ -40,11 +40,11 @@ const MasterClass = () => {
             <Typography
               variant="h2"
               color="blue-gray"
-              className="mb-6 text-3xl font-extrabold"
+              className="mb-6 text-3xl font-extrabold dark:text-white"
             >
               Rejoignez Nos Masterclasses Exclusives
             </Typography>
-            <Typography className="text-blue-gray-600">
+            <Typography className="text-blue-gray-600 dark:text-white">
               Découvrez des cours intensifs dispensés par des professionnels de
               la musique. Améliorez vos compétences et faites passer votre
               talent au niveau supérieur.
@@ -56,7 +56,7 @@ const MasterClass = () => {
             <Typography
               variant="h3"
               color="blue-gray"
-              className="mb-6 text-2xl font-bold"
+              className="mb-6 text-2xl font-bold dark:text-white"
             >
               Prochaines Sessions
             </Typography>
@@ -70,7 +70,7 @@ const MasterClass = () => {
                     <div className="mt-2 h-56 w-1 bg-gray-500"></div>
                   </div>
 
-                  <Card className="flex-1 text-white shadow">
+                  <Card className="flex-1 text-white shadow dark:bg-white/90">
                     <CardBody className="flex flex-col items-center gap-6 p-4 md:flex-row">
                       <div className="overflow-hidden rounded-md">
                         <img
@@ -84,10 +84,10 @@ const MasterClass = () => {
                           <div>
                             <div className="flex flex-col gap-2 px-2">
                               <div className="flex items-center gap-2">
-                                <span className="font-medium text-blue-gray-500">
+                                <span className="font-medium text-blue-gray-500 dark:text-black">
                                   Début :
                                 </span>
-                                <Typography className="text-md font-medium text-blue-gray-500">
+                                <Typography className="text-md font-medium text-blue-gray-500 dark:text-black">
                                   {new Date(
                                     masterclass.startDate,
                                   ).toLocaleDateString("fr-FR", {
@@ -101,10 +101,10 @@ const MasterClass = () => {
                                 </Typography>
                               </div>
                               <div className="flex items-center gap-2">
-                                <span className="font-medium text-blue-gray-500">
+                                <span className="font-medium text-blue-gray-500 dark:text-black">
                                   Fin :
                                 </span>
-                                <Typography className="text-md font-medium text-blue-gray-500">
+                                <Typography className="text-md font-medium text-blue-gray-500 dark:text-black">
                                   {new Date(
                                     masterclass.endDate,
                                   ).toLocaleDateString("fr-FR", {
@@ -143,9 +143,9 @@ const MasterClass = () => {
                           }
                           readOnly={true}
                           theme="bubble"
-                          className="text-blue-gray-500"
+                          className="text-blue-gray-500 dark:text-black"
                         />
-                        <hr className="my-4" />
+                        <hr className="my-4 dark:border-gray-700" />
                         <div className="flex items-center justify-between gap-2">
                           <div className="flex items-center gap-2">
                             <div className="relative ml-4">
@@ -193,7 +193,7 @@ const MasterClass = () => {
           <Typography
             variant="h2"
             color="blue-gray"
-            className="mb-6 p-4 text-center text-2xl font-extrabold"
+            className="mb-6 p-4 text-center text-2xl font-extrabold dark:text-white"
           >
             Pas de sessions disponibles pour le moment.
           </Typography>

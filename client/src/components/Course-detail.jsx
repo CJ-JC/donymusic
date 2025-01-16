@@ -236,7 +236,7 @@ const Coursedetail = () => {
           </div>
           <div className="relative rounded-md border p-3">
             <div className="mb-3 flex items-center justify-between gap-x-2">
-              <h3 className="text-2xl font-semibold text-blue-gray-900">
+              <h3 className="text-2xl font-semibold text-blue-gray-900 dark:text-white">
                 {course.title}
               </h3>
               <div className="focus:ring-ring inline-flex items-center rounded-md border border-transparent bg-green-500/10 px-2.5 py-0.5 text-xs font-medium text-green-800 transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2">
@@ -255,14 +255,14 @@ const Coursedetail = () => {
                   <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"></path>
                   <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"></path>
                 </svg>
-                <span>
+                <span className="dark:text-white">
                   {course.chapters.length}{" "}
                   {course.chapters.length === 1 ? "chapitre" : "chapitres"}
                 </span>
               </div>
             </div>
 
-            <div className="my-3 text-sm text-blue-gray-500">
+            <div className="my-3 text-sm text-blue-gray-500 dark:text-white">
               <ReactQuill
                 value={course.description}
                 readOnly={true}
@@ -271,16 +271,16 @@ const Coursedetail = () => {
             </div>
             {course.chapters && course.chapters.length > 0 && (
               <>
-                <h3 className="mb-4 text-2xl font-semibold text-blue-gray-900">
+                <h3 className="mb-4 text-2xl font-semibold text-blue-gray-900 dark:text-white">
                   Contenu du cours
                 </h3>
 
                 <div className="text-md flex items-center  justify-end gap-x-2 border-b border-gray-300 py-1">
-                  <p className="text-sm text-gray-800">
+                  <p className="text-sm text-gray-800 dark:text-white">
                     {course.chapters.length}{" "}
                     {course.chapters.length === 1 ? "section" : "sections"}
                   </p>
-                  <p className="text-sm text-gray-800">
+                  <p className="text-sm text-gray-800 dark:text-white">
                     {countVideos}{" "}
                     {countVideos.length === 1 ? "session" : "sessions"}
                   </p>
@@ -294,11 +294,11 @@ const Coursedetail = () => {
                     >
                       <AccordionHeader
                         onClick={() => handleOpen(chapter.id)}
-                        className="text-lg font-bold"
+                        className="text-lg font-bold dark:text-white"
                       >
                         {chapter.title}
                         <div className="ml-auto">
-                          <span className="text-sm text-gray-500">
+                          <span className="text-sm text-gray-500 dark:text-white">
                             {chapter.videos.length} session
                             {chapter.videos.length > 1 && "s"}
                           </span>
@@ -309,7 +309,7 @@ const Coursedetail = () => {
                           <ul className="space-y-2">
                             {chapter.videos.map((video) => (
                               <li key={video.id}>
-                                <button className="my-1 flex w-full items-center gap-x-2 bg-gray-50 p-1 text-sm font-bold transition hover:bg-gray-200">
+                                <button className="my-1 flex w-full items-center gap-x-2 bg-gray-50 p-1 text-sm font-bold transition hover:bg-gray-200 dark:text-black">
                                   {video.title}
                                 </button>
                               </li>
@@ -327,7 +327,7 @@ const Coursedetail = () => {
 
         <div className="order-2 flex flex-col space-y-6 lg:col-span-2">
           {hasPurchased ? (
-            <div className="rounded-md border bg-white p-6 shadow-md">
+            <div className="rounded-md border bg-white p-6 shadow-md dark:bg-white/90">
               <div className="mb-6">
                 <h3 className="mb-4 text-xl font-semibold text-blue-gray-500">
                   Continuez là où vous vous êtes arrêté.
@@ -415,12 +415,12 @@ const Coursedetail = () => {
               </div>
             </div>
           ) : (
-            <div className="rounded-md border bg-white p-6 shadow-md">
+            <div className="rounded-md border bg-white p-6 shadow-md dark:bg-white/90">
               <div className="mb-6">
-                <h3 className="mb-4 text-2xl font-semibold text-blue-gray-900">
+                <h3 className="mb-4 text-2xl font-semibold text-blue-gray-900 dark:text-black">
                   Accédez à votre formation maintenant
                 </h3>
-                <p className="text-sm text-blue-gray-500">
+                <p className="text-sm text-blue-gray-500 dark:text-black">
                   Bénéficiez d’un accès immédiat à tous les contenus de la
                   formation en procédant au paiement sécurisé.
                 </p>
@@ -431,7 +431,7 @@ const Coursedetail = () => {
                 <div className="flex items-center gap-x-4">
                   {discountedPrice && discountedPrice < course.price ? (
                     <>
-                      <span className="text-lg font-bold text-blue-gray-500 line-through">
+                      <span className="text-lg font-bold text-blue-gray-500 line-through dark:text-black">
                         {course.price}€
                       </span>
                       <span className="text-lg font-bold text-red-600">
@@ -442,14 +442,14 @@ const Coursedetail = () => {
                       </span>
                     </>
                   ) : (
-                    <span className="text-lg font-bold text-blue-gray-500">
+                    <span className="text-lg font-bold text-blue-gray-500 dark:text-black">
                       {course.price}€
                     </span>
                   )}
                 </div>
 
                 {/* Points de valeur ajoutée */}
-                <ul className="list-disc space-y-2 pl-5 text-sm text-blue-gray-500">
+                <ul className="list-disc space-y-2 pl-5 text-sm text-blue-gray-500 dark:text-black">
                   <li>Accès à vie à la formation.</li>
                   <li>Garantie satisfait ou remboursé sous 14 jours.</li>
                   <li>Support pédagogique 24/7.</li>
@@ -490,7 +490,7 @@ const Coursedetail = () => {
               </div>
 
               {/* Section de garantie ou de confiance */}
-              <div className="mt-6 border-t pt-4 text-sm text-blue-gray-600">
+              <div className="mt-6 border-t pt-4 text-sm text-blue-gray-600 dark:text-black">
                 <p className="flex items-center gap-x-2">
                   <svg
                     xmlns="http://www.w3.org/2000/svg"

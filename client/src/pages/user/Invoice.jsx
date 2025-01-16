@@ -11,13 +11,15 @@ const Invoice = ({ purchases }) => {
   };
 
   return (
-    <div className="container mx-auto overflow-auto bg-white">
-      <Typography variant="h4">Vos achats</Typography>
-      <p className="text-gray-600">
+    <div className="container mx-auto overflow-auto">
+      <Typography variant="h4" className="dark:text-white">
+        Vos achats
+      </Typography>
+      <p className="text-gray-600 dark:text-white">
         Les offres que vous avez achetées sont affichées ci-dessous.
       </p>
-      <table className="my-4 w-full min-w-max table-auto text-left">
-        <thead className="bg-[#F9FAFB] text-gray-700 dark:bg-gray-700 dark:text-gray-400">
+      <table className="f my-4 w-full min-w-max table-auto text-left dark:bg-white/90 dark:text-black">
+        <thead className="bg-[#F9FAFB] font-medium text-gray-700 dark:bg-gray-700 dark:text-white">
           <tr>
             <th className="border-slate-200 bg-slate-50 border-b p-4">
               <p className="text-slate-500 text-sm font-normal leading-none">
@@ -53,29 +55,31 @@ const Invoice = ({ purchases }) => {
               key={index}
             >
               <td className="p-4 py-5">
-                <p className="text-slate-800 block text-sm">
+                <p className="text-slate-800 block text-sm font-medium">
                   {purchase.itemType === "course"
                     ? purchase.course.title
                     : purchase.masterclass.title}
                 </p>
               </td>
               <td className="p-4 py-5">
-                <p className="text-slate-500 text-sm">{purchase.amount}€</p>
+                <p className="text-slate-500 text-sm font-medium">
+                  {purchase.amount}€
+                </p>
               </td>
               <td className="p-4 py-5">
-                <p className="text-slate-500 text-sm">
+                <p className="text-slate-500 text-sm font-medium">
                   {purchase.status === "pending" ? (
                     <span className="me-2 rounded bg-gray-100 px-2.5 py-0.5 text-xs font-medium text-gray-800 dark:bg-gray-700 dark:text-gray-300">
                       En attente
                     </span>
                   ) : (
-                    <span className="me-2 rounded bg-green-100 px-2.5 py-0.5 text-xs font-medium text-green-800 dark:bg-green-900 dark:text-green-300">
+                    <span className="me-2 rounded bg-green-100 px-2.5 py-0.5 text-xs font-medium text-green-800 dark:bg-green-600 dark:text-white">
                       Acheté
                     </span>
                   )}
                 </p>
               </td>
-              <td className="p-4 py-5">
+              <td className="p-4 py-5 text-sm font-medium">
                 {new Date(purchase.createdAt).toLocaleDateString()}
               </td>
               <td className="flex items-center gap-4 p-4 py-5">

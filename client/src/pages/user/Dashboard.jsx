@@ -9,8 +9,10 @@ const Dashboard = ({ courseData, loading }) => {
   }
   return (
     <div className="container mx-auto">
-      <Typography variant="h4">Vos formations</Typography>
-      <p className="text-gray-600">
+      <Typography variant="h4" className="dark:text-white">
+        Vos formations
+      </Typography>
+      <p className="text-gray-600 dark:text-white">
         Les formations que vous avez souscrit sont affichées ci-dessous.
       </p>
       <CourseList courses={courseData} />

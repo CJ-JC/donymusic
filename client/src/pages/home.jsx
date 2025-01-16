@@ -11,10 +11,7 @@ import {
   Textarea,
   Checkbox,
 } from "@material-tailwind/react";
-import { FingerPrintIcon } from "@heroicons/react/24/solid";
 import { PageTitle } from "@/widgets/layout";
-import { TeamCard } from "@/widgets/cards";
-import { teamData, contactData } from "@/data";
 import CourseList from "@/components/Course-list";
 import useCourses from "@/widgets/utils/UseCourses";
 import Countdown from "@/widgets/utils/Countdown";
@@ -86,11 +83,11 @@ export function Home() {
         </div>
       </div>
 
-      <section className="mx-auto -mt-28 max-w-screen-xl px-4 pb-20">
+      <section className="mx-auto -mt-24 max-w-screen-xl px-4 pb-20">
         <div className="container mx-auto">
           {firstMasterclass && (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-1">
-              <Card className="rounded-lg shadow-lg shadow-gray-500/10">
+              <Card className="rounded-lg shadow-lg shadow-gray-500/10 dark:bg-white/90">
                 <CardBody className="px-4 py-6">
                   <div className="flex flex-col items-center justify-between gap-x-10 md:flex-row">
                     <div>
@@ -100,7 +97,7 @@ export function Home() {
                       >
                         {firstMasterclass?.title}
                       </Typography>
-                      <div className="text-sm text-blue-gray-500">
+                      <div className="text-sm text-blue-gray-500 dark:text-black">
                         <ReactQuill
                           value={
                             firstMasterclass?.description.length > 200
@@ -119,7 +116,10 @@ export function Home() {
                       </div>
                     </div>
                     <div>
-                      <Typography variant="h6" className="text-blue-gray-500">
+                      <Typography
+                        variant="h6"
+                        className="text-blue-gray-500 dark:text-black"
+                      >
                         Début dans :
                       </Typography>
                       <Countdown
@@ -131,7 +131,7 @@ export function Home() {
                   </div>
                   <div className="flex w-full justify-center">
                     <Link to="/masterclass">
-                      <Button variant="gradient" size="md" className="mt-4">
+                      <Button size="md" className="mt-4">
                         En savoir plus
                       </Button>
                     </Link>
@@ -141,7 +141,7 @@ export function Home() {
             </div>
           )}
           <section className="mt-32 flex flex-wrap items-center">
-            <div className="container mx-auto">
+            <div className="container mx-auto dark:text-white">
               <motion.div
                 initial={{ opacity: 0 }}
                 whileInView={{ opacity: 1 }}
@@ -164,7 +164,9 @@ export function Home() {
 
                 <div className="my-24 flex justify-center">
                   <Link to={`/courses`} className="rounded-full">
-                    <Button variant="gradient">Voir tous les cours</Button>
+                    <Button className="dark:bg-white dark:text-black dark:hover:bg-gray-400">
+                      Voir tous les cours
+                    </Button>
                   </Link>
                 </div>
               </motion.div>
@@ -192,10 +194,10 @@ export function Home() {
             >
               <div className="mt-4 flex items-center space-x-6">
                 <div>
-                  <h3 className="text-lg font-semibold text-blue-gray-900">
+                  <h3 className="text-lg font-semibold text-blue-gray-900 dark:text-white">
                     Jean Dupont
                   </h3>
-                  <p className="text-blue-gray-500">
+                  <p className="text-blue-gray-500 dark:text-white">
                     Pianiste expert, passionné par la musique et la transmission
                     de son art. Avec plus de 10 ans d'expérience, il a donné des
                     concerts à travers le monde et formé de nombreux élèves, les
@@ -273,8 +275,8 @@ export function Home() {
                   <div className="rounded-full bg-blue-gray-900 p-2 text-white">
                     <Monitor className="h-8 w-8" />
                   </div>
-                  <p className="mt-2 text-blue-gray-500">
-                    <strong>Formation en ligne</strong>: Accédez à des cours
+                  <p className="mt-2 text-blue-gray-500 dark:text-white">
+                    <strong>Formation en ligne</strong> : Accédez à des cours
                     interactifs et flexibles, disponibles 24/7 pour s'adapter à
                     votre emploi du temps.
                   </p>
@@ -288,8 +290,8 @@ export function Home() {
                   <div className="rounded-full bg-blue-gray-900 p-2 text-white">
                     <UsersRound className="h-8 w-8" />
                   </div>
-                  <p className="mt-2 text-blue-gray-500">
-                    <strong>Communauté dynamique</strong>: Rejoignez une
+                  <p className="mt-2 text-blue-gray-500 dark:text-white">
+                    <strong>Communauté dynamique</strong> : Rejoignez une
                     communauté d'apprenants et partagez vos expériences.
                   </p>
                 </div>
@@ -302,8 +304,8 @@ export function Home() {
                   <div className="rounded-full bg-blue-gray-900 p-2 text-white">
                     <Rocket className="h-8 w-8" />
                   </div>
-                  <p className="mt-2 text-blue-gray-500">
-                    <strong>Atteignez de nouveaux sommets</strong>: Progresser
+                  <p className="mt-2 text-blue-gray-500 dark:text-white">
+                    <strong>Atteignez de nouveaux sommets</strong> : Progresser
                     n’a jamais été aussi simple. Développez vos compétences et
                     avancez vers vos rêves.
                   </p>
@@ -313,10 +315,9 @@ export function Home() {
           </motion.div>
           <div className="mt-24 flex justify-center">
             <Button
-              variant="gradient"
               size="md"
               onClick={() => navigate("/sign-up")}
-              className="px-6 py-3 text-white"
+              className="px-6 py-3 dark:bg-white dark:text-black dark:hover:bg-gray-400"
             >
               Rejoignez-nous aujourd'hui
             </Button>

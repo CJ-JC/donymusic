@@ -33,7 +33,13 @@ import Setting from "./pages/user/Settings";
 import Success from "./pages/Success";
 import InvoicePdf from "./pages/user/Invoice-pdf";
 
-const Layout = ({ globalDiscount, discountPercentage, isExpired }) => (
+const Layout = ({
+  globalDiscount,
+  discountPercentage,
+  isExpired,
+  toggleTheme,
+  theme,
+}) => (
   <>
     {!isExpired && globalDiscount && (
       <div className="border-orange-30 text-primary text-md flex w-full items-center justify-center border bg-orange-700/60 p-4">
@@ -57,9 +63,9 @@ const Layout = ({ globalDiscount, discountPercentage, isExpired }) => (
         choix.
       </div>
     )}
-    <Navbar />
+    <Navbar toggleTheme={toggleTheme} theme={theme} />
     <Outlet />
-    <Footer />
+    <Footer toggleTheme={toggleTheme} theme={theme} />
   </>
 );
 
@@ -69,6 +75,22 @@ function App() {
   const [authLoading, setAuthLoading] = useState(true);
   const [error, setError] = useState(null);
   const [isExpired, setIsExpired] = useState(false);
+
+  const [theme, setTheme] = useState(() => {
+    return localStorage.getItem("theme") || "light";
+  });
+
+  const toggleTheme = () => {
+    setTheme((prevTheme) => {
+      const newTheme = prevTheme === "light" ? "dark" : "light";
+      localStorage.setItem("theme", newTheme);
+      return newTheme;
+    });
+  };
+
+  useEffect(() => {
+    document.body.className = theme;
+  }, [theme]);
 
   useEffect(() => {
     const fetchRemises = async () => {
@@ -136,6 +158,8 @@ function App() {
               globalDiscount={globalDiscount}
               discountPercentage={discountPercentage}
               isExpired={isExpired}
+              toggleTheme={toggleTheme}
+              theme={theme}
             />
           }
         >

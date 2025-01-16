@@ -60,25 +60,27 @@ function Countdown({ targetDate, startDate, endDate }) {
           <div className="text-2xl font-bold text-blue-gray-900">
             {timeLeft.days}
           </div>
-          <span className="text-sm text-gray-500">Jours</span>
+          <span className="text-sm text-gray-500 dark:text-black">Jours</span>
         </div>
         <div className="flex flex-col items-center">
           <div className="text-2xl font-bold text-blue-gray-900">
             {timeLeft.hours}
           </div>
-          <span className="text-sm text-gray-500">Heures</span>
+          <span className="text-sm text-gray-500 dark:text-black">Heures</span>
         </div>
         <div className="flex flex-col items-center">
           <div className="text-2xl font-bold text-blue-gray-900">
             {timeLeft.minutes}
           </div>
-          <span className="text-sm text-gray-500">Minutes</span>
+          <span className="text-sm text-gray-500 dark:text-black">Minutes</span>
         </div>
         <div className="flex flex-col items-center">
           <div className="text-2xl font-bold text-blue-gray-900">
             {timeLeft.seconds}
           </div>
-          <span className="text-sm text-gray-500">Secondes</span>
+          <span className="text-sm text-gray-500 dark:text-black">
+            Secondes
+          </span>
         </div>
       </div>
     );

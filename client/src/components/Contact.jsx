@@ -79,10 +79,9 @@ const Contact = () => {
           onChange={(e) => setMessage(e.target.value)}
         />
         <Button
-          variant="gradient"
           type="submit"
           size="md"
-          className="mt-4"
+          className="mt-4 dark:bg-white dark:text-black dark:hover:bg-gray-400"
           fullWidth
         >
           Envoyer le message

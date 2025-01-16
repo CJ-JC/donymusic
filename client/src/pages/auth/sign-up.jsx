@@ -42,7 +42,7 @@ export function SignUp() {
 
   return (
     <>
-      <section className="mx-auto flex w-full max-w-screen-xl items-center justify-center p-4 md:py-4 lg:justify-around">
+      <section className="mx-auto flex h-auto w-full max-w-screen-xl items-center justify-center p-4 md:h-screen md:py-4 lg:justify-around">
         <div className="hidden w-2/5 overflow-hidden lg:block">
           <img
             src="/img/piano.jpg"
@@ -63,14 +63,14 @@ export function SignUp() {
           <div className="mb-1 flex flex-col gap-6">
             <label
               htmlFor="lastname"
-              className="-mb-3 text-sm font-medium text-blue-gray-900"
+              className="-mb-3 text-sm font-medium text-blue-gray-900 dark:text-white"
             >
               Nom
             </label>
             <Input
               size="lg"
               placeholder="Votre nom"
-              className=" !border-t-blue-gray-200 focus:!border-t-gray-900"
+              className=" !border-t-blue-gray-200 focus:!border-t-gray-900 dark:text-white"
               name="lastName"
               id="lastname"
               type="text"
@@ -79,14 +79,14 @@ export function SignUp() {
             />
             <label
               htmlFor="firstname"
-              className="-mb-3 text-sm font-medium text-blue-gray-900"
+              className="-mb-3 text-sm font-medium text-blue-gray-900 dark:text-white"
             >
               Prénom
             </label>
             <Input
               size="lg"
               placeholder="Votre prénom"
-              className=" !border-t-blue-gray-200 focus:!border-t-gray-900"
+              className=" !border-t-blue-gray-200 focus:!border-t-gray-900 dark:text-white"
               name="firstName"
               id="firstname"
               type="text"
@@ -94,14 +94,14 @@ export function SignUp() {
             />
             <label
               htmlFor="email"
-              className="-mb-3 text-sm font-medium text-blue-gray-900"
+              className="-mb-3 text-sm font-medium text-blue-gray-900 dark:text-white"
             >
               Email
             </label>
             <Input
               size="lg"
               placeholder="Email"
-              className=" !border-t-blue-gray-200 focus:!border-t-gray-900"
+              className=" !border-t-blue-gray-200 focus:!border-t-gray-900 dark:text-white"
               name="email"
               id="email"
               type="email"
@@ -109,14 +109,14 @@ export function SignUp() {
             />
             <label
               htmlFor="password"
-              className="-mb-3 text-sm font-medium text-blue-gray-900"
+              className="-mb-3 text-sm font-medium text-blue-gray-900 dark:text-white"
             >
               Mot de passe
             </label>
             <Input
               size="lg"
               placeholder="Votre mot de passe"
-              className=" !border-t-blue-gray-200 focus:!border-t-gray-900"
+              className=" !border-t-blue-gray-200 focus:!border-t-gray-900 dark:text-white"
               name="password"
               id="password"
               type="password"
@@ -130,12 +130,12 @@ export function SignUp() {
               <Typography
                 variant="small"
                 color="gray"
-                className="flex flex-wrap items-center justify-start font-medium"
+                className="flex flex-wrap items-center justify-start font-medium dark:text-white"
               >
                 J'accepte les&nbsp;
                 <a
                   href="#"
-                  className="font-normal text-black underline transition-colors hover:text-gray-900"
+                  className="font-normal text-black underline transition-colors hover:text-gray-900 dark:text-white"
                 >
                   Conditions générales d'utilisation
                 </a>
@@ -145,19 +145,22 @@ export function SignUp() {
           />
           <Button
             type="submit"
-            className="mt-6"
             fullWidth
             onClick={handleSubmit}
+            className="mt-6 dark:bg-white dark:text-black dark:hover:bg-gray-400"
           >
             S'inscrire
           </Button>
 
           <Typography
             variant="paragraph"
-            className="mt-4 text-center font-medium text-blue-gray-500"
+            className="mt-4 text-center font-medium text-blue-gray-500 dark:text-white"
           >
             Vous avez déjà un compte ?
-            <Link to="/sign-in" className="ml-1 text-gray-900">
+            <Link
+              to="/sign-in"
+              className="ml-1 text-gray-900 dark:text-gray-300"
+            >
               Connectez-vous
             </Link>
           </Typography>

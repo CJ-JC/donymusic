@@ -7,15 +7,17 @@ import {
   Collapse,
 } from "@material-tailwind/react";
 import { Bars3Icon, XMarkIcon } from "@heroicons/react/24/outline";
-import logo from "/img/logo-day.svg";
+import logoDay from "/img/logo-day.svg";
+import logoNight from "/img/logo-night.svg";
 import axios from "axios";
 import { checkAuthStatus } from "../utils/CheckAuthStatus";
 import { useDispatch, useSelector } from "react-redux";
 import { loggedOut } from "@/reducer/auth";
 import Loading from "../utils/Loading";
 import AccountDropdown from "../utils/AccountDropdown";
+import { MoonIcon, SunIcon } from "lucide-react";
 
-export function Navbar({ brandName, action }) {
+export function Navbar({ toggleTheme, theme }) {
   const [openNav, setOpenNav] = useState(false);
   const [authLoading, setAuthLoading] = useState(true);
   const dispatch = useDispatch();
@@ -60,8 +62,8 @@ export function Navbar({ brandName, action }) {
         className={({ isActive }) =>
           `group flex items-center rounded-lg p-1 px-2 ${
             isActive
-              ? "border-b border-gray-500 font-medium text-gray-800"
-              : "bg-white font-medium text-gray-600 hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700"
+              ? "border-b border-gray-500 font-medium text-gray-800 dark:border-white dark:bg-white dark:text-black"
+              : "bg-white font-medium text-gray-600 hover:bg-gray-100 dark:border-b dark:bg-transparent dark:text-white dark:hover:bg-gray-800"
           }`
         }
       >
@@ -74,8 +76,8 @@ export function Navbar({ brandName, action }) {
         className={({ isActive }) =>
           `group flex items-center rounded-lg p-1 px-2 ${
             isActive
-              ? "border-b border-gray-500 font-medium text-gray-800"
-              : "bg-white font-medium text-gray-600 hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700"
+              ? "border-b border-gray-500 font-medium text-gray-800 dark:border-white dark:bg-white dark:text-black"
+              : "bg-white font-medium text-gray-600 hover:bg-gray-100 dark:border-b dark:bg-transparent dark:text-white dark:hover:bg-gray-800"
           }`
         }
       >
@@ -87,8 +89,8 @@ export function Navbar({ brandName, action }) {
         className={({ isActive }) =>
           `group flex items-center rounded-lg p-1 px-2 ${
             isActive
-              ? "border-b border-gray-500 font-medium text-gray-800"
-              : "bg-white font-medium text-gray-600 hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700"
+              ? "border-b border-gray-500 font-medium text-gray-800 dark:border-white dark:bg-white dark:text-black"
+              : "bg-white font-medium text-gray-600 hover:bg-gray-100 dark:border-b dark:bg-transparent dark:text-white dark:hover:bg-gray-800"
           }`
         }
       >
@@ -104,7 +106,11 @@ export function Navbar({ brandName, action }) {
     >
       <div className="container mx-auto flex items-center justify-between text-black">
         <Link to="/" onClick={handleLinkClick}>
-          <img src={logo} alt="Logo" className="h-14 w-auto" />
+          {theme === "dark" ? (
+            <img src={logoNight} width={200} alt="logo donymusic" />
+          ) : (
+            <img src={logoDay} width={200} alt="logo donymusic" />
+          )}
         </Link>
         <div className="hidden lg:block">{navList}</div>
         <div className="hidden gap-2 lg:flex">
@@ -114,12 +120,21 @@ export function Navbar({ brandName, action }) {
               <Link
                 to={user.role === "admin" ? "/administrator" : "/user/account"}
               >
-                <Button variant="outlined" size="sm">
+                <Button
+                  variant="outlined"
+                  className="font-medium text-gray-800 dark:bg-white dark:text-black"
+                  size="sm"
+                >
                   Mon compte
                 </Button>
               </Link>
               <Link to={"#"}>
-                <Button variant="gradient" size="sm" onClick={logout}>
+                <Button
+                  variant="gradient"
+                  className="border border-black font-medium dark:bg-black dark:text-white"
+                  size="sm"
+                  onClick={logout}
+                >
                   Déconnexion
                 </Button>
               </Link>
@@ -127,17 +142,33 @@ export function Navbar({ brandName, action }) {
           ) : (
             <>
               <Link to="/sign-in">
-                <Button variant="outlined" size="sm">
+                <Button
+                  variant="outlined"
+                  size="sm"
+                  className="font-medium text-gray-800 dark:bg-white dark:text-black"
+                >
                   Connexion
                 </Button>
               </Link>
               <Link to="/sign-up">
-                <Button variant="gradient" size="sm" fullWidth>
+                <Button
+                  variant="gradient"
+                  size="sm"
+                  fullWidth
+                  className="border border-black font-medium dark:bg-black dark:text-white"
+                >
                   S'inscrire
                 </Button>
               </Link>
             </>
           )}
+          <button onClick={toggleTheme} className="theme-toggle">
+            {theme === "dark" ? (
+              <SunIcon className="h-6 w-6 text-white" />
+            ) : (
+              <MoonIcon className="h-6 w-6" />
+            )}
+          </button>
         </div>
         <IconButton
           variant="text"

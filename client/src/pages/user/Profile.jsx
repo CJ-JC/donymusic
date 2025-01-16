@@ -18,13 +18,15 @@ const Profile = ({
 }) => {
   return (
     <div className="container mx-auto">
-      <Typography variant="h4">Vos informations</Typography>
-      <p className="text-gray-600">
+      <Typography variant="h4" className="dark:text-white">
+        Vos informations
+      </Typography>
+      <p className="text-gray-600 dark:text-white">
         Les informations que vous avez renseignées sont affichées ci-dessous.
       </p>
 
       <div className="my-4">
-        <Card className="mx-auto max-w-2xl p-6">
+        <Card className="mx-auto max-w-2xl p-6 dark:bg-white/90">
           <div className="mb-6 flex items-center justify-between">
             <Typography variant="h4" color="blue-gray">
               Mon Profil

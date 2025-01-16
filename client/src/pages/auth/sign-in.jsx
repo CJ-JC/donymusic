@@ -46,7 +46,7 @@ export function SignIn() {
 
   return (
     <>
-      <section className="mx-auto flex w-full max-w-screen-xl items-center justify-center p-4 md:py-4 lg:justify-around">
+      <section className="mx-auto flex h-auto w-full max-w-screen-xl items-center justify-center p-4 md:h-screen md:py-4 lg:justify-around">
         <form
           className="mb-2 w-80 max-w-screen-lg lg:w-1/2"
           onSubmit={handleSubmit}
@@ -59,14 +59,14 @@ export function SignIn() {
           <div className="mb-1 flex flex-col gap-6">
             <label
               htmlFor="email"
-              className="-mb-3 text-sm font-medium text-blue-gray-900"
+              className="-mb-3 text-sm font-medium text-blue-gray-900 dark:text-white"
             >
               Email
             </label>
             <Input
               size="lg"
               placeholder="Votre email"
-              className=" !border-t-blue-gray-200 focus:!border-t-gray-900"
+              className=" !border-t-blue-gray-200 focus:!border-t-gray-900 dark:text-white"
               id="email"
               name="email"
               type="email"
@@ -75,7 +75,7 @@ export function SignIn() {
             />
             <label
               htmlFor="password"
-              className="-mb-3 text-sm font-medium text-blue-gray-900"
+              className="-mb-3 text-sm font-medium text-blue-gray-900 dark:text-white"
             >
               Mot de passe
             </label>
@@ -83,7 +83,7 @@ export function SignIn() {
               type="password"
               size="lg"
               placeholder="********"
-              className=" !border-t-blue-gray-200 focus:!border-t-gray-900"
+              className=" !border-t-blue-gray-200 focus:!border-t-gray-900 dark:text-white"
               id="password"
               name="password"
               onChange={handleChange}
@@ -92,7 +92,7 @@ export function SignIn() {
           </div>
 
           <Button
-            className="mt-6"
+            className="mt-6 dark:bg-white dark:text-black dark:hover:bg-gray-400"
             type="submit"
             fullWidth
             onClick={handleSubmit}
@@ -101,16 +101,22 @@ export function SignIn() {
           </Button>
 
           <div className="mt-6 flex flex-col items-center justify-between gap-2 md:flex-row">
-            <Typography variant="small" className="font-medium text-gray-900">
+            <Typography
+              variant="small"
+              className="font-medium text-gray-900 dark:text-white"
+            >
               <a href="#">Mot de passe oublié</a>
             </Typography>
           </div>
           <Typography
             variant="paragraph"
-            className="mt-4 text-center font-medium text-blue-gray-500"
+            className="mt-4 text-center font-medium text-blue-gray-500 dark:text-white"
           >
             Vous n'avez pas de compte ?
-            <Link to="/sign-up" className="ml-1 text-gray-900">
+            <Link
+              to="/sign-up"
+              className="ml-1 text-gray-900 dark:text-gray-300"
+            >
               Créer un compte
             </Link>
           </Typography>
