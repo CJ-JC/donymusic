@@ -123,6 +123,7 @@ const CreateCourse = () => {
                   id="title"
                   name="title"
                   label="Titre de la formation"
+                  className="dark:text-white dark:focus:border-white"
                   required
                   value={inputs.title}
                   onChange={handleChange}
@@ -131,7 +132,7 @@ const CreateCourse = () => {
               <div className="mt-6 space-y-2 rounded-md border p-4">
                 <label
                   htmlFor="description"
-                  className="text-sm font-medium text-blue-gray-900"
+                  className="text-sm font-medium text-blue-gray-900 dark:text-white"
                 >
                   Description de la formation
                 </label>
@@ -165,12 +166,12 @@ const CreateCourse = () => {
               <div className="my-6 space-y-2 rounded-md border p-4">
                 <label
                   htmlFor="image"
-                  className="text-sm font-medium text-blue-gray-900"
+                  className="text-sm font-medium text-blue-gray-900 dark:text-white"
                 >
                   Image de la formation
                 </label>
                 <div className="bg-grey-lighter flex w-full items-center justify-between">
-                  <label className="flex w-52 cursor-pointer flex-col items-center rounded-lg border bg-white px-4 py-6 tracking-wide shadow-sm hover:text-gray-700">
+                  <label className="flex w-52 cursor-pointer flex-col items-center rounded-lg border bg-white px-4 py-6 tracking-wide shadow-sm hover:text-gray-700 dark:text-black">
                     <svg
                       className="h-8 w-8"
                       fill="currentColor"
@@ -241,6 +242,7 @@ const CreateCourse = () => {
                   type="number"
                   value={inputs.price}
                   onChange={handleChange}
+                  className="dark:text-white dark:focus:border-white"
                 />
               </div>
             </div>
@@ -273,7 +275,7 @@ const CreateCourse = () => {
                   <div className="flex items-center justify-between font-medium">
                     <label
                       htmlFor="chapterTitle"
-                      className="text-sm font-medium text-blue-gray-900"
+                      className="text-sm font-medium text-blue-gray-900 dark:text-white"
                     >
                       Chapitre de la formation
                     </label>
@@ -287,7 +289,7 @@ const CreateCourse = () => {
                       Ajouter chapitre
                     </button>
                   </div>
-                  <p className="text-sm italic text-gray-600">
+                  <p className="text-sm italic text-gray-600 dark:text-white">
                     Créez d'abord le cours pour ajouter des chapitres
                   </p>
                 </div>
@@ -320,6 +322,7 @@ const CreateCourse = () => {
                     type="text"
                     value={inputs.videoUrl}
                     onChange={handleChange}
+                    className="dark:text-white dark:focus:border-white"
                   />
                 </div>
                 <div className="mt-6 space-y-2 rounded-md border p-4">
@@ -339,7 +342,7 @@ const CreateCourse = () => {
                         categoryId: parseInt(e.target.value),
                       }))
                     }
-                    className="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500"
+                    className="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900  dark:bg-white dark:text-black dark:placeholder-gray-400"
                   >
                     <option value="" disabled>
                       -- Sélectionnez une catégorie --
@@ -355,7 +358,11 @@ const CreateCourse = () => {
             </div>
           </div>
           <div className="flex justify-center">
-            <Button type="submit" className="mt-6" disabled={loading}>
+            <Button
+              type="submit"
+              className="mt-6 dark:bg-white dark:text-black dark:hover:bg-gray-400"
+              disabled={loading}
+            >
               {loading ? "Création..." : "Créer le cours"}
             </Button>
           </div>

@@ -48,7 +48,7 @@ const editCourse = () => {
   useEffect(() => {
     const fetchCourse = async () => {
       try {
-        const response = await axios.get(`/api/course/${id}`);
+        const response = await axios.get(`/api/course/get-course-by-id/${id}`);
         const {
           title,
           description,
@@ -134,7 +134,7 @@ const editCourse = () => {
       setLoading(true);
       await axios.put(`/api/course/update/${id}`, formData);
       setLoading(false);
-      navigate("/administrator");
+      navigate("/administrator/courses");
       window.location.reload();
     } catch (error) {
       setError(error.response?.data?.error || "Une erreur est survenue");
@@ -194,7 +194,7 @@ const editCourse = () => {
   return (
     <>
       {inputs.isPublished === false && (
-        <div className="border-yellow-30 text-primary flex w-full items-center border bg-yellow-200/80 p-4 text-sm">
+        <div className="border-yellow-30 text-primary flex w-full items-center border bg-yellow-200/80 p-4 text-sm dark:bg-white/90 dark:text-black">
           <svg
             xmlns="http://www.w3.org/2000/svg"
             width="24"
@@ -275,12 +275,13 @@ const editCourse = () => {
                   type="text"
                   value={inputs.title}
                   onChange={handleChange}
+                  className="dark:text-white"
                 />
               </div>
               <div className="mt-6 space-y-2 rounded-md border p-4">
                 <label
                   htmlFor="description"
-                  className="-mb-3 text-sm font-medium text-blue-gray-900"
+                  className="-mb-3 text-sm font-medium text-blue-gray-900 dark:text-white"
                 >
                   Description de la formation
                 </label>
@@ -314,12 +315,12 @@ const editCourse = () => {
               <div className="my-6 rounded-md border p-4">
                 <label
                   htmlFor="image"
-                  className="-mb-3 text-sm font-medium text-blue-gray-900"
+                  className="-mb-3 text-sm font-medium text-blue-gray-900 dark:text-white"
                 >
                   Image de la formation
                 </label>
                 <div className="bg-grey-lighter flex w-full items-center justify-between">
-                  <label className="flex w-52 cursor-pointer flex-col items-center justify-center rounded-lg border bg-white px-4 py-6 tracking-wide shadow-sm hover:text-gray-700">
+                  <label className="flex w-52 cursor-pointer flex-col items-center justify-center rounded-lg border bg-white px-4 py-6 tracking-wide shadow-sm hover:text-gray-700 dark:text-black">
                     <svg
                       className="h-8 w-8"
                       fill="currentColor"
@@ -378,7 +379,7 @@ const editCourse = () => {
               <div className="mt-6 space-y-2 rounded-md border p-4">
                 <label
                   htmlFor="price"
-                  className="text-sm font-medium text-blue-gray-900"
+                  className="text-sm font-medium text-blue-gray-900 dark:text-white"
                 >
                   Prix de la formation
                 </label>
@@ -390,6 +391,7 @@ const editCourse = () => {
                   type="number"
                   value={inputs.price}
                   onChange={handleChange}
+                  className="dark:text-white"
                 />
               </div>
             </div>
@@ -422,7 +424,7 @@ const editCourse = () => {
                   <div className="flex items-center justify-between font-medium">
                     <label
                       htmlFor="chapterTitle"
-                      className="-mb-3 text-sm font-medium text-blue-gray-900"
+                      className="-mb-3 text-sm font-medium text-blue-gray-900 dark:text-white"
                     >
                       Titre du chapitre
                     </label>
@@ -430,7 +432,7 @@ const editCourse = () => {
                     <Link to={`/administrator/create-chapter/${id}`}>
                       <button
                         size="sm"
-                        className="flex items-center rounded-md p-2 hover:bg-gray-100 focus:outline-none"
+                        className="flex items-center rounded-md p-2 hover:bg-gray-100 focus:outline-none dark:hover:bg-gray-400 dark:hover:text-black"
                       >
                         <PlusCircle className="mr-2 h-4 w-4" />
                         Ajouter chapitre
@@ -454,7 +456,7 @@ const editCourse = () => {
                           className="mt-6 space-y-2 rounded-md border p-2"
                         >
                           <div className="flex items-center justify-between">
-                            <p className="text-sm italic text-gray-800">
+                            <p className="text-sm italic text-gray-800 dark:text-white">
                               {chapter.title}
                             </p>
                             <div className="flex items-center gap-x-2">
@@ -463,7 +465,7 @@ const editCourse = () => {
                               >
                                 <button
                                   size="sm"
-                                  className="flex items-center rounded-md p-2 text-sm hover:bg-gray-100 focus:outline-none"
+                                  className="flex items-center rounded-md p-2 text-sm hover:bg-gray-100 focus:outline-none dark:hover:bg-gray-400 dark:hover:text-black"
                                 >
                                   <Pen className="mr-1 h-4 w-4" />
                                   Modifier
@@ -519,6 +521,7 @@ const editCourse = () => {
                     type="text"
                     value={inputs.videoUrl}
                     onChange={handleChange}
+                    className="dark:text-white"
                   />
                 </div>
                 <div className="mt-6 space-y-2 rounded-md border p-4">
@@ -538,7 +541,7 @@ const editCourse = () => {
                         categoryId: parseInt(e.target.value),
                       }))
                     }
-                    className="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500"
+                    className="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900  dark:border-gray-600 dark:bg-white dark:text-black dark:placeholder-gray-400"
                   >
                     <option value="" disabled>
                       -- Sélectionnez une catégorie --
@@ -564,7 +567,10 @@ const editCourse = () => {
             />
           </div>
           <div className="flex justify-center">
-            <Button className="mt-6 w-min" onClick={handleSubmit}>
+            <Button
+              className="mt-6 w-min dark:bg-white dark:text-black dark:hover:bg-gray-400"
+              onClick={handleSubmit}
+            >
               Modifier
             </Button>
           </div>

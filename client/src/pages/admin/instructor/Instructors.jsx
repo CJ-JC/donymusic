@@ -53,11 +53,11 @@ export default function Instructors() {
   };
 
   return (
-    <div className="relative flex w-full flex-col overflow-scroll rounded-lg bg-white bg-clip-border p-4 text-gray-700 shadow-md">
+    <div className="relative flex w-full flex-col overflow-scroll rounded-lg border bg-white bg-clip-border p-4 text-gray-700 shadow-md dark:bg-[#25303F]">
       <div className="mb-4 flex items-center justify-between">
         <Typography
           variant="h3"
-          className="text-xl font-bold md:text-3xl"
+          className="text-xl font-bold dark:text-white md:text-3xl"
           color="blue-gray"
         >
           Liste des Instructeurs
@@ -80,7 +80,7 @@ export default function Instructors() {
         </div>
       )}
       <table className="w-full min-w-max table-auto text-left">
-        <thead className="bg-[#F9FAFB] text-gray-700 dark:bg-gray-700 dark:text-gray-400">
+        <thead className="bg-[#F9FAFB] font-medium text-gray-700 dark:bg-blue-gray-700 dark:text-white">
           <tr>
             <th className="border-slate-200 bg-slate-50 border-b p-4">
               <p className="text-slate-500 text-sm font-normal leading-none">
@@ -107,7 +107,7 @@ export default function Instructors() {
         <tbody>
           {instructors.map((instructor) => (
             <tr
-              className="hover:bg-slate-50 border-slate-200 border-b"
+              className="hover:bg-slate-50 border-slate-200 border-b dark:text-white"
               key={instructor.id}
             >
               <td className="p-4">

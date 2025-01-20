@@ -51,6 +51,7 @@ const CreateMasterclass = () => {
     startDate: new Date(),
     endDate: new Date(),
     instructorId: null,
+    link: "",
   });
 
   const handleChange = (e) => {
@@ -83,6 +84,7 @@ const CreateMasterclass = () => {
     formData.append("duration", inputs.duration || 1); // Valeur par défaut 1 jour
     formData.append("maxParticipants", inputs.maxParticipants || 10);
     formData.append("instructorId", inputs.instructorId);
+    formData.append("link", inputs.link);
 
     try {
       setLoading(true);
@@ -98,6 +100,7 @@ const CreateMasterclass = () => {
         startDate: new Date(),
         endDate: new Date(),
         instructorId: null,
+        link: "",
       });
       setFile(null);
       setLoading(false);
@@ -368,6 +371,22 @@ const CreateMasterclass = () => {
                   id="maxParticipants"
                   type="number"
                   value={inputs.maxParticipants}
+                  onChange={handleChange}
+                />
+              </div>
+              <div className="mt-6 space-y-2 rounded-md border p-4">
+                <label
+                  htmlFor="link"
+                  className="text-sm font-medium text-blue-gray-900"
+                >
+                  Lien de la masterclass
+                </label>
+                <Input
+                  placeholder="Loen de la masterclass"
+                  required
+                  name="link"
+                  id="link"
+                  value={inputs.link}
                   onChange={handleChange}
                 />
               </div>

@@ -1,7 +1,7 @@
 import sequelize from "../config/dbMysql.js";
 import { DataTypes } from "sequelize";
-// import { Remark } from "./Remark.js";
-// import { User } from "./User.js";
+import { User } from "./User.js";
+import { Remark } from "./Remark.js";
 
 export const Reply = sequelize.define(
     "reply",
@@ -11,25 +11,39 @@ export const Reply = sequelize.define(
             primaryKey: true,
             autoIncrement: true,
         },
-        // userId: {
-        //     type: DataTypes.INTEGER,
-        //     allowNull: false,
-        //     references: {
-        //         model: "user",
-        //         key: "id",
-        //     },
-        // },
-        // remarkId: {
-        //     type: DataTypes.INTEGER,
-        //     allowNull: false,
-        //     references: {
-        //         model: "remark",
-        //         key: "id",
-        //     },
-        // },
+        userId: {
+            type: DataTypes.INTEGER,
+            allowNull: false,
+            references: {
+                model: "user",
+                key: "id",
+            },
+            onUpdate: "CASCADE",
+            onDelete: "CASCADE",
+        },
         content: {
             type: DataTypes.TEXT,
             allowNull: false,
+        },
+        remarkId: {
+            type: DataTypes.INTEGER,
+            allowNull: false,
+            references: {
+                model: "remark",
+                key: "id",
+            },
+            onUpdate: "CASCADE",
+            onDelete: "CASCADE",
+        },
+        videoId: {
+            type: DataTypes.INTEGER,
+            allowNull: false,
+            references: {
+                model: "video",
+                key: "id",
+            },
+            onUpdate: "CASCADE",
+            onDelete: "CASCADE",
         },
         createdAt: {
             type: DataTypes.DATE,
@@ -48,5 +62,4 @@ export const Reply = sequelize.define(
     }
 );
 
-// Reply.belongsTo(Remark, { foreignKey: "remarkId", as: "remark" });
-// Reply.belongsTo(User, { foreignKey: "userId", as: "user" });
+Reply.belongsTo(User, { as: "author", foreignKey: "userId" });

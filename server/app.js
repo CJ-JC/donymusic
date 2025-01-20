@@ -17,6 +17,12 @@ import Stripe from "stripe";
 import { Payment } from "./models/Payment.js";
 import { Purchase } from "./models/Purchase.js";
 import { sendEmail } from "./controllers/email.js";
+import { Course } from "./models/Course.js";
+import { Remark } from "./models/Remark.js";
+import { Reply } from "./models/Reply.js";
+import remarkRoutes from "./routes/remarkRoutes.js";
+import replyRoutes from "./routes/replyRoutes.js";
+
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
 
 const app = express();
@@ -88,18 +94,14 @@ app.use(
     })
 );
 
+// Synchroniser les modèles avec la base de données
 sequelize
-    .authenticate()
-    .then(async () => {
-        try {
-            await sequelize.sync({ alter: true });
-            console.log("Database & tables created!");
-        } catch (error) {
-            console.error("Unable to connect to the database:", error);
-        }
+    .sync({ alter: true })
+    .then(() => {
+        console.log("Les tables ont été créées !");
     })
     .catch((error) => {
-        console.error("Unable to connect to the database:", error);
+        console.error("Erreur lors de la création des tables :", error);
     });
 
 app.use("/uploads", express.static("public/uploads"));
@@ -123,6 +125,10 @@ app.use("/api/category", categoryRoutes);
 app.use("/api/instructor", instructorRoutes);
 
 app.use("/api/payment", paymentRoutes);
+
+app.use("/api/remark", remarkRoutes);
+
+app.use("/api/reply", replyRoutes);
 
 app.use("/api/email", (req, res) => {
     sendEmail(req.query)

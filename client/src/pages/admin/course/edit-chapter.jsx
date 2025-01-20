@@ -196,12 +196,13 @@ const EditChapter = () => {
               value={chapterData.title}
               onChange={handleChapterChange}
               required
+              className="dark:text-white dark:focus:border-white"
             />
           </div>
           <div className="space-y-2 rounded-md border p-4">
             <label
               htmlFor="description"
-              className="text-sm font-medium text-blue-gray-900"
+              className="text-sm font-medium text-blue-gray-900 dark:text-white"
             >
               Description du chapitre
             </label>
@@ -257,6 +258,7 @@ const EditChapter = () => {
                 value={video.title}
                 onChange={(e) => handleVideoChange(index, e)}
                 type="text"
+                className="dark:text-white dark:focus:border-white"
               />
             </div>
             <div className="relative space-y-2 rounded-md border p-4">
@@ -268,6 +270,7 @@ const EditChapter = () => {
                   value={video.url}
                   onChange={(e) => handleVideoChange(index, e)}
                   type="text"
+                  className="dark:text-white dark:focus:border-white"
                 />
                 {videos.length > 1 && (
                   <button
@@ -355,7 +358,11 @@ const EditChapter = () => {
         )}
 
         <div className="flex justify-center">
-          <Button type="submit" className="mt-6 w-min" disabled={loading}>
+          <Button
+            type="submit"
+            className="mt-6 w-min dark:bg-white dark:text-black dark:hover:bg-gray-400"
+            disabled={loading}
+          >
             {loading ? "Modification..." : "Modifier"}
           </Button>
         </div>

@@ -162,11 +162,14 @@ export function Navbar({ toggleTheme, theme }) {
               </Link>
             </>
           )}
-          <button onClick={toggleTheme} className="theme-toggle">
+          <button
+            onClick={toggleTheme}
+            className="theme-toggle rounded-md hover:bg-gray-200"
+          >
             {theme === "dark" ? (
-              <SunIcon className="h-6 w-6 text-white" />
+              <SunIcon className="text- h-8 w-8 p-1 text-white dark:hover:text-black" />
             ) : (
-              <MoonIcon className="h-6 w-6" />
+              <MoonIcon className="h-8 w-8 p-1" />
             )}
           </button>
         </div>

@@ -7,17 +7,10 @@ const Editor = ({ name, value, onChange }) => {
     onChange({ target: { name, value: content } });
   };
 
-  const modules = {
-    toolbar: [
-      [{ header: [1, 2, false] }],
-      ["bold", "italic", "underline", "strike"],
-      [{ list: "ordered" }, { list: "bullet" }],
-      ["link"],
-    ],
-  };
-
   return (
-    <ReactQuill value={value} onChange={handleEditorChange} modules={modules} />
+    <div className="max-h-[300px] overflow-auto">
+      <ReactQuill value={value} onChange={handleEditorChange} />
+    </div>
   );
 };
 

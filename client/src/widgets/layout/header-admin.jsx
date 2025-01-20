@@ -7,9 +7,9 @@ const HeaderAdmin = ({ users, purchases, totalBenefits }) => {
 
   return (
     <div className="grid grid-cols-1 gap-4 md:grid-cols-2 md:gap-6 xl:grid-cols-4 2xl:gap-7">
-      <div className="rounded-sm bg-white px-7 py-6 shadow-md">
-        <div className="flex h-11 w-11 items-center justify-center rounded-full bg-[#212121]">
-          <ShoppingCart className="h-5 w-5 text-white" />
+      <div className="rounded-sm border bg-white px-7 py-6 shadow-md dark:bg-[#25303F]">
+        <div className="flex h-11 w-11 items-center justify-center rounded-full bg-[#212121] dark:bg-white">
+          <ShoppingCart className="h-5 w-5 text-white dark:text-black" />
         </div>
 
         <div className="mt-4 flex items-end justify-between">
@@ -17,7 +17,7 @@ const HeaderAdmin = ({ users, purchases, totalBenefits }) => {
             <h4 className="text-xl font-bold dark:text-white">
               {formattedNumberPurchases}
             </h4>
-            <span className="text-sm font-medium text-blue-gray-700">
+            <span className="text-sm font-medium text-blue-gray-700 dark:text-white">
               Nombre de commandes
             </span>
           </div>
@@ -41,9 +41,9 @@ const HeaderAdmin = ({ users, purchases, totalBenefits }) => {
         </div>
       </div>
 
-      <div className="rounded-sm bg-white px-7 py-6 shadow-md">
-        <div className="flex h-11 w-11 items-center justify-center rounded-full bg-[#212121]">
-          <Euro className="h-5 w-5 text-white" />
+      <div className="rounded-sm border bg-white px-7 py-6 shadow-md dark:bg-[#25303F]">
+        <div className="flex h-11 w-11 items-center justify-center rounded-full bg-[#212121] dark:bg-white">
+          <Euro className="h-5 w-5 text-white dark:text-black" />
         </div>
 
         <div className="mt-4 flex items-end justify-between">
@@ -51,7 +51,7 @@ const HeaderAdmin = ({ users, purchases, totalBenefits }) => {
             <h4 className="text-xl font-bold dark:text-white">
               {totalBenefits.toFixed(2)}€
             </h4>
-            <span className="text-sm font-medium text-blue-gray-700">
+            <span className="text-sm font-medium text-blue-gray-700 dark:text-white">
               Total des bénéfices
             </span>
           </div>
@@ -75,15 +75,15 @@ const HeaderAdmin = ({ users, purchases, totalBenefits }) => {
         </div>
       </div>
 
-      <div className="rounded-sm bg-white px-7 py-6 shadow-md">
-        <div className="flex h-11 w-11 items-center justify-center rounded-full bg-[#212121]">
-          <ShoppingBag className="h-5 w-5 text-white" />
+      <div className="rounded-sm border bg-white px-7 py-6 shadow-md dark:bg-[#25303F]">
+        <div className="flex h-11 w-11 items-center justify-center rounded-full bg-[#212121] dark:bg-white">
+          <ShoppingBag className="h-5 w-5 text-white dark:text-black" />
         </div>
 
         <div className="mt-4 flex items-end justify-between">
           <div>
             <h4 className="text-xl font-bold dark:text-white">2.450</h4>
-            <span className="text-sm font-medium text-blue-gray-700">
+            <span className="text-sm font-medium text-blue-gray-700 dark:text-white">
               Total Product
             </span>
           </div>
@@ -107,9 +107,9 @@ const HeaderAdmin = ({ users, purchases, totalBenefits }) => {
         </div>
       </div>
 
-      <div className="rounded-sm bg-white px-7 py-6 shadow-md">
-        <div className="flex h-11 w-11 items-center justify-center rounded-full bg-[#212121]">
-          <Users2 className="h-5 w-5 text-white" />
+      <div className="rounded-sm border bg-white px-7 py-6 shadow-md dark:bg-[#25303F]">
+        <div className="flex h-11 w-11 items-center justify-center rounded-full bg-[#212121] dark:bg-white">
+          <Users2 className="h-5 w-5 text-white dark:text-black" />
         </div>
 
         <div className="mt-4 flex items-end justify-between">
@@ -117,7 +117,7 @@ const HeaderAdmin = ({ users, purchases, totalBenefits }) => {
             <h4 className="text-xl font-bold dark:text-white">
               {formattedNumber}
             </h4>
-            <span className="text-sm font-medium text-blue-gray-700">
+            <span className="text-sm font-medium text-blue-gray-700 dark:text-white">
               Total Users
             </span>
           </div>

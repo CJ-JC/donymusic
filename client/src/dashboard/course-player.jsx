@@ -2,7 +2,14 @@ import React, { useEffect, useRef, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
 import { Button, Progress, Typography } from "@material-tailwind/react";
-import { Check, LogOut, PlayCircleIcon } from "lucide-react";
+import {
+  Check,
+  LogOut,
+  MoonIcon,
+  PlayCircleIcon,
+  PlusCircle,
+  SunIcon,
+} from "lucide-react";
 import CloseIcon from "@mui/icons-material/Close";
 import {
   Accordion,
@@ -15,6 +22,8 @@ import ReactPlayer from "react-player";
 import { useDispatch, useSelector } from "react-redux";
 import { checkAuthStatus } from "@/widgets/utils/CheckAuthStatus";
 import Confetti from "@/widgets/utils/Confetti";
+import Remark from "./Create-remark";
+import { loggedOut } from "@/reducer/auth";
 
 function Icon({ id, open }) {
   return (
@@ -37,7 +46,7 @@ function Icon({ id, open }) {
   );
 }
 
-const CoursePlayer = () => {
+const CoursePlayer = ({ toggleTheme, theme }) => {
   const { courseId } = useParams();
   const [selectedVideo, setSelectedVideo] = useState(null);
   const [course, setCourse] = useState(null);
@@ -224,6 +233,12 @@ const CoursePlayer = () => {
     fetchCourse();
   }, [courseId, navigate]);
 
+  const logout = () => {
+    axios.post("/api/user/logout");
+    dispatch(loggedOut());
+    navigate("/");
+  };
+
   if (loading) {
     return <Loading />;
   }
@@ -251,12 +266,12 @@ const CoursePlayer = () => {
       <Confetti isActive={showConfetti} />
       <aside
         id="cta-button-sidebar"
-        className={`fixed inset-y-0 z-50 h-full w-80 flex-col border-r bg-white shadow-sm transition-transform duration-300
+        className={`fixed inset-y-0 z-50 h-full w-80 flex-col border-r bg-white shadow-sm transition-transform duration-300 dark:bg-[#020818]
 		${isSidebarOpen ? "translate-x-0" : "-translate-x-full"} 
 		md:block md:translate-x-0`}
         aria-label="Sidebar"
       >
-        <div className="flex h-full flex-col overflow-y-auto border-r bg-white shadow-sm">
+        <div className="flex h-full flex-col overflow-y-auto border-r bg-white shadow-sm dark:bg-[#020818]">
           <div className="flex h-20 w-full flex-col space-y-2 border-b p-4">
             <Typography variant="h5" className="font-semibold">
               {course?.title}
@@ -280,7 +295,7 @@ const CoursePlayer = () => {
               >
                 <AccordionHeader
                   onClick={() => handleOpen(chapter.id)}
-                  className="p-3 text-lg font-bold"
+                  className="p-3 text-lg font-bold dark:text-white"
                 >
                   {chapter.title}
                 </AccordionHeader>
@@ -333,7 +348,7 @@ const CoursePlayer = () => {
       </aside>
 
       <div className="h-full md:pl-80">
-        <div className="sticky inset-x-0 top-0 z-40 flex h-20 w-full items-center justify-between border-b bg-white p-4">
+        <div className="sticky inset-x-0 top-0 z-40 flex h-20 w-full items-center justify-between border-b bg-white p-4 dark:bg-[#020818]">
           <div className="flex items-center">
             <button
               onClick={() => setIsSidebarOpen(!isSidebarOpen)}
@@ -358,15 +373,25 @@ const CoursePlayer = () => {
           </div>
           <div className="flex items-center space-x-4">
             <Link to={"/detail/slug/" + course.slug}>
-              <button className="flex items-center text-gray-900 hover:text-gray-700 focus:text-gray-700 focus:outline-none">
+              <button className="flex items-center text-gray-900 hover:text-gray-700 focus:text-gray-700 focus:outline-none dark:text-white">
                 <LogOut className="mr-1 h-4 w-4" /> Retour
               </button>
             </Link>
-            <Link to={"#"}>
-              <Button variant="outlined" color="red" size="sm">
-                Déconnexion
-              </Button>
-            </Link>
+
+            <Button variant="outlined" onClick={logout} color="red" size="sm">
+              Déconnexion
+            </Button>
+
+            <button
+              onClick={toggleTheme}
+              className="theme-toggle rounded-md hover:bg-gray-200"
+            >
+              {theme === "dark" ? (
+                <SunIcon className="text- h-8 w-8 p-1 text-white dark:hover:text-black" />
+              ) : (
+                <MoonIcon className="h-8 w-8 p-1" />
+              )}
+            </button>
           </div>
         </div>
         <div className="mx-auto flex flex-col pb-20 xl:max-w-5xl">
@@ -393,14 +418,14 @@ const CoursePlayer = () => {
               )}
             </div>
             <div className="mx-auto my-4">
-              <div className="flex justify-center border-b border-gray-200">
+              <div className="flex justify-center border-b border-gray-200 py-2">
                 {tabs.map((tab) => (
                   <button
                     key={tab.id}
                     onClick={() => setActiveTab(tab.id)}
-                    className={`px-6 py-1 text-sm font-medium focus:outline-none ${
+                    className={`whitespace-nowrap px-6 py-1 text-sm font-medium focus:outline-none ${
                       activeTab === tab.id
-                        ? "border-b-2 border-blue-gray-900 font-semibold text-blue-gray-900"
+                        ? "border-b-2 border-blue-gray-900 font-semibold text-blue-gray-900 dark:border-white dark:text-white"
                         : "text-gray-500 hover:text-gray-700"
                     }`}
                   >
@@ -412,10 +437,10 @@ const CoursePlayer = () => {
               <div className="mt-4">
                 {activeTab === "presentation" && (
                   <div className="h-[600px]">
-                    <div className="mb-4 flex flex-col items-center justify-between md:flex-row">
+                    <div className="flex  items-center justify-between md:flex-row">
                       <Typography
                         variant="h4"
-                        className="font-bold"
+                        className="px-2 font-bold dark:text-white"
                         color="blue-gray"
                       >
                         {selectedVideo?.title}
@@ -436,40 +461,27 @@ const CoursePlayer = () => {
                       </Button>
                     </div>
 
-                    <Typography className="font-medium text-gray-700">
+                    <div className="font-medium text-gray-700 dark:text-white">
                       <ReactQuill
                         value={course.description}
                         readOnly={true}
                         theme="bubble"
                       />
-                    </Typography>
+                    </div>
                   </div>
                 )}
-                {activeTab === "qa" && (
-                  <div className="h-[600px]">
-                    <Typography
-                      variant="h4"
-                      className="font-bold"
-                      color="blue-gray"
-                    >
-                      Question - Réponse
-                    </Typography>
-                    <p className="mt-2 text-gray-700">
-                      Posez vos questions et obtenez des réponses ici.
-                    </p>
-                  </div>
-                )}
+                {activeTab === "qa" && <Remark selectedVideo={selectedVideo} />}
                 {activeTab === "notes" && (
                   <div className="h-[600px]">
                     <Typography
                       variant="h4"
-                      className="font-bold"
+                      className="font-bold dark:text-white"
                       color="blue-gray"
                     >
                       Prise de note
                     </Typography>
                     <textarea
-                      className="mt-2 w-full rounded-md border border-gray-300 p-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      className="mt-2 w-full rounded-md border border-gray-300 p-2 focus:outline-none"
                       rows="6"
                       placeholder="Prenez vos notes ici..."
                     ></textarea>

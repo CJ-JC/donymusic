@@ -91,10 +91,10 @@ const ShowMasterclass = () => {
   return (
     <>
       {/* Table des Masterclasses */}
-      <div className="relative flex h-full w-full flex-col overflow-scroll rounded-lg bg-white bg-clip-border p-4 text-gray-700 shadow-md">
+      <div className="relative flex h-full w-full flex-col overflow-scroll rounded-lg border bg-white bg-clip-border p-4 text-gray-700 shadow-md dark:bg-[#25303F]">
         <Typography
           variant="h3"
-          className="mb-3 text-xl font-bold md:text-3xl"
+          className="mb-3 text-xl font-bold dark:text-white md:text-3xl"
           color="blue-gray"
         >
           Liste des masterclasses
@@ -114,7 +114,7 @@ const ShowMasterclass = () => {
           </Link>
         </div>
         <table className="w-full min-w-max table-auto text-left">
-          <thead className="bg-[#F9FAFB] text-gray-700 dark:bg-gray-700 dark:text-gray-400">
+          <thead className="bg-[#F9FAFB] font-medium text-gray-700 dark:bg-blue-gray-700 dark:text-white">
             <tr>
               <th className="border-slate-200 bg-slate-50 border-b p-4">
                 <p className="text-slate-500 text-sm font-normal leading-none">
@@ -146,7 +146,7 @@ const ShowMasterclass = () => {
           <tbody>
             {currentMasterclasses.map((masterclass, index) => (
               <tr
-                className="hover:bg-slate-50 border-slate-200 border-b"
+                className="hover:bg-slate-50 border-slate-200 border-b dark:text-white"
                 key={index}
               >
                 <td className="p-4 py-5">
@@ -170,7 +170,7 @@ const ShowMasterclass = () => {
                 <td className="flex items-center gap-2 p-4 py-5">
                   <Link
                     to={`/administrator/edit-masterclass/${masterclass.id}`}
-                    className="flex w-min items-center gap-1 rounded-lg bg-blue-gray-100 p-2 text-sm font-medium text-black hover:bg-gray-200 dark:text-blue-500"
+                    className="flex w-min items-center gap-1 rounded-lg bg-blue-gray-100 p-2 text-sm font-medium text-black hover:bg-gray-200 dark:text-black"
                   >
                     <PencilIcon className="h-4 w-4" />
                   </Link>
@@ -178,7 +178,7 @@ const ShowMasterclass = () => {
                     size="sm"
                     color="red"
                     onClick={() => openDeleteDialog(masterclass)}
-                    className="flex items-center gap-1 rounded-lg p-2 dark:text-red-500"
+                    className="flex items-center gap-1 rounded-lg p-2 dark:text-white"
                   >
                     <Trash className="h-4 w-4" />
                   </Button>
@@ -190,7 +190,7 @@ const ShowMasterclass = () => {
 
         {/* Pagination */}
         <div className="flex items-center justify-between px-4 py-3">
-          <div className="text-slate-500 text-sm">
+          <div className="text-slate-500 text-sm dark:text-white">
             Afficher{" "}
             <b>
               {indexOfFirstMasterclass + 1}-

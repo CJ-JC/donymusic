@@ -186,7 +186,10 @@ function App() {
         </Route>
 
         {/* Routes admin */}
-        <Route path="/administrator" element={<Admin />}>
+        <Route
+          path="/administrator"
+          element={<Admin toggleTheme={toggleTheme} theme={theme} />}
+        >
           {/* Chapters */}
           <Route path="create-chapter/:courseId" element={<CreateChapter />} />
           <Route
@@ -216,7 +219,7 @@ function App() {
         {/* Autres routes */}
         <Route
           path="/course-player/course/:courseId/chapters/:chapterId"
-          element={<CoursePlayer />}
+          element={<CoursePlayer toggleTheme={toggleTheme} theme={theme} />}
         />
 
         <Route path="*" element={<NotFound />} />

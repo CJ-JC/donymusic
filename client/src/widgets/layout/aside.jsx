@@ -17,7 +17,7 @@ const Aside = ({ logout, isSidebarOpen, setIsSidebarOpen, user }) => {
   return (
     <aside
       id="cta-button-sidebar"
-      className={`fixed inset-y-0 z-50 h-full w-80 flex-col border-r bg-[#1C2534] shadow-sm transition-transform duration-300
+      className={`fixed inset-y-0 z-50 h-full w-80 flex-col border-r bg-[#1C2534]  shadow-sm transition-transform duration-300 dark:bg-[#25303F]
     ${isSidebarOpen ? "translate-x-0" : "-translate-x-full"} 
     md:block md:translate-x-0`}
       aria-label="Sidebar"
@@ -46,8 +46,8 @@ const Aside = ({ logout, isSidebarOpen, setIsSidebarOpen, user }) => {
               className={({ isActive }) =>
                 `group flex items-center rounded-lg p-2 ${
                   isActive
-                    ? "bg-[#333A48] font-medium text-white"
-                    : "font-medium text-gray-400 hover:bg-[#333A48] dark:text-white dark:hover:bg-gray-700"
+                    ? "bg-[#333A48] font-medium text-white dark:bg-gray-100 dark:text-black"
+                    : "font-medium text-gray-400 hover:bg-[#333A48] dark:hover:bg-gray-200 dark:hover:text-black"
                 }`
               }
             >
@@ -62,8 +62,8 @@ const Aside = ({ logout, isSidebarOpen, setIsSidebarOpen, user }) => {
               className={({ isActive }) =>
                 `group flex items-center rounded-lg p-2 ${
                   isActive
-                    ? "bg-[#333A48] font-medium text-white"
-                    : "font-medium text-gray-400 hover:bg-[#333A48] dark:text-white dark:hover:bg-gray-700"
+                    ? "bg-[#333A48] font-medium text-white dark:bg-gray-100 dark:text-black"
+                    : "font-medium text-gray-400 hover:bg-[#333A48] dark:hover:bg-gray-200 dark:hover:text-black"
                 }`
               }
             >
@@ -78,8 +78,8 @@ const Aside = ({ logout, isSidebarOpen, setIsSidebarOpen, user }) => {
               className={({ isActive }) =>
                 `group flex items-center rounded-lg p-2 ${
                   isActive
-                    ? "bg-[#333A48] font-medium text-white"
-                    : "font-medium text-gray-400 hover:bg-[#333A48] dark:text-white dark:hover:bg-gray-700"
+                    ? "bg-[#333A48] font-medium text-white dark:bg-gray-100 dark:text-black"
+                    : "font-medium text-gray-400 hover:bg-[#333A48] dark:hover:bg-gray-200 dark:hover:text-black"
                 }`
               }
             >
@@ -94,8 +94,8 @@ const Aside = ({ logout, isSidebarOpen, setIsSidebarOpen, user }) => {
               className={({ isActive }) =>
                 `group flex items-center rounded-lg p-2 ${
                   isActive
-                    ? "bg-[#333A48] font-medium text-white"
-                    : "font-medium text-gray-400 hover:bg-[#333A48] dark:text-white dark:hover:bg-gray-700"
+                    ? "bg-[#333A48] font-medium text-white dark:bg-gray-100 dark:text-black"
+                    : "font-medium text-gray-400 hover:bg-[#333A48] dark:hover:bg-gray-200 dark:hover:text-black"
                 }`
               }
             >
@@ -110,8 +110,8 @@ const Aside = ({ logout, isSidebarOpen, setIsSidebarOpen, user }) => {
               className={({ isActive }) =>
                 `group flex items-center rounded-lg p-2 ${
                   isActive
-                    ? "bg-[#333A48] font-medium text-white"
-                    : "font-medium text-gray-400 hover:bg-[#333A48] dark:text-white dark:hover:bg-gray-700"
+                    ? "bg-[#333A48] font-medium text-white dark:bg-gray-100 dark:text-black"
+                    : "font-medium text-gray-400 hover:bg-[#333A48] dark:hover:bg-gray-200 dark:hover:text-black"
                 }`
               }
             >
@@ -126,8 +126,8 @@ const Aside = ({ logout, isSidebarOpen, setIsSidebarOpen, user }) => {
               className={({ isActive }) =>
                 `group flex items-center rounded-lg p-2 ${
                   isActive
-                    ? "bg-[#333A48] font-medium text-white"
-                    : "font-medium text-gray-400 hover:bg-[#333A48] dark:text-white dark:hover:bg-gray-700"
+                    ? "bg-[#333A48] font-medium text-white dark:bg-gray-100 dark:text-black"
+                    : "font-medium text-gray-400 hover:bg-[#333A48] dark:hover:bg-gray-200 dark:hover:text-black"
                 }`
               }
             >
@@ -142,8 +142,8 @@ const Aside = ({ logout, isSidebarOpen, setIsSidebarOpen, user }) => {
               className={({ isActive }) =>
                 `group flex items-center rounded-lg p-2 ${
                   isActive
-                    ? "bg-[#333A48] font-medium text-white"
-                    : "font-medium text-gray-400 hover:bg-[#333A48] dark:text-white dark:hover:bg-gray-700"
+                    ? "bg-[#333A48] font-medium text-white dark:bg-gray-100 dark:text-black"
+                    : "font-medium text-gray-400 hover:bg-[#333A48] dark:hover:bg-gray-200 dark:hover:text-black"
                 }`
               }
             >

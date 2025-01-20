@@ -2,7 +2,7 @@ const generateInvoiceEmailTemplate = ({ fullname, product, payment, item, produc
     return `
 <section class="mx-auto max-w-2xl bg-white px-6 py-8 dark:bg-gray-900">
   <main class="mt-8">
-    <h4 class="text-gray-700 dark:text-gray-200">Bonjour ${fullname},</h4>
+    <p>Bonjour ${fullname},</p>
 
     <div class="mt-6 rounded-lg bg-gray-100 p-4 dark:bg-gray-800">
         <p class="mt-4 text-sm font-semibold text-gray-700 dark:text-gray-200">
@@ -39,7 +39,7 @@ const generateInvoiceEmailTemplate = ({ fullname, product, payment, item, produc
     <p>Si vous avez des questions ou besoin d'assistance, n'hésitez pas à nous contacter <a href="mailto:contact@donymusic.com">contact@donymusic.com</a>.</p>
 
     <p class="mt-3 text-gray-500 dark:text-gray-400">
-        Nous vous souhaitons une expérience enrichissante et pleine de succès !
+        Nous vous souhaitons une expérience enrichissante et beaucoup de succès !
     </p>
     <p>Musicalement,</p>
 

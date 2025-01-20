@@ -38,7 +38,7 @@ export const getCourses = async (req, res) => {
     }
 };
 
-export const getCourseById = async (req, res) => {
+export const getCourseByUserId = async (req, res) => {
     try {
         const userId = req.session.user?.id; // ID de l'utilisateur connecté
         const { id } = req.params; // ID du cours demandé
@@ -57,9 +57,9 @@ export const getCourseById = async (req, res) => {
             },
         });
 
-        if (!purchase) {
-            return res.status(403).json({ message: "Accès interdit. Cours non acheté." });
-        }
+        // if (!purchase) {
+        //     return res.status(403).json({ message: "Accès interdit. Cours non acheté." });
+        // }
 
         // Récupérer les détails du cours
         const course = await Course.findOne({
@@ -112,6 +112,40 @@ export const getCourseById = async (req, res) => {
             lastViewedChapterId: lastViewedProgress?.chapterId || null,
         });
     } catch (error) {
+        res.status(500).json({ message: "Erreur serveur" });
+    }
+};
+
+export const getCourseById = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const course = await Course.findOne({
+            where: { id },
+            include: [
+                {
+                    model: Chapter,
+                    include: [
+                        {
+                            model: Video,
+                            attributes: ["id", "url", "title"],
+                        },
+                    ],
+                },
+                {
+                    model: Category,
+                    as: "category",
+                    attributes: ["id", "title"],
+                },
+            ],
+        });
+
+        if (!course) {
+            return res.status(404).json({ message: "Cours non trouvé" });
+        }
+
+        res.status(200).json(course);
+    } catch (error) {
+        console.error("Erreur lors de la récupération du cours:", error);
         res.status(500).json({ message: "Erreur serveur" });
     }
 };

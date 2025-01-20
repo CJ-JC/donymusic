@@ -107,12 +107,13 @@ const AddRemise = () => {
   };
 
   return (
-    <div className="container mx-auto rounded-md bg-white p-4 shadow-md">
+    <div className="container mx-auto rounded-md border bg-white p-4 shadow-md dark:bg-[#25303F]">
       <h1 className="mb-4 text-2xl font-bold">Ajouter une Remise</h1>
       <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
         <div className="mb-4">
           <Input
             label="Pourcentage de réduction"
+            className="dark:text-white"
             type="number"
             value={discountPercentage}
             onChange={(e) => setDiscountPercentage(Number(e.target.value))}
@@ -125,13 +126,14 @@ const AddRemise = () => {
             type="date"
             value={expirationDate}
             onChange={(e) => setExpirationDate(e.target.value)}
+            className="dark:text-white"
           />
         </div>
 
         <div className="mb-4">
           <label
             htmlFor="course"
-            className="block text-sm font-medium text-gray-700"
+            className="block text-sm font-medium text-gray-700 dark:text-white"
           >
             Tous les cours
           </label>
@@ -139,7 +141,7 @@ const AddRemise = () => {
             id="course"
             value={courseId || ""}
             onChange={(e) => setCourseId(e.target.value)}
-            className="peer block w-full appearance-none border-0 border-b-2 border-gray-200 bg-transparent px-0 py-2.5 text-sm text-gray-500 focus:border-gray-200 focus:outline-none focus:ring-0 dark:border-gray-700 dark:text-gray-400"
+            className="peer block w-full appearance-none border-0 border-b-2 border-gray-200 bg-transparent px-0 py-2.5 text-sm text-gray-500 focus:border-gray-200 focus:outline-none focus:ring-0 dark:border-white dark:text-white"
           >
             <option value="">Tous les cours</option>
             {courses.map((course) => (
@@ -199,7 +201,10 @@ const AddRemise = () => {
         {error && <p className="text-center text-red-500">{error}</p>}
       </div>
       <div className="flex justify-center">
-        <Button variant="gradient" onClick={handleAddRemise}>
+        <Button
+          onClick={handleAddRemise}
+          className="dark:bg-white dark:text-black dark:hover:bg-gray-400"
+        >
           Créer la remise
         </Button>
       </div>
@@ -241,7 +246,6 @@ const AddRemise = () => {
 
               <div className="mt-3 flex flex-wrap justify-between">
                 <Button
-                  variant="gradient"
                   onClick={() =>
                     handleApplyRemise(
                       remise.discountPercentage,
@@ -249,7 +253,7 @@ const AddRemise = () => {
                     )
                   }
                   disabled={loading}
-                  className="w-min"
+                  className="w-min dark:bg-white dark:text-black dark:hover:bg-gray-400"
                 >
                   {loading ? "Application..." : "Appliquer"}
                 </Button>

@@ -66,7 +66,7 @@ export function SignIn() {
             <Input
               size="lg"
               placeholder="Votre email"
-              className=" !border-t-blue-gray-200 focus:!border-t-gray-900 dark:text-white"
+              className=" dark:text-white"
               id="email"
               name="email"
               type="email"
@@ -83,7 +83,7 @@ export function SignIn() {
               type="password"
               size="lg"
               placeholder="********"
-              className=" !border-t-blue-gray-200 focus:!border-t-gray-900 dark:text-white"
+              className=" dark:text-white"
               id="password"
               name="password"
               onChange={handleChange}
@@ -125,7 +125,7 @@ export function SignIn() {
         <div className="hidden w-2/5 overflow-hidden lg:block">
           <img
             src="/img/sign-in.jpg"
-            className="h-full w-full rounded-3xl object-cover"
+            className="h-[200px] w-full rounded-3xl object-cover md:h-[600px]"
             alt="Image de guitare"
           />
         </div>

@@ -22,11 +22,11 @@ export const getMasterclasses = async (req, res) => {
 
 export const createMasterclass = async (req, res) => {
     try {
-        const { title, description, startDate, endDate, price, duration, maxParticipants, instructorId } = req.body;
+        const { title, description, startDate, endDate, price, duration, maxParticipants, instructorId, link } = req.body;
         const imagePath = req.file ? `/uploads/masterclass/${req.file.filename}` : null;
 
         // Vérifier les champs obligatoires
-        if (!title || !description || !startDate || !endDate || !price || !duration || !maxParticipants || !instructorId) {
+        if ((!title || !description || !startDate || !endDate || !price || !duration || !maxParticipants || !instructorId, !link)) {
             return res.status(400).json({ message: "Tous les champs sont obligatoires" });
         }
 
@@ -61,6 +61,7 @@ export const createMasterclass = async (req, res) => {
             endDate,
             price: parseFloat(price),
             instructorId: parseInt(instructorId),
+            link,
         });
 
         res.status(201).json(masterclass);
@@ -96,10 +97,10 @@ export const getMasterclassById = async (req, res) => {
 export const updateMasterclass = async (req, res) => {
     try {
         const { id } = req.params;
-        const { title, description, startDate, endDate, price, duration, maxParticipants, slug, instructorId } = req.body;
+        const { title, description, startDate, endDate, price, duration, maxParticipants, slug, instructorId, link } = req.body;
 
         // Vérification des champs obligatoires
-        if (!title || !description || !startDate || !endDate || !price || !duration || !maxParticipants || !instructorId) {
+        if ((!title || !description || !startDate || !endDate || !price || !duration || !maxParticipants || !instructorId, !link)) {
             if (req.file) {
                 fs.unlinkSync(`public/uploads/masterclass/${req.file.filename}`);
             }
@@ -151,6 +152,7 @@ export const updateMasterclass = async (req, res) => {
                 maxParticipants,
                 slug: newSlug,
                 instructorId: parseInt(instructorId),
+                link,
             },
             {
                 where: { id },

@@ -1,10 +1,9 @@
 import sequelize from "../config/dbMysql.js";
 import { DataTypes } from "sequelize";
-// import { Reply } from "./Reply.js";
-// import { Course } from "./Course.js";
-// import { Chapter } from "./Chapter.js";
-// import { Video } from "./Video.js";
-// import { User } from "./User.js";
+import { Course } from "./Course.js";
+import { Reply } from "./Reply.js";
+import { User } from "./User.js";
+import { Video } from "./Video.js";
 
 export const Remark = sequelize.define(
     "remark",
@@ -14,41 +13,43 @@ export const Remark = sequelize.define(
             primaryKey: true,
             autoIncrement: true,
         },
-        // userId: {
-        //     type: DataTypes.INTEGER,
-        //     allowNull: false,
-        //     references: {
-        //         model: "user",
-        //         key: "id",
-        //     },
-        // },
-        // courseId: {
-        //     type: DataTypes.INTEGER,
-        //     allowNull: false,
-        //     references: {
-        //         model: "course",
-        //         key: "id",
-        //     },
-        // },
-        // chapterId: {
-        //     type: DataTypes.INTEGER,
-        //     allowNull: false,
-        //     references: {
-        //         model: "chapter",
-        //         key: "id",
-        //     },
-        // },
-        // videoId: {
-        //     type: DataTypes.INTEGER,
-        //     allowNull: false,
-        //     references: {
-        //         model: "video",
-        //         key: "id",
-        //     },
-        // },
+        title: {
+            type: DataTypes.STRING,
+            allowNull: false,
+        },
         content: {
             type: DataTypes.TEXT,
             allowNull: false,
+        },
+        userId: {
+            type: DataTypes.INTEGER,
+            allowNull: false,
+            references: {
+                model: "user",
+                key: "id",
+            },
+            onUpdate: "CASCADE",
+            onDelete: "CASCADE",
+        },
+        courseId: {
+            type: DataTypes.INTEGER,
+            allowNull: false,
+            references: {
+                model: "course",
+                key: "id",
+            },
+            onUpdate: "CASCADE",
+            onDelete: "CASCADE",
+        },
+        videoId: {
+            type: DataTypes.INTEGER,
+            allowNull: false,
+            references: {
+                model: "video",
+                key: "id",
+            },
+            onUpdate: "CASCADE",
+            onDelete: "CASCADE",
         },
         createdAt: {
             type: DataTypes.DATE,
@@ -67,8 +68,24 @@ export const Remark = sequelize.define(
     }
 );
 
+// Définition des relations
+Remark.belongsTo(Course, {
+    foreignKey: "courseId",
+    as: "relatedCourse",
+    onDelete: "CASCADE",
+});
+
+Remark.belongsTo(User, {
+    foreignKey: "userId",
+    as: "author",
+    onDelete: "CASCADE",
+});
+
+Remark.belongsTo(Video, {
+    foreignKey: "videoId",
+    as: "relatedVideo",
+    onDelete: "CASCADE",
+});
+
 // Remark.hasMany(Reply, { foreignKey: "remarkId", as: "replies" });
-// Remark.belongsTo(User, { foreignKey: "userId", as: "user" });
-// Remark.belongsTo(Course, { foreignKey: "courseId", as: "course" });
-// Remark.belongsTo(Chapter, { foreignKey: "chapterId", as: "chapter" });
-// Remark.belongsTo(Video, { foreignKey: "videoId", as: "video" });
+Remark.hasMany(Reply, { as: "replies", foreignKey: "remarkId" });

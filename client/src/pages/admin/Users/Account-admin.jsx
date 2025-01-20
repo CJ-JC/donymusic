@@ -110,13 +110,17 @@ const AccountAdmin = () => {
 
   return (
     <div className="container mx-auto px-4 py-8">
-      <Card className="mx-auto max-w-2xl p-6">
+      <Card className="mx-auto max-w-2xl border p-6 dark:bg-[#25303F]">
         <div className="mb-6 flex items-center justify-between">
-          <Typography variant="h4" color="blue-gray">
+          <Typography
+            variant="h4"
+            color="blue-gray"
+            className="dark:text-white"
+          >
             Mon Profil
           </Typography>
           <IconButton variant="text" onClick={() => setIsEditing(!isEditing)}>
-            <PencilIcon className="h-5 w-5" />
+            <PencilIcon className="h-5 w-5 dark:text-white" />
           </IconButton>
         </div>
 
@@ -134,7 +138,7 @@ const AccountAdmin = () => {
             <Typography
               variant="small"
               color="blue-gray"
-              className="mb-2 font-medium"
+              className="mb-2 font-medium dark:text-white"
             >
               Prénom
             </Typography>
@@ -145,7 +149,9 @@ const AccountAdmin = () => {
               onChange={handleChange}
               required
               readOnly={!isEditing}
-              className={!isEditing ? "bg-gray-50" : ""}
+              className={
+                !isEditing ? "bg-gray-50 dark:text-white" : "dark:text-white"
+              }
             />
           </div>
 
@@ -153,7 +159,7 @@ const AccountAdmin = () => {
             <Typography
               variant="small"
               color="blue-gray"
-              className="mb-2 font-medium"
+              className="mb-2 font-medium dark:text-white"
             >
               Nom
             </Typography>
@@ -164,7 +170,9 @@ const AccountAdmin = () => {
               onChange={handleChange}
               required
               readOnly={!isEditing}
-              className={!isEditing ? "bg-gray-50" : ""}
+              className={
+                !isEditing ? "bg-gray-50 dark:text-white" : "dark:text-white"
+              }
             />
           </div>
 
@@ -172,7 +180,7 @@ const AccountAdmin = () => {
             <Typography
               variant="small"
               color="blue-gray"
-              className="mb-2 font-medium"
+              className="mb-2 font-medium dark:text-white"
             >
               Email
             </Typography>
@@ -183,7 +191,9 @@ const AccountAdmin = () => {
               onChange={handleChange}
               required
               readOnly={!isEditing}
-              className={!isEditing ? "bg-gray-50" : ""}
+              className={
+                !isEditing ? "bg-gray-50 dark:text-white" : "dark:text-white"
+              }
             />
           </div>
 
@@ -193,7 +203,7 @@ const AccountAdmin = () => {
                 <Typography
                   variant="small"
                   color="blue-gray"
-                  className="mb-2 font-medium"
+                  className="mb-2 font-medium dark:text-white"
                 >
                   Mot de passe actuel
                 </Typography>
@@ -203,13 +213,14 @@ const AccountAdmin = () => {
                   value={formData.passwordCurrent || ""}
                   onChange={handleChange}
                   placeholder="Mot de passe actuel"
+                  className="dark:text-white"
                 />
               </div>
               <div className="relative">
                 <Typography
                   variant="small"
                   color="blue-gray"
-                  className="mb-2 font-medium"
+                  className="mb-2 font-medium dark:text-white"
                 >
                   Nouveau mot de passe
                 </Typography>
@@ -219,7 +230,7 @@ const AccountAdmin = () => {
                   placeholder="Nouveau mot de passe"
                   value={formData.password || ""}
                   onChange={handleChange}
-                  className="pr-10"
+                  className="pr-10 dark:text-white"
                 />
                 <button
                   type="button"
@@ -238,7 +249,7 @@ const AccountAdmin = () => {
                 <Typography
                   variant="small"
                   color="blue-gray"
-                  className="mb-2 font-medium"
+                  className="mb-2 font-medium dark:text-white"
                 >
                   Confirmer le mot de passe
                 </Typography>

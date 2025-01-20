@@ -86,7 +86,7 @@ export function Home() {
       <section className="mx-auto -mt-24 max-w-screen-xl px-4 pb-20">
         <div className="container mx-auto">
           {firstMasterclass && (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-1">
+            <div className="grid grid-cols-1 md:grid-cols-1 lg:grid-cols-1">
               <Card className="rounded-lg shadow-lg shadow-gray-500/10 dark:bg-white/90">
                 <CardBody className="px-4 py-6">
                   <div className="flex flex-col items-center justify-between gap-x-10 md:flex-row">

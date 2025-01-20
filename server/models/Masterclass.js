@@ -50,6 +50,10 @@ export const Masterclass = sequelize.define(
             type: DataTypes.STRING,
             allowNull: false,
         },
+        link: {
+            type: DataTypes.STRING,
+            allowNull: false,
+        },
         instructorId: {
             type: DataTypes.INTEGER,
             allowNull: true,

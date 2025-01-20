@@ -66,7 +66,7 @@ const CourseCard = ({
   return (
     <>
       <Link to={`/detail/slug/${slug}`} key={id}>
-        <article className="pt-30 relative isolate mx-auto flex h-72 max-w-sm flex-col justify-end overflow-hidden rounded-2xl px-4 pb-4">
+        <article className="pt-30 relative isolate mx-auto flex h-72 max-w-sm flex-col justify-end overflow-hidden rounded-2xl border px-4 pb-4 dark:border-white/30">
           <img
             alt={title}
             src={`${BASE_URL}${imageUrl}`}

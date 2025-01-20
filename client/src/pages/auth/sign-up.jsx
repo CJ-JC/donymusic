@@ -43,11 +43,18 @@ export function SignUp() {
   return (
     <>
       <section className="mx-auto flex h-auto w-full max-w-screen-xl items-center justify-center p-4 md:h-screen md:py-4 lg:justify-around">
-        <div className="hidden w-2/5 overflow-hidden lg:block">
+        {/* <div className="hidden w-2/5 overflow-hidden lg:block">
           <img
             src="/img/piano.jpg"
             alt="Image de piano"
             className="h-full w-full rounded-3xl object-cover"
+          />
+        </div> */}
+        <div className="hidden w-2/5 overflow-hidden lg:block">
+          <img
+            src="/img/piano.jpg"
+            alt="Image de piano"
+            className="h-[200px] w-full rounded-3xl object-cover md:h-[600px]"
           />
         </div>
 
@@ -70,7 +77,7 @@ export function SignUp() {
             <Input
               size="lg"
               placeholder="Votre nom"
-              className=" !border-t-blue-gray-200 focus:!border-t-gray-900 dark:text-white"
+              className=" dark:text-white"
               name="lastName"
               id="lastname"
               type="text"
@@ -86,7 +93,7 @@ export function SignUp() {
             <Input
               size="lg"
               placeholder="Votre prénom"
-              className=" !border-t-blue-gray-200 focus:!border-t-gray-900 dark:text-white"
+              className=" dark:text-white"
               name="firstName"
               id="firstname"
               type="text"
@@ -101,7 +108,7 @@ export function SignUp() {
             <Input
               size="lg"
               placeholder="Email"
-              className=" !border-t-blue-gray-200 focus:!border-t-gray-900 dark:text-white"
+              className=" dark:text-white"
               name="email"
               id="email"
               type="email"
@@ -116,7 +123,7 @@ export function SignUp() {
             <Input
               size="lg"
               placeholder="Votre mot de passe"
-              className=" !border-t-blue-gray-200 focus:!border-t-gray-900 dark:text-white"
+              className=" dark:text-white"
               name="password"
               id="password"
               type="password"

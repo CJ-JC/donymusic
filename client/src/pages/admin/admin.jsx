@@ -7,10 +7,10 @@ import { useDispatch, useSelector } from "react-redux";
 import { checkAuthStatus } from "@/widgets/utils/CheckAuthStatus";
 import Loading from "@/widgets/utils/Loading";
 import Aside from "@/widgets/layout/aside";
-import { LogOut } from "lucide-react";
+import { LogOut, MoonIcon, SunIcon } from "lucide-react";
 import Dashboard from "./Dashboard";
 
-const Admin = () => {
+const Admin = ({ theme, toggleTheme }) => {
   const [authLoading, setAuthLoading] = useState(true);
   const location = useLocation();
   const navigate = useNavigate();
@@ -52,8 +52,8 @@ const Admin = () => {
         setIsSidebarOpen={setIsSidebarOpen}
         user={user}
       />
-      <div className="h-auto bg-[#f1f5f99f] md:h-screen md:pl-80">
-        <div className="sticky inset-x-0 top-0 z-40 flex h-20 w-full items-center justify-between border-b bg-white p-4">
+      <div className="h-auto bg-[#f1f5f99f] dark:bg-[#25303F] md:h-screen md:pl-80">
+        <div className="sticky inset-x-0 top-0 z-40 flex h-20 w-full items-center justify-between border-b bg-white p-4 dark:bg-[#25303F]">
           <div className="flex items-center">
             <button
               onClick={() => setIsSidebarOpen(!isSidebarOpen)}
@@ -82,16 +82,31 @@ const Admin = () => {
                 variant="outlined"
                 size="sm"
                 fullWidth
-                className="flex items-center"
+                className="flex items-center font-medium text-gray-800 dark:bg-white dark:text-black"
               >
                 <LogOut className="mr-1 h-4 w-4" /> Retour
               </Button>
             </Link>
             <Link to="/">
-              <Button variant="gradient" size="sm" fullWidth>
+              <Button
+                variant="gradient"
+                size="sm"
+                fullWidth
+                className="border border-black font-medium dark:bg-black dark:text-white"
+              >
                 Accueil
               </Button>
             </Link>
+            <button
+              onClick={toggleTheme}
+              className="theme-toggle rounded-md hover:bg-gray-200"
+            >
+              {theme === "dark" ? (
+                <SunIcon className="text- h-8 w-8 p-1 text-white dark:hover:text-black" />
+              ) : (
+                <MoonIcon className="h-8 w-8 p-1" />
+              )}
+            </button>
           </div>
         </div>
         <div className="mx-auto flex flex-col pb-20 xl:max-w-7xl">

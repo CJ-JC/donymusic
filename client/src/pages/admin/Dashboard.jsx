@@ -57,16 +57,16 @@ const Dashboard = () => {
             {error}
           </div>
         )}
-        <div className="relative my-3 flex w-full flex-col overflow-scroll rounded-lg bg-white bg-clip-border p-4 text-gray-700 shadow-md">
+        <div className="relative my-3 flex w-full flex-col overflow-scroll rounded-lg border bg-white bg-clip-border p-4 text-gray-700 shadow-md dark:bg-[#25303F]">
           <Typography
             variant="h3"
-            className="my-3 text-xl font-bold md:text-3xl "
+            className="my-3 text-xl font-bold dark:text-white md:text-3xl"
             color="blue-gray"
           >
             Les commandes
           </Typography>
           <table className="w-full min-w-max table-auto text-left">
-            <thead className="bg-[#F9FAFB] text-gray-700 dark:bg-gray-700 dark:text-gray-400">
+            <thead className="bg-[#F9FAFB] font-medium text-gray-700 dark:bg-blue-gray-700 dark:text-white">
               <tr>
                 <th className="border-slate-200 bg-slate-50 border-b p-4">
                   <p className="text-slate-500 text-sm font-normal leading-none">
@@ -103,7 +103,7 @@ const Dashboard = () => {
             <tbody>
               {purchases.map((purchase, index) => (
                 <tr
-                  className="hover:bg-slate-50 border-slate-200 border-b"
+                  className="hover:bg-slate-50 border-slate-200 border-b dark:text-white"
                   key={index}
                 >
                   <td className="p-4 py-5">
@@ -118,13 +118,15 @@ const Dashboard = () => {
                     <p className="text-slate-800 block text-sm">
                       <span className="font-semibold">
                         {" "}
-                        {purchase.course.title}
+                        {purchase.itemType === "course"
+                          ? purchase.course.title
+                          : purchase.masterclass.title}
                       </span>
                     </p>
                   </td>
                   <td className="p-4 py-5">
                     <p className="text-slate-800 block text-sm">
-                      {purchase.course.category
+                      {purchase.course?.category
                         ? purchase.course.category.title
                         : "Catégorie non définie"}
                     </p>
@@ -145,7 +147,7 @@ const Dashboard = () => {
                       )}
                     </p>
                   </td>
-                  <td className="p-4 py-5">
+                  <td className="p-4 py-5 text-sm">
                     {new Date(purchase.createdAt).toLocaleDateString()}
                   </td>
                 </tr>

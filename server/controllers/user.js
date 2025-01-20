@@ -1,5 +1,9 @@
 import { User } from "../models/User.js";
 import bcrypt from "bcrypt";
+import nodemailer from "nodemailer";
+import dotenv from "dotenv";
+import generateRegisterEmailTemplate from "../email/generateRegisterEmailTemplate.js";
+dotenv.config();
 
 export const getUsers = async (req, res) => {
     try {
@@ -59,6 +63,10 @@ export const registerUser = async (req, res) => {
         const saltRounds = 10; // Niveau de complexité
         const hashedPassword = await bcrypt.hash(password, saltRounds);
 
+        // Envoi de l'email après paiement confirmé
+        const userEmail = email;
+        const fullname = firstName;
+
         // Créez l'utilisateur avec le mot de passe haché
         const user = await User.create({
             firstName,
@@ -66,6 +74,16 @@ export const registerUser = async (req, res) => {
             email,
             password: hashedPassword,
         });
+
+        try {
+            await sendInvoiceEmail({
+                fullname,
+                email: userEmail,
+                subject: "Bienvenue sur Donymusic",
+            });
+        } catch (emailError) {
+            console.error("Erreur d'envoi de l'email :", emailError.message);
+        }
 
         // Masquer le mot de passe dans la réponse
         const { id, createdAt, updatedAt } = user;
@@ -218,5 +236,34 @@ export const getUserProfile = async (req, res) => {
         res.status(200).json(user);
     } catch (error) {
         res.status(500).json({ message: "Erreur lors de la récupération du profil" });
+    }
+};
+
+const sendInvoiceEmail = async ({ fullname, email, subject }) => {
+    let transporter = nodemailer.createTransport({
+        host: process.env.EMAIL_HOST,
+        port: parseInt(process.env.EMAIL_PORT || "587", 10),
+        secure: false,
+        auth: {
+            user: process.env.EMAIL_USER,
+            pass: process.env.EMAIL_PASS,
+        },
+    });
+
+    const htmlContent = generateRegisterEmailTemplate({
+        fullname,
+    });
+
+    const mailOptions = {
+        from: "donymusic@contact.com",
+        to: email,
+        subject,
+        html: htmlContent,
+    };
+
+    try {
+        await transporter.sendMail(mailOptions);
+    } catch (error) {
+        throw new Error("L'email n'a pas pu être envoyé");
     }
 };

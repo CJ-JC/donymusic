@@ -126,13 +126,14 @@ const CreateChapter = () => {
               value={chapterData.title}
               onChange={handleChapterChange}
               label="Titre du chapitre"
+              className="dark:text-white dark:focus:border-white"
               required
             />
           </div>
           <div className="space-y-2 rounded-md border p-4">
             <label
               htmlFor="description"
-              className="text-sm font-medium text-blue-gray-900"
+              className="text-sm font-medium text-blue-gray-900 dark:text-white"
             >
               Description du chapitre
             </label>
@@ -168,7 +169,7 @@ const CreateChapter = () => {
           <button
             type="button"
             onClick={handleAddVideo}
-            className="flex items-center rounded-md p-2 hover:bg-gray-100 focus:outline-none"
+            className="flex items-center rounded-md p-2 hover:bg-gray-100 focus:outline-none dark:hover:bg-gray-400 dark:hover:text-black"
           >
             <PlusCircle className="mr-2 h-4 w-4" />
             Ajouter des vidéos
@@ -188,6 +189,7 @@ const CreateChapter = () => {
                 value={video.title}
                 onChange={(e) => handleVideoChange(index, e)}
                 type="text"
+                className="dark:text-white dark:focus:border-white"
               />
             </div>
             <div className="relative space-y-2 rounded-md border p-4">
@@ -199,6 +201,7 @@ const CreateChapter = () => {
                   value={video.url}
                   onChange={(e) => handleVideoChange(index, e)}
                   type="text"
+                  className="dark:text-white dark:focus:border-white"
                 />
                 {videos.length > 1 && (
                   <button
@@ -257,7 +260,11 @@ const CreateChapter = () => {
           )}
         </div>
         <div className="flex justify-center">
-          <Button type="submit" className="mt-6" disabled={loading}>
+          <Button
+            type="submit"
+            className="mt-6 dark:bg-white dark:text-black dark:hover:bg-gray-400"
+            disabled={loading}
+          >
             {loading ? "Création..." : "Créer le chapitre"}
           </Button>
         </div>

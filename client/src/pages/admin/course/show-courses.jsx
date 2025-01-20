@@ -49,10 +49,10 @@ const ShowCourses = () => {
   return (
     <>
       {/* Table of Courses */}
-      <div className="relative flex w-full flex-col overflow-scroll rounded-lg bg-white bg-clip-border p-4 text-gray-700 shadow-md">
+      <div className="relative flex w-full flex-col overflow-scroll rounded-lg border bg-white bg-clip-border p-4 text-gray-700 shadow-md dark:bg-[#25303F]">
         <Typography
           variant="h3"
-          className="mb-3 text-xl font-bold md:text-3xl"
+          className="mb-3 text-xl font-bold dark:text-white md:text-3xl"
           color="blue-gray"
         >
           Liste des formations
@@ -71,7 +71,7 @@ const ShowCourses = () => {
           </Link>
         </div>
         <table className="w-full min-w-max table-auto text-left">
-          <thead className="bg-[#F9FAFB] text-gray-700 dark:bg-gray-700 dark:text-gray-400">
+          <thead className="bg-[#F9FAFB] font-medium text-gray-700 dark:bg-blue-gray-700 dark:text-white">
             <tr>
               <th className="border-slate-200 bg-slate-50 border-b p-4">
                 <p className="text-slate-500 text-sm font-normal leading-none">
@@ -103,7 +103,7 @@ const ShowCourses = () => {
           <tbody>
             {currentCourses.map((course, index) => (
               <tr
-                className="hover:bg-slate-50 border-slate-200 border-b"
+                className="hover:bg-slate-50 border-slate-200 border-b dark:text-white"
                 key={index}
               >
                 <td className="p-4 py-5">
@@ -149,7 +149,7 @@ const ShowCourses = () => {
 
         {/* Pagination */}
         <div className="flex items-center justify-between px-4 py-3">
-          <div className="text-slate-500 text-sm">
+          <div className="text-slate-500 text-sm dark:text-white">
             Afficher{" "}
             <b>
               {indexOfFirstCourse + 1}-

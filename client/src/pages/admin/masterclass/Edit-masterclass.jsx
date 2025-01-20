@@ -54,6 +54,7 @@ const EditMasterclass = () => {
           duration,
           maxParticipants,
           instructorId,
+          link,
         } = response.data;
 
         setInputs({
@@ -67,6 +68,7 @@ const EditMasterclass = () => {
           duration,
           maxParticipants,
           instructorId,
+          link,
         });
         setImageUrl(imageUrl ? `${BASE_URL}${imageUrl}` : null);
       } catch (error) {
@@ -88,6 +90,7 @@ const EditMasterclass = () => {
     maxParticipants: "",
     slug: "",
     instructorId: null,
+    link: "",
   });
 
   const handleChange = (e) => {
@@ -101,15 +104,16 @@ const EditMasterclass = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (
-      !inputs.title ||
-      !inputs.description ||
-      !inputs.price ||
-      !inputs.startDate ||
-      !inputs.endDate ||
-      !inputs.duration ||
-      !inputs.maxParticipants ||
-      !inputs.slug ||
-      !inputs.instructorId
+      (!inputs.title ||
+        !inputs.description ||
+        !inputs.price ||
+        !inputs.startDate ||
+        !inputs.endDate ||
+        !inputs.duration ||
+        !inputs.maxParticipants ||
+        !inputs.slug ||
+        !inputs.instructorId,
+      !inputs.link)
     ) {
       setError("Tous les champs sont obligatoires");
       return;
@@ -135,6 +139,7 @@ const EditMasterclass = () => {
     formData.append("maxParticipants", inputs.maxParticipants);
     formData.append("slug", inputs.slug);
     formData.append("instructorId", inputs.instructorId);
+    formData.append("link", inputs.link);
 
     try {
       await axios.put(`/api/masterclass/update/${id}`, formData);
@@ -183,6 +188,7 @@ const EditMasterclass = () => {
                   id="title"
                   name="title"
                   label="Titre de la masterclasse"
+                  className="dark:text-white"
                   required
                   value={inputs.title}
                   onChange={handleChange}
@@ -191,7 +197,7 @@ const EditMasterclass = () => {
               <div className="mt-6 space-y-2 rounded-md border p-4">
                 <label
                   htmlFor="description"
-                  className="text-sm font-medium text-blue-gray-900"
+                  className="text-sm font-medium text-blue-gray-900 dark:text-white"
                 >
                   Description de la masterclasse
                 </label>
@@ -199,6 +205,7 @@ const EditMasterclass = () => {
                   name="description"
                   value={inputs.description}
                   onChange={handleChange}
+                  className="dark:text-white"
                 />
               </div>
               <div className="my-6 flex items-center gap-x-2">
@@ -225,12 +232,12 @@ const EditMasterclass = () => {
               <div className="my-6 rounded-md border p-4">
                 <label
                   htmlFor="image"
-                  className="-mb-3 text-sm font-medium text-blue-gray-900"
+                  className="-mb-3 text-sm font-medium text-blue-gray-900 dark:text-white"
                 >
                   Image de la masterclasse
                 </label>
                 <div className="bg-grey-lighter flex w-full items-center justify-between">
-                  <label className="flex w-52 cursor-pointer flex-col items-center justify-center rounded-lg border bg-white px-4 py-6 tracking-wide shadow-sm hover:text-gray-700">
+                  <label className="flex w-52 cursor-pointer flex-col items-center justify-center rounded-lg border bg-white px-4 py-6 tracking-wide shadow-sm hover:text-gray-700 dark:text-black">
                     <svg
                       className="h-8 w-8"
                       fill="currentColor"
@@ -239,7 +246,7 @@ const EditMasterclass = () => {
                     >
                       <path d="M16.88 9.1A4 4 0 0 1 16 17H5a5 5 0 0 1-1-9.9V7a3 3 0 0 1 4.52-2.59A4.98 4.98 0 0 1 17 8c0 .38-.04.74-.12 1.1zM11 11h3l-4-4-4 4h3v3h2v-3z" />
                     </svg>
-                    <span className="mt-2 text-center text-sm leading-normal">
+                    <span className="mt-2 text-center text-sm leading-normal dark:text-black">
                       Sélectionner une image
                     </span>
                     <input
@@ -268,7 +275,7 @@ const EditMasterclass = () => {
               <div className="my-6 rounded-md border p-4">
                 <label
                   htmlFor="instructor"
-                  className="mb-2 block text-sm font-medium text-gray-900"
+                  className="mb-2 block text-sm font-medium text-gray-900 dark:text-white"
                 >
                   Instructeur
                 </label>
@@ -282,7 +289,7 @@ const EditMasterclass = () => {
                       instructorId: parseInt(e.target.value),
                     }))
                   }
-                  className="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400"
+                  className="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 dark:border-gray-600 dark:bg-white dark:text-black"
                 >
                   <option value="" disabled>
                     -- Sélectionnez un instructeur --
@@ -322,12 +329,13 @@ const EditMasterclass = () => {
                 <div className="mt-6 space-y-2 rounded-md border p-4">
                   <label
                     htmlFor="price"
-                    className="text-sm font-medium text-blue-gray-900"
+                    className="text-sm font-medium text-blue-gray-900 dark:text-white"
                   >
                     Prix de la masterclasse
                   </label>
                   <Input
                     placeholder="Exemple: Prix de la masterclasse"
+                    className="dark:text-white"
                     required
                     name="price"
                     id="price"
@@ -341,7 +349,7 @@ const EditMasterclass = () => {
               <div>
                 <h2 className="text-xl">Choisissez les dates et heures</h2>
                 <div>
-                  <label className="text-sm font-medium text-blue-gray-900">
+                  <label className="text-sm font-medium text-blue-gray-900 dark:text-white">
                     Date et heure de début
                   </label>
                   <DatePicker
@@ -352,11 +360,11 @@ const EditMasterclass = () => {
                     timeFormat="HH:mm"
                     timeIntervals={15}
                     locale="fr"
-                    className="ml-6 mt-2 w-full rounded-md border border-gray-300 px-2 py-2"
+                    className="ml-6 mt-2 w-full rounded-md border border-gray-300 px-2 py-2 dark:text-black"
                   />
                 </div>
                 <div>
-                  <label className="text-sm font-medium text-blue-gray-900">
+                  <label className="darl:text-white text-sm font-medium text-blue-gray-900 dark:text-white">
                     Date et heure de fin
                   </label>
                   <DatePicker
@@ -367,14 +375,14 @@ const EditMasterclass = () => {
                     timeFormat="HH:mm"
                     timeIntervals={15}
                     locale="fr"
-                    className="ml-6 mt-2 w-full rounded-md border border-gray-300 px-2 py-2"
+                    className="ml-6 mt-2 w-full rounded-md border border-gray-300 px-2 py-2 dark:text-black"
                   />
                 </div>
               </div>
               <div className="mt-6 space-y-2 rounded-md border p-4">
                 <label
                   htmlFor="duration"
-                  className="text-sm font-medium text-blue-gray-900"
+                  className="text-sm font-medium text-blue-gray-900 dark:text-white"
                 >
                   Durer de la masterclasse
                 </label>
@@ -384,6 +392,7 @@ const EditMasterclass = () => {
                   name="duration"
                   id="duration"
                   type="number"
+                  className="dark:text-white"
                   value={inputs.duration}
                   onChange={handleChange}
                 />
@@ -391,13 +400,14 @@ const EditMasterclass = () => {
               <div className="mt-6 space-y-2 rounded-md border p-4">
                 <label
                   htmlFor="maxParticipants"
-                  className="text-sm font-medium text-blue-gray-900"
+                  className="text-sm font-medium text-blue-gray-900 dark:text-white"
                 >
                   Maximum de participants
                 </label>
                 <Input
                   placeholder="Exemple: 20"
                   required
+                  className="dark:text-white"
                   name="maxParticipants"
                   id="maxParticipants"
                   type="number"
@@ -405,11 +415,31 @@ const EditMasterclass = () => {
                   onChange={handleChange}
                 />
               </div>
+              <div className="mt-6 space-y-2 rounded-md border p-4">
+                <label
+                  htmlFor="link"
+                  className="text-sm font-medium text-blue-gray-900 dark:text-white"
+                >
+                  Lien de la masterclass
+                </label>
+                <Input
+                  placeholder="Exemple: 20"
+                  required
+                  className="dark:text-white"
+                  name="link"
+                  id="link"
+                  value={inputs.link}
+                  onChange={handleChange}
+                />
+              </div>
             </div>
           </div>
           <div className="flex justify-center">
-            <Button type="submit" className="mt-6" onClick={handleSubmit}>
-              {/* {loading ? "Création..." : "Créer le cours"} */}
+            <Button
+              type="submit"
+              className="mt-6 dark:bg-white dark:text-black dark:hover:bg-gray-400"
+              onClick={handleSubmit}
+            >
               Modifier la masterclasse
             </Button>
           </div>

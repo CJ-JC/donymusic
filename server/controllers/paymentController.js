@@ -346,9 +346,7 @@ const sendInvoiceEmail = async ({ fullname, email, subject, payment, item, produ
 
     try {
         await transporter.sendMail(mailOptions);
-        console.log(`Email envoyé à ${email}`);
     } catch (error) {
-        console.error("Erreur lors de l'envoi de l'email :", error);
         throw new Error("L'email n'a pas pu être envoyé");
     }
 };
