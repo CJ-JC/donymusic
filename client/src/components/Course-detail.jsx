@@ -326,7 +326,7 @@ const Coursedetail = () => {
         </div>
 
         <div className="order-2 flex flex-col space-y-6 lg:col-span-2">
-          {!hasPurchased ? (
+          {(user?.role && user.role === "admin") || hasPurchased ? (
             <div className="rounded-md border bg-white p-6 shadow-md dark:bg-white/90">
               <div className="mb-6">
                 <h3 className="mb-4 text-xl font-semibold text-blue-gray-900">

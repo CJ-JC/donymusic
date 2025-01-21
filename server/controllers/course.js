@@ -41,10 +41,46 @@ export const getCourses = async (req, res) => {
 export const getCourseByUserId = async (req, res) => {
     try {
         const userId = req.session.user?.id; // ID de l'utilisateur connecté
+        const userRole = req.session.user?.role; // Rôle de l'utilisateur connecté
         const { id } = req.params; // ID du cours demandé
 
         if (!userId) {
             return res.status(401).json({ message: "Non autorisé. Veuillez vous connecter." });
+        }
+
+        // Vérification du rôle administrateur
+        if (userRole === "admin") {
+            // L'utilisateur est un administrateur, il a accès au cours sans restriction
+            const course = await Course.findOne({
+                where: { id },
+                include: [
+                    {
+                        model: Chapter,
+                        include: [
+                            {
+                                model: Video,
+                                attributes: ["id", "url", "title"],
+                            },
+                        ],
+                    },
+                    {
+                        model: Category,
+                        as: "category",
+                        attributes: ["id", "title"],
+                    },
+                ],
+            });
+
+            if (!course) {
+                return res.status(404).json({ message: "Cours non trouvé" });
+            }
+
+            // Aucun besoin de vérifier les progrès ou les achats pour les administrateurs
+            return res.status(200).json({
+                ...course.toJSON(),
+                lastViewedVideoId: null,
+                lastViewedChapterId: null,
+            });
         }
 
         // Vérifier si l'utilisateur a acheté le cours
@@ -57,9 +93,9 @@ export const getCourseByUserId = async (req, res) => {
             },
         });
 
-        // if (!purchase) {
-        //     return res.status(403).json({ message: "Accès interdit. Cours non acheté." });
-        // }
+        if (!purchase) {
+            return res.status(403).json({ message: "Accès interdit. Cours non acheté." });
+        }
 
         // Récupérer les détails du cours
         const course = await Course.findOne({
