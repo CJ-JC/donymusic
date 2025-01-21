@@ -7,7 +7,6 @@ export const createReply = async (req, res) => {
     try {
         // Récupération des données de la requête
         const { userId, remarkId, content, videoId } = req.body;
-        console.log(req.body);
 
         // Validation des données d'entrée
         if (!content) {
@@ -40,10 +39,9 @@ export const createReply = async (req, res) => {
             data: reply,
         });
     } catch (error) {
-        console.error("Erreur lors de la création de la réponse :", error);
         res.status(500).json({
             message: "Erreur interne lors de la création de la réponse",
-            error: error.message, // Pour plus de détails lors du débogage
+            error: error.message,
         });
     }
 };
@@ -80,7 +78,6 @@ export const updateReply = async (req, res) => {
             data: existingReply,
         });
     } catch (error) {
-        console.error("Erreur lors de la modification de la réponse :", error);
         res.status(500).json({ message: "Erreur interne", error: error.message });
     }
 };
@@ -97,7 +94,6 @@ export const getRepliesByVideoId = async (req, res) => {
 
         res.status(200).json(replies);
     } catch (error) {
-        console.error("Erreur lors de la récupération des réponses :", error);
         res.status(500).json({
             message: "Erreur interne lors de la récupération des réponses",
             error: error.message,

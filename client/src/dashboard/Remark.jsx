@@ -1,10 +1,15 @@
 import React, { useEffect, useState } from "react";
-import { Button, Input, Typography } from "@material-tailwind/react";
+import { Button, Input, Textarea, Typography } from "@material-tailwind/react";
 import axios from "axios";
-import { Eye, EyeOff, Pencil, Trash, User2Icon } from "lucide-react";
-import ReactQuill from "react-quill";
+import {
+  Eye,
+  EyeOff,
+  MessageSquareText,
+  Pencil,
+  Trash,
+  User2Icon,
+} from "lucide-react";
 import { useSelector } from "react-redux";
-import Editor from "@/widgets/utils/Editor";
 import Reply from "./Reply";
 
 const Remark = ({ selectedVideo, createdRemark }) => {
@@ -12,9 +17,7 @@ const Remark = ({ selectedVideo, createdRemark }) => {
   const [isContentVisible, setIsContentVisible] = useState({});
   const [editingRemarkId, setEditingRemarkId] = useState(null);
   const [replyingRemarkId, setReplyingRemarkId] = useState(null);
-  const [replyContent, setReplyContent] = useState("");
   const [replies, setReplies] = useState([]);
-  //   const [isReplying, setIsReplying] = useState(false);
   const { isLoggedIn, user } = useSelector((state) => state.auth);
 
   const fetchRemarks = async () => {
@@ -48,7 +51,6 @@ const Remark = ({ selectedVideo, createdRemark }) => {
     fetchRemarks();
   }, [selectedVideo]);
 
-  // Ajouter createdRemark à remarks lorsqu'il change
   useEffect(() => {
     if (createdRemark) {
       setRemarks((prevRemarks) => [createdRemark, ...prevRemarks]);
@@ -112,19 +114,31 @@ const Remark = ({ selectedVideo, createdRemark }) => {
 
   return (
     <div className="container mx-auto max-w-screen-xl">
-      <div className="remarks-list mb-10 py-10">
+      <div className="remarks-list mb-10 pb-10">
         {sortedRemarks.map((remark) => (
           <article
             key={remark.id}
-            className="gray-200 my-3 w-full text-base dark:border-gray-700"
+            className="gray-200 my-3 w-full border-b py-2 text-base dark:border-gray-700"
           >
             <footer className="flex items-start justify-between">
               <div className="flex items-center">
                 <div className="mr-2 flex h-8 w-8 items-center justify-center rounded-full bg-black p-1 text-white dark:bg-white dark:text-black">
                   <User2Icon className="h-10 w-10" />
                 </div>
-                <p className="px-2 font-bold">{remark.author?.firstName}</p>
+
+                <p className="font-bold">{remark.author?.firstName}</p>
+                <p className="px-2 text-sm font-bold text-gray-600 dark:text-gray-400">
+                  <time
+                    dateTime={remark.createdAt}
+                    title={new Date(remark.createdAt).toLocaleDateString(
+                      "fr-FR",
+                    )}
+                  >
+                    {new Date(remark.createdAt).toLocaleDateString("fr-FR")}
+                  </time>
+                </p>
               </div>
+
               <button
                 onClick={() => toggleContentVisibility(remark.id)}
                 className="text-sm font-medium text-gray-500 hover:underline dark:text-gray-400"
@@ -150,8 +164,9 @@ const Remark = ({ selectedVideo, createdRemark }) => {
                   }
                   className="mb-2 text-blue-gray-900"
                 />
-                <Editor
+                <Textarea
                   name="content"
+                  resize
                   value={remark.content}
                   onChange={(e) =>
                     handleInputChange(remark.id, e.target.name, e.target.value)
@@ -173,43 +188,21 @@ const Remark = ({ selectedVideo, createdRemark }) => {
               </div>
             ) : (
               <>
-                <p className="px-2 pt-3 font-bold">{remark.title}</p>
+                <p className="pt-2 font-bold">{remark.title}</p>
                 <div className="text-gray-500 dark:text-gray-400">
                   {isContentVisible[remark.id] ? (
-                    <div className="font-medium text-gray-700 dark:text-white">
-                      <ReactQuill
-                        value={remark.content}
-                        readOnly={true}
-                        theme="bubble"
-                        className="font-medium text-gray-700 dark:text-white"
-                      />
-                    </div>
+                    <Typography className="whitespace-pre-wrap font-medium text-gray-700 dark:text-white">
+                      {remark.content.trim()}
+                    </Typography>
                   ) : (
-                    <div className="font-medium text-gray-700 dark:text-white">
-                      <ReactQuill
-                        value={
-                          remark.content.length > 180
-                            ? remark.content.substring(0, 180) + "..."
-                            : remark.content
-                        }
-                        readOnly={true}
-                        theme="bubble"
-                        className="font-medium text-gray-700 dark:text-white"
-                      />
-                    </div>
+                    <Typography className="whitespace-pre-wrap font-medium text-gray-700 dark:text-white">
+                      {remark.content.length > 180
+                        ? remark.content.substring(0, 180) + "..."
+                        : remark.content}
+                    </Typography>
                   )}
                 </div>
-                <p className="mb-2 px-2 text-sm font-bold text-gray-600 dark:text-gray-400">
-                  <time
-                    dateTime={remark.createdAt}
-                    title={new Date(remark.createdAt).toLocaleDateString(
-                      "fr-FR",
-                    )}
-                  >
-                    {new Date(remark.createdAt).toLocaleDateString("fr-FR")}
-                  </time>
-                </p>
-                <div className="my-4 font-semibold text-gray-500 dark:text-gray-400">
+                <div className="my-2 text-sm font-semibold text-gray-500 dark:text-gray-400">
                   {replies.filter((reply) => reply.remarkId === remark.id)
                     .length > 0 && (
                     <p>
@@ -233,9 +226,10 @@ const Remark = ({ selectedVideo, createdRemark }) => {
                   <button
                     size="sm"
                     type="button"
-                    className="flex items-center text-sm font-medium text-gray-500 hover:underline dark:text-gray-400"
+                    className="flex items-center gap-x-1 text-sm font-medium text-gray-500 hover:underline dark:text-gray-400"
                     onClick={() => toggleReply(remark.id)}
                   >
+                    <MessageSquareText size={15} />
                     Répondre
                   </button>
                   {(user?.id === remark.userId || user?.role === "admin") && (

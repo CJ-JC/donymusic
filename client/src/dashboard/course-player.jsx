@@ -1,15 +1,8 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
 import { Button, Progress, Typography } from "@material-tailwind/react";
-import {
-  Check,
-  LogOut,
-  MoonIcon,
-  PlayCircleIcon,
-  PlusCircle,
-  SunIcon,
-} from "lucide-react";
+import { Check, LogOut, MoonIcon, PlayCircleIcon, SunIcon } from "lucide-react";
 import CloseIcon from "@mui/icons-material/Close";
 import {
   Accordion,
@@ -22,8 +15,10 @@ import ReactPlayer from "react-player";
 import { useDispatch, useSelector } from "react-redux";
 import { checkAuthStatus } from "@/widgets/utils/CheckAuthStatus";
 import Confetti from "@/widgets/utils/Confetti";
-import Remark from "./Create-remark";
 import { loggedOut } from "@/reducer/auth";
+import { ArrowBack } from "@mui/icons-material";
+import CreateRemark from "./Create-remark";
+import CreateNote from "./Create-note";
 
 function Icon({ id, open }) {
   return (
@@ -179,19 +174,19 @@ const CoursePlayer = ({ toggleTheme, theme }) => {
         [selectedVideo.id]: response.data,
       }));
 
-      const chapterProgressResponse = await axios.get(
-        `/api/user-progress/${chapter.id}`,
-      );
-      const { progress, isComplete } = chapterProgressResponse.data;
+      // const chapterProgressResponse = await axios.get(
+      //   `/api/user-progress/${chapter.id}`,
+      // );
+      // const { progress, isComplete } = chapterProgressResponse.data;
 
-      setProgress(progress);
+      // setProgress(progress);
 
-      if (isComplete) {
-        setShowConfetti(true);
-        setTimeout(() => {
-          setShowConfetti(false);
-        }, 5000);
-      }
+      // if (isComplete) {
+      //   setShowConfetti(true);
+      //   setTimeout(() => {
+      //     setShowConfetti(false);
+      //   }, 5000);
+      // }
     } catch (error) {
       console.error("Erreur lors de la mise à jour de la progression :", error);
     }
@@ -242,7 +237,7 @@ const CoursePlayer = ({ toggleTheme, theme }) => {
   if (loading) {
     return <Loading />;
   }
-  // http://localhost:5173/course-player/course/1/chapters/1
+
   if (error) {
     return <div className="p-8 text-center text-red-500">{error}</div>;
   }
@@ -286,7 +281,7 @@ const CoursePlayer = ({ toggleTheme, theme }) => {
               onClick={() => setIsSidebarOpen(false)}
             />
           </div>
-          <ul className="w-full p-2 font-medium">
+          <ul className="h-screen w-full overflow-auto p-2 font-medium">
             {course.chapters.map((chapter) => (
               <Accordion
                 key={chapter.id}
@@ -344,6 +339,17 @@ const CoursePlayer = ({ toggleTheme, theme }) => {
               </Accordion>
             ))}
           </ul>
+          <hr />
+          <ul className="my-5 flex justify-center">
+            <Button
+              onClick={logout}
+              variant="outlined"
+              size="sm"
+              className="flex items-center bg-white focus:outline-none"
+            >
+              <LogOut className="mr-1 h-4 w-4" /> Déconnexion
+            </Button>
+          </ul>
         </div>
       </aside>
 
@@ -373,14 +379,14 @@ const CoursePlayer = ({ toggleTheme, theme }) => {
           </div>
           <div className="flex items-center space-x-4">
             <Link to={"/detail/slug/" + course.slug}>
-              <button className="flex items-center text-gray-900 hover:text-gray-700 focus:text-gray-700 focus:outline-none dark:text-white">
-                <LogOut className="mr-1 h-4 w-4" /> Retour
-              </button>
+              <Button
+                size="sm"
+                variant="outlined"
+                className="flex items-center dark:bg-white dark:text-black"
+              >
+                <ArrowBack /> Retour
+              </Button>
             </Link>
-
-            <Button variant="outlined" onClick={logout} color="red" size="sm">
-              Déconnexion
-            </Button>
 
             <button
               onClick={toggleTheme}
@@ -423,7 +429,7 @@ const CoursePlayer = ({ toggleTheme, theme }) => {
                   <button
                     key={tab.id}
                     onClick={() => setActiveTab(tab.id)}
-                    className={`whitespace-nowrap px-6 py-1 text-sm font-medium focus:outline-none ${
+                    className={`whitespace-nowrap px-4 py-1 text-sm font-medium focus:outline-none ${
                       activeTab === tab.id
                         ? "border-b-2 border-blue-gray-900 font-semibold text-blue-gray-900 dark:border-white dark:text-white"
                         : "text-gray-500 hover:text-gray-700"
@@ -440,8 +446,7 @@ const CoursePlayer = ({ toggleTheme, theme }) => {
                     <div className="flex  items-center justify-between md:flex-row">
                       <Typography
                         variant="h4"
-                        className="px-2 font-bold dark:text-white"
-                        color="blue-gray"
+                        className="blue-gray-900 px-2 font-bold dark:text-white"
                       >
                         {selectedVideo?.title}
                       </Typography>
@@ -470,22 +475,11 @@ const CoursePlayer = ({ toggleTheme, theme }) => {
                     </div>
                   </div>
                 )}
-                {activeTab === "qa" && <Remark selectedVideo={selectedVideo} />}
+                {activeTab === "qa" && (
+                  <CreateRemark selectedVideo={selectedVideo} />
+                )}
                 {activeTab === "notes" && (
-                  <div className="h-[600px]">
-                    <Typography
-                      variant="h4"
-                      className="font-bold dark:text-white"
-                      color="blue-gray"
-                    >
-                      Prise de note
-                    </Typography>
-                    <textarea
-                      className="mt-2 w-full rounded-md border border-gray-300 p-2 focus:outline-none"
-                      rows="6"
-                      placeholder="Prenez vos notes ici..."
-                    ></textarea>
-                  </div>
+                  <CreateNote selectedVideo={selectedVideo} />
                 )}
               </div>
             </div>

@@ -17,11 +17,9 @@ import Stripe from "stripe";
 import { Payment } from "./models/Payment.js";
 import { Purchase } from "./models/Purchase.js";
 import { sendEmail } from "./controllers/email.js";
-import { Course } from "./models/Course.js";
-import { Remark } from "./models/Remark.js";
-import { Reply } from "./models/Reply.js";
 import remarkRoutes from "./routes/remarkRoutes.js";
 import replyRoutes from "./routes/replyRoutes.js";
+import noteRoutes from "./routes/noteRoutes.js";
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
 
@@ -129,6 +127,8 @@ app.use("/api/payment", paymentRoutes);
 app.use("/api/remark", remarkRoutes);
 
 app.use("/api/reply", replyRoutes);
+
+app.use("/api/note", noteRoutes);
 
 app.use("/api/email", (req, res) => {
     sendEmail(req.query)

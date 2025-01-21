@@ -1,21 +1,21 @@
-import { Button, Input, Textarea, Typography } from "@material-tailwind/react";
-import axios from "axios";
-import { PlusCircle } from "lucide-react";
 import React, { useState } from "react";
-import { useSelector } from "react-redux";
+import Note from "./Note";
+import { Button, Textarea, Typography } from "@material-tailwind/react";
+import { PlusCircle } from "lucide-react";
 import { useParams } from "react-router-dom";
-import Remark from "./Remark";
+import axios from "axios";
+import { useSelector } from "react-redux";
 
-const CreateRemark = ({ selectedVideo }) => {
+const CreateNote = ({ selectedVideo }) => {
   const { courseId } = useParams();
+  const [isCreating, setIsCreating] = useState(false);
+  const [createdNote, setCreatedNote] = useState(null);
+  const { isLoggedIn, user } = useSelector((state) => state.auth);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
-  const [isCreating, setIsCreating] = useState(false);
-  const { isLoggedIn, user } = useSelector((state) => state.auth);
-  const [createdRemark, setCreatedRemark] = useState(null);
+  const [notes, setNotes] = useState([]);
 
   const [inputs, setInputs] = useState({
-    title: "",
     content: "",
     courseId: courseId,
     videoId: selectedVideo?.id,
@@ -31,16 +31,20 @@ const CreateRemark = ({ selectedVideo }) => {
     setError("");
 
     try {
-      const response = await axios.post("/api/remark/create", {
+      const response = await axios.post("/api/note/create", {
         ...inputs,
         userId: user.id,
         videoId: selectedVideo?.id,
         courseId: courseId,
       });
-      setCreatedRemark(response.data.data);
+
+      const newNote = response.data;
+
+      setNotes((prevNotes) => [newNote, ...prevNotes]);
+      setCreatedNote(newNote);
       setIsCreating(false);
     } catch (error) {
-      setError(error.response?.data?.error || "Une erreur est survenue");
+      setError(error.response?.data?.error || "Les champs sont obligatoires");
     } finally {
       setLoading(false);
     }
@@ -58,7 +62,7 @@ const CreateRemark = ({ selectedVideo }) => {
           className="font-bold dark:text-white"
           color="blue-gray"
         >
-          Question ?
+          Prendre des notes
         </Typography>
 
         <Button
@@ -72,26 +76,13 @@ const CreateRemark = ({ selectedVideo }) => {
           ) : (
             <>
               <PlusCircle className="mr-2 h-4 w-4" />
-              Poser une question
+              Prise de note
             </>
           )}
         </Button>
       </div>
       {isCreating && (
         <>
-          <div className="my-4 p-4 text-sm text-blue-gray-500 dark:text-white">
-            <strong>
-              Conseils pour obtenir plus rapidement des réponses à vos questions
-            </strong>
-            <ul className="py-2">
-              <li>
-                - Faites une recherche pour vérifier si votre question a déjà
-                été posée.
-              </li>
-              <li>- Donnez autant de détails que possible.</li>
-              <li>- Vérifiez la grammaire et l&apos;orthographe.</li>
-            </ul>
-          </div>
           <div>
             <form
               className="mx-auto mb-2 w-80 max-w-screen-lg lg:w-1/2"
@@ -99,30 +90,17 @@ const CreateRemark = ({ selectedVideo }) => {
             >
               <div className="mb-1 flex flex-col space-y-4">
                 <div>
-                  <label htmlFor="title">Titre</label>
-                  <Input
-                    size="lg"
-                    className="dark:border-white dark:text-white"
-                    id="title"
-                    name="title"
-                    placeholder="Titre de votre contenu..."
-                    onChange={handleChange}
-                    autoFocus
-                  />
-                </div>
-                <div>
-                  <label htmlFor="content">Contenu</label>
+                  <label htmlFor="content">Note</label>
                   <Textarea
                     name="content"
                     onChange={handleChange}
                     id="content"
                     resize
                     placeholder="Votre contenu..."
-                    required
                     className="dark:border-white dark:text-white"
                   />
+                  {error && <p className="text-red-500">{error}</p>}
                 </div>
-                {error && <p className="text-red-500">{error}</p>}
               </div>
 
               <Button
@@ -136,9 +114,9 @@ const CreateRemark = ({ selectedVideo }) => {
           </div>
         </>
       )}
-      <Remark selectedVideo={selectedVideo} createdRemark={createdRemark} />
+      <Note selectedVideo={selectedVideo} createdNote={createdNote} />
     </div>
   );
 };
 
-export default CreateRemark;
+export default CreateNote;

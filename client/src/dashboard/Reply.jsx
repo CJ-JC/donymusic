@@ -1,8 +1,7 @@
-import { Button, Typography } from "@material-tailwind/react";
+import { Button, Textarea, Typography } from "@material-tailwind/react";
 import axios from "axios";
 import { Pencil, Trash, User2Icon } from "lucide-react";
 import React, { useEffect, useState } from "react";
-import ReactQuill from "react-quill";
 import { useSelector } from "react-redux";
 
 const Reply = ({
@@ -44,15 +43,13 @@ const Reply = ({
         remarkId,
       });
 
-      // Vérifiez si `response.data` contient un champ imbriqué
       const newReply = response.data?.data || response.data;
 
-      // Ajouter immédiatement la réponse à l'état local
       setReplies((prevReplies) => [
         {
           ...newReply,
-          createdAt: new Date().toISOString(), // S'assurer que la date est valide
-          author: user, // Ajouter l'auteur localement si pas renvoyé par l'API
+          createdAt: new Date().toISOString(),
+          author: user,
         },
         ...prevReplies,
       ]);
@@ -125,11 +122,13 @@ const Reply = ({
     <div>
       {replyingRemarkId === remarkId && (
         <div className="mx-auto my-4 max-w-screen-lg lg:w-[75%] ">
-          <ReactQuill
+          <Textarea
             value={replyContent}
-            onChange={(value) => setReplyContent(value)}
-            theme="snow"
+            onChange={(e) => setReplyContent(e.target.value)} // Corriger ici
+            placeholder="Votre réponse..."
+            resize
           />
+
           <div className="my-2 flex justify-end gap-x-3">
             <Button onClick={() => handleReply(remarkId)} disabled={isReplying}>
               {isReplying ? "Publication..." : "Publier"}
@@ -148,7 +147,7 @@ const Reply = ({
       {sortedReplies.map((reply) => (
         <article
           key={reply.id}
-          className="my-2 ml-6 rounded-lg border-l p-2 text-base lg:ml-12"
+          className="my-2 ml-6 rounded-lg p-2 text-base lg:ml-12"
         >
           {/* Rendu du contenu */}
           <footer className="flex items-center justify-between">
@@ -157,23 +156,22 @@ const Reply = ({
                 <User2Icon className="h-10 w-10" />
               </div>
               <p className="font-bold">{reply.author?.firstName}</p>
+              <p className="px-2 text-sm font-bold text-gray-600 dark:text-gray-400">
+                <time
+                  dateTime={reply.createdAt}
+                  title={new Date(reply.createdAt).toLocaleDateString("fr-FR")}
+                >
+                  {new Date(reply.createdAt).toLocaleDateString("fr-FR")}
+                </time>
+              </p>
             </div>
-            <p className="text-sm font-bold text-gray-600 dark:text-gray-400">
-              <time
-                dateTime={reply.createdAt}
-                title={new Date(reply.createdAt).toLocaleDateString("fr-FR")}
-              >
-                {new Date(reply.createdAt).toLocaleDateString("fr-FR")}
-              </time>
-            </p>
           </footer>
           {editingReplyId === reply.id ? (
             <>
               <div className="my-2">
-                <ReactQuill
+                <Textarea
                   value={replyContent}
-                  onChange={(value) => handleInputChange(value)}
-                  theme="snow"
+                  onChange={(e) => handleInputChange(e.target.value)}
                 />
                 <div className="mt-2 flex justify-end gap-x-3">
                   <Button size="sm" onClick={() => handleEditReply(reply.id)}>
@@ -192,19 +190,10 @@ const Reply = ({
             </>
           ) : (
             <>
-              <div className="text-gray-500 dark:text-gray-400">
-                <Typography
-                  as="div"
-                  className="font-medium text-gray-700 dark:text-white"
-                >
-                  <ReactQuill
-                    value={reply.content}
-                    readOnly={true}
-                    theme="bubble"
-                    className="font-medium text-gray-700 dark:text-white"
-                  />
-                </Typography>
-              </div>
+              <Typography className="whitespace-pre-wrap pt-2 font-medium text-gray-700 dark:text-white">
+                {reply.content.trim()}
+              </Typography>
+
               {user?.id === reply.userId && (
                 <div className="mt-2 flex items-center space-x-4">
                   <button
