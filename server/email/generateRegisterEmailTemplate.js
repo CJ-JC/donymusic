@@ -1,8 +1,8 @@
 const generateRegisterEmailTemplate = ({ fullname }) => {
     return `
 <section class="mx-auto max-w-2xl bg-white px-6 py-8 dark:bg-gray-900">
-<main>
-    <p>Salut ${fullname},</p>
+<main style="font-size: 12px;">
+    <p>Bonjour ${fullname},</p>
 
     <p style="margin-top: 20px; line-height: 1.6;">
       Merci de vous être inscrit sur <strong>Donymusic</strong> ! <br /> Nous sommes ravis de vous compter parmi notre communauté d'apprenants passionnés par la musique.
@@ -14,7 +14,7 @@ const generateRegisterEmailTemplate = ({ fullname }) => {
   </main>
 
   <footer style="margin-top: 40px; font-size: 12px; color: #718096; line-height: 1.6; text-align: center;">
-    <p>Nous vous souhaitons une expérience enrichissante et beaucoup de succès !</p>
+    <p>Nous vous souhaitons une expérience enrichissante et plein de succès !</p>
     <p style="margin-top: 10px;">Musicalement,</p>
     <p style="margin-top: 20px;">
         <a href="https://donymusic.fr" style="color: #2563eb;">www.donymusic.fr</a><br />

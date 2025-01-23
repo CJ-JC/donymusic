@@ -32,6 +32,8 @@ import AccountAdmin from "./pages/admin/Users/Account-admin";
 import Setting from "./pages/user/Settings";
 import Success from "./pages/Success";
 import InvoicePdf from "./pages/user/Invoice-pdf";
+import ForgotPassword from "./pages/auth/forgot-password";
+import ResetPassword from "./pages/auth/reset-password";
 
 const Layout = ({
   globalDiscount,
@@ -180,6 +182,8 @@ function App() {
           {/* s'authentifier */}
           <Route path="sign-in" element={<SignIn />} />
           <Route path="sign-up" element={<SignUp />} />
+          <Route path="forgot-password" element={<ForgotPassword />} />
+          <Route path="reset-password" element={<ResetPassword />} />
 
           {/* payment */}
           <Route path="success" element={<Success />} />

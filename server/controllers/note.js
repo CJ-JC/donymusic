@@ -58,7 +58,6 @@ export const updateNote = async (req, res) => {
     try {
         const { id } = req.params;
         const userId = req.session.user.id;
-        console.log(userId, id);
 
         const { content } = req.body;
 

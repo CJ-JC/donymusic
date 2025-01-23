@@ -338,7 +338,7 @@ const sendInvoiceEmail = async ({ fullname, email, subject, payment, item, produ
     });
 
     const mailOptions = {
-        from: `"donymusic@contact.com"`,
+        from: "Donymusic <donymusic@contact.com>",
         to: email,
         subject,
         html: htmlContent,

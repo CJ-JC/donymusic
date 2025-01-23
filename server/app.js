@@ -20,6 +20,7 @@ import { sendEmail } from "./controllers/email.js";
 import remarkRoutes from "./routes/remarkRoutes.js";
 import replyRoutes from "./routes/replyRoutes.js";
 import noteRoutes from "./routes/noteRoutes.js";
+import resetPasswordRoutes from "./routes/resetPassword.js";
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
 
@@ -129,6 +130,8 @@ app.use("/api/remark", remarkRoutes);
 app.use("/api/reply", replyRoutes);
 
 app.use("/api/note", noteRoutes);
+
+app.use("/api/reset-password", resetPasswordRoutes);
 
 app.use("/api/email", (req, res) => {
     sendEmail(req.query)

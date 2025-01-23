@@ -105,7 +105,7 @@ export function SignIn() {
               variant="small"
               className="font-medium text-gray-900 dark:text-white"
             >
-              <a href="#">Mot de passe oublié</a>
+              <Link to={"/forgot-password"}>Mot de passe oublié</Link>
             </Typography>
           </div>
           <Typography
