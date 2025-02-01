@@ -9,12 +9,12 @@ export default defineConfig({
   resolve: {
     alias: [{ find: "@", replacement: "/src" }],
   },
-  server: {
-    proxy: {
-      "/api": {
-        target: "http://localhost:8001",
-        changeOrigin: true,
-      },
-    },
-  },
+  // server: {
+  //   proxy: {
+  //     "/api": {
+  //       target: "https://donymusic-server.vercel.app",
+  //       changeOrigin: true,
+  //     },
+  //   },
+  // },
 });
