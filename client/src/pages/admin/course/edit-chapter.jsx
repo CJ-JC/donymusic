@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Button, Input } from "@material-tailwind/react";
-import { PlusCircle, Trash2, TrashIcon } from "lucide-react";
+import { Paperclip, PlusCircle, Trash2, TrashIcon } from "lucide-react";
 import axios from "axios";
 import { useParams, useNavigate } from "react-router-dom";
 import Editor from "@/widgets/utils/Editor";
@@ -12,38 +12,57 @@ const EditChapter = () => {
   const { id, courseId } = useParams();
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
-  const [attachment, setAttachment] = useState(null);
 
   const [chapterData, setChapterData] = useState({
     title: "",
     description: "",
     courseId: courseId,
+    videos: [],
+    attachments: [],
   });
 
   // État pour gérer plusieurs vidéos
-  const [videos, setVideos] = useState([{ title: "", url: "" }]);
+  const [videos, setVideos] = useState([
+    {
+      title: "",
+      url: "",
+      attachments: [],
+      newAttachments: [], // Ajout d'un tableau pour les nouvelles annexes par vidéo
+    },
+  ]);
+
+  // État pour gérer les annexes
+  const [attachments, setAttachments] = useState([
+    {
+      title: "",
+      file: null,
+      videoId: "",
+    },
+  ]);
 
   // Récupérer les données du chapitre et ses vidéos
   useEffect(() => {
     const fetchChapterData = async () => {
       try {
         const response = await axios.get(`/api/chapter/${id}`);
-        const { title, description, attachment } = response.data;
+        const { title, description } = response.data;
 
         setChapterData({
           title,
           description,
-          attachment,
           courseId,
+          attachments,
         });
 
-        // Si des vidéos existent, les charger
+        // Si des vidéos existent, les charger avec leurs annexes
         if (response.data.videos && response.data.videos.length > 0) {
           setVideos(
             response.data.videos.map((video) => ({
               id: video.id,
               title: video.title,
               url: video.url,
+              attachments: video.attachments || [],
+              newAttachments: [],
             })),
           );
         }
@@ -69,7 +88,10 @@ const EditChapter = () => {
   };
 
   const handleAddVideo = () => {
-    setVideos([...videos, { title: "", url: "" }]);
+    setVideos([
+      ...videos,
+      { title: "", url: "", attachments: [], newAttachments: [] },
+    ]);
   };
 
   const handleRemoveVideo = (index) => {
@@ -77,12 +99,56 @@ const EditChapter = () => {
     setVideos(newVideos);
   };
 
+  const handleAddAttachment = (videoIndex) => {
+    const newVideos = [...videos];
+    if (!newVideos[videoIndex].newAttachments) {
+      newVideos[videoIndex].newAttachments = [];
+    }
+    newVideos[videoIndex].newAttachments.push({ file: null });
+    setVideos(newVideos);
+  };
+
+  const handleRemoveAttachment = (videoIndex, attachmentIndex) => {
+    const newVideos = [...videos];
+    newVideos[videoIndex].newAttachments = newVideos[
+      videoIndex
+    ].newAttachments.filter((_, i) => i !== attachmentIndex);
+    setVideos(newVideos);
+  };
+
+  const handleAttachmentChange = (videoIndex, attachmentIndex, e) => {
+    const newVideos = [...videos];
+    if (!newVideos[videoIndex].newAttachments) {
+      newVideos[videoIndex].newAttachments = [];
+    }
+    if (e.target.type === "file") {
+      newVideos[videoIndex].newAttachments[attachmentIndex].file =
+        e.target.files[0];
+    }
+    setVideos(newVideos);
+  };
+
+  const handleRemoveExistingAttachment = async (videoIndex, attachmentId) => {
+    try {
+      await axios.delete(`/api/attachment/delete/${attachmentId}`);
+
+      // Mettre à jour l'état local après la suppression
+      const newVideos = [...videos];
+      newVideos[videoIndex].attachments = newVideos[
+        videoIndex
+      ].attachments.filter((attachment) => attachment.id !== attachmentId);
+      setVideos(newVideos);
+    } catch (error) {
+      setError("Erreur lors de la suppression de l'annexe");
+    }
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
     setError("");
 
-    // Valider que les vidéos ont des titres et des URLs
+    // Filtrer les vidéos valides
     const validVideos = videos.filter((video) => video.title && video.url);
     if (validVideos.length === 0) {
       setError("Au moins une vidéo avec un titre et une URL est requise");
@@ -91,63 +157,34 @@ const EditChapter = () => {
     }
 
     const formData = new FormData();
-
-    // Ajouter les données du chapitre
     formData.append("title", chapterData.title);
     formData.append("description", chapterData.description);
-    formData.append("courseId", chapterData.courseId);
+    formData.append("courseId", courseId);
     formData.append("videos", JSON.stringify(validVideos));
 
-    // Ajouter le fichier attaché
-    if (attachment) {
-      formData.append("attachment", attachment);
-    }
+    // Ajouter les fichiers d'annexe au formData avec leurs videoId
+    videos.forEach((video, videoIndex) => {
+      if (video.newAttachments) {
+        video.newAttachments.forEach((attachment, attachmentIndex) => {
+          if (attachment.file) {
+            formData.append(`attachments`, attachment.file);
+            formData.append(`videoId${attachmentIndex}`, videoIndex);
+          }
+        });
+      }
+    });
 
     try {
-      const response = await axios.put(`/api/chapter/edit/${id}`, formData, {
+      await axios.put(`/api/chapter/edit/${id}`, formData, {
         headers: {
           "Content-Type": "multipart/form-data",
         },
       });
-
-      if (response.data.chapter) {
-        // Redirection vers la page du cours
-        navigate(`/administrator/edit-course/${courseId}`);
-      }
+      navigate(`/administrator/edit-course/${courseId}`);
     } catch (error) {
       setError(
         error.response?.data?.error ||
           "Une erreur est survenue lors de la mise à jour",
-      );
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const handleAttachmentChange = (e) => {
-    if (e.target.files && e.target.files[0]) {
-      setAttachment(e.target.files[0]);
-    }
-  };
-
-  const removeAttachment = () => {
-    setAttachment(null);
-  };
-
-  const deleteExistingAttachment = async () => {
-    try {
-      setLoading(true);
-      const response = await axios.delete(`/api/chapter/${id}/attachment`);
-      if (response.data.chapter) {
-        setChapterData((prev) => ({
-          ...prev,
-          attachment: null,
-        }));
-      }
-    } catch (error) {
-      setError(
-        error.response?.data?.error ||
-          "Erreur lors de la suppression du fichier",
       );
     } finally {
       setLoading(false);
@@ -238,7 +275,7 @@ const EditChapter = () => {
           <button
             type="button"
             onClick={handleAddVideo}
-            className="flex items-center rounded-md p-2 hover:bg-gray-100 focus:outline-none"
+            className="flex items-center rounded-md p-2 hover:bg-gray-100 focus:outline-none dark:bg-white dark:text-black"
           >
             <PlusCircle className="mr-2 h-4 w-4" />
             Ajouter des vidéos
@@ -248,7 +285,7 @@ const EditChapter = () => {
         {videos.map((video, index) => (
           <div
             key={index}
-            className="mt-6 grid grid-cols-1 gap-6 md:grid-cols-2"
+            className="mt-6 grid grid-cols-1 gap-6 bg-white p-2 dark:bg-transparent md:grid-cols-2"
           >
             <div className="space-y-2 rounded-md border p-4">
               <Input
@@ -283,79 +320,112 @@ const EditChapter = () => {
                 )}
               </div>
             </div>
+            {/* Section des annexes */}
+            <div className="col-span-2 rounded-md border p-4">
+              <div className="mb-4 flex items-center justify-between">
+                <div className="flex items-center gap-x-2">
+                  <Paperclip className="h-5 w-5 text-gray-500" />
+                  <span className="text-sm font-medium">
+                    Annexes de la vidéo
+                  </span>
+                </div>
+                <Button
+                  variant="gradient"
+                  type="button"
+                  onClick={() => handleAddAttachment(index)}
+                  className="flex items-center rounded-md p-2 hover:bg-gray-100 focus:outline-none"
+                >
+                  <PlusCircle className="mr-2 h-4 w-4" />
+                  Ajouter une annexe
+                </Button>
+              </div>
+
+              {/* Liste des annexes existantes */}
+              {video.attachments && video.attachments.length > 0 && (
+                <div className="mb-4 space-y-2">
+                  <h4 className="text-sm font-medium">Annexes existantes :</h4>
+                  {video.attachments.map((attachment, attachmentIndex) => (
+                    <div
+                      key={attachmentIndex}
+                      className="flex items-center justify-between rounded-lg border p-2"
+                    >
+                      <div className="flex items-center gap-2">
+                        <Paperclip className="h-4 w-4 text-gray-500" />
+                        <a
+                          href={`${BASE_URL}${attachment.fileUrl}`}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="text-sm text-blue-500 hover:text-blue-700 hover:underline"
+                          download
+                        >
+                          {attachment.title}
+                        </a>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <a
+                          href={`${BASE_URL}${attachment.fileUrl}`}
+                          download
+                          className="text-blue-500 hover:text-blue-700"
+                        >
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            width="16"
+                            height="16"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            strokeWidth="2"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            className="lucide lucide-download"
+                          >
+                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                            <polyline points="7 10 12 15 17 10" />
+                            <line x1="12" y1="15" x2="12" y2="3" />
+                          </svg>
+                        </a>
+                        <button
+                          type="button"
+                          onClick={() =>
+                            handleRemoveExistingAttachment(index, attachment.id)
+                          }
+                          className="text-red-500 hover:text-red-700"
+                        >
+                          <TrashIcon className="h-4 w-4" />
+                        </button>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+
+              {/* Formulaire d'ajout d'annexe */}
+              {video.newAttachments &&
+                video.newAttachments.map((attachment, attachmentIndex) => (
+                  <div key={attachmentIndex} className="mb-4">
+                    <div className="flex items-center gap-2">
+                      <Input
+                        type="file"
+                        onChange={(e) =>
+                          handleAttachmentChange(index, attachmentIndex, e)
+                        }
+                        className="dark:text-white dark:focus:border-white"
+                      />
+                      <button
+                        type="button"
+                        onClick={() =>
+                          handleRemoveAttachment(index, attachmentIndex)
+                        }
+                        className="text-red-500 hover:text-red-700"
+                      >
+                        <Trash2 className="h-5 w-5" />
+                      </button>
+                    </div>
+                  </div>
+                ))}
+            </div>
           </div>
         ))}
-
-        <div className="mt-10 flex items-center gap-x-2">
-          <div className="flex items-center justify-center rounded-full bg-blue-100 p-2">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="24"
-              height="24"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              className="lucide lucide-paperclip text-green-700"
-            >
-              <path d="M13.234 20.252 21 12.3" />
-              <path d="m16 6-8.414 8.586a2 2 0 0 0 0 2.828 2 2 0 0 0 2.828 0l8.414-8.586a4 4 0 0 0 0-5.656 4 4 0 0 0-5.656 0l-8.415 8.585a6 6 0 1 0 8.486 8.486" />
-            </svg>
-          </div>
-          <h2 className="text-xl">Annexes de la formation</h2>
-        </div>
-        <div className="mt-6 w-full gap-6 space-y-2 rounded-md border p-4 md:w-2/4">
-          <Input
-            label="Fichier annexe"
-            type="file"
-            name="attachment"
-            id="attachment"
-            onChange={handleAttachmentChange}
-          />
-
-          {attachment && (
-            <div className="mt-2">
-              <div className="flex justify-between">
-                {attachment.name.substring(0, 50)}{" "}
-                <div className="flex gap-x-2">
-                  <button onClick={removeAttachment} className="text-red-500">
-                    <TrashIcon className="h-5 w-5" />
-                  </button>
-                </div>
-              </div>
-            </div>
-          )}
-        </div>
-
-        {chapterData.attachment && (
-          <div className="mt-6">
-            <div className="flex items-center justify-between">
-              <div className="text-sm font-medium text-blue-gray-900">
-                Fichier joint actuel
-              </div>
-              <Button
-                variant="text"
-                color="red"
-                className="flex items-center gap-2"
-                onClick={deleteExistingAttachment}
-                disabled={loading}
-              >
-                <TrashIcon className="h-4 w-4" />
-                Supprimer le fichier
-              </Button>
-            </div>
-            <div className="mt-4">
-              <iframe
-                src={`${BASE_URL}${chapterData.attachment}`}
-                width="100%"
-                height="500px"
-                className="border"
-              />
-            </div>
-          </div>
-        )}
 
         <div className="flex justify-center">
           <Button

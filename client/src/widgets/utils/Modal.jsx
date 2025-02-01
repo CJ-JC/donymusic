@@ -53,18 +53,18 @@ const Modal = ({ isModalOpen, closeModal, handleConfirmDelete, message }) => {
                   {message || "Voulez-vous vraiment supprimer cet élément ?"}
                 </h3>
                 <button
+                  onClick={closeModal}
+                  type="button"
+                  className="mr-3 rounded-lg border border-gray-200 bg-white px-5 py-2.5 text-sm font-medium text-gray-900 hover:bg-gray-100 hover:text-gray-700 focus:z-10 focus:outline-none focus:ring-4 focus:ring-gray-100 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white dark:focus:ring-gray-700"
+                >
+                  Non, annuler
+                </button>
+                <button
                   onClick={handleConfirmDelete}
                   type="button"
                   className="inline-flex items-center rounded-lg bg-red-600 px-5 py-2.5 text-center text-sm font-medium text-white hover:bg-red-800 focus:outline-none focus:ring-4 focus:ring-red-300 dark:focus:ring-red-800"
                 >
                   Oui, j'en suis sûr
-                </button>
-                <button
-                  onClick={closeModal}
-                  type="button"
-                  className="ml-3 rounded-lg border border-gray-200 bg-white px-5 py-2.5 text-sm font-medium text-gray-900 hover:bg-gray-100 hover:text-gray-700 focus:z-10 focus:outline-none focus:ring-4 focus:ring-gray-100 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white dark:focus:ring-gray-700"
-                >
-                  Non, annuler
                 </button>
               </div>
             </div>

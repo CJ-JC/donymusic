@@ -70,6 +70,11 @@ export const getUserPurchases = async (req, res) => {
                     as: "masterclass",
                     attributes: ["id", "title", "description", "imageUrl"],
                 },
+                {
+                    model: User,
+                    as: "user",
+                    attributes: ["id", "firstName", "lastName", "email"],
+                },
             ],
         });
 
@@ -104,11 +109,11 @@ export const checkUserPurchase = async (req, res) => {
             ],
         });
 
-        if (purchase) {
-            return res.status(200).json({ hasPurchased: true });
-        }
+        // Vérification si c'est un achat de cours ou de masterclass
+        const hasPurchasedCourse = !!purchase?.course;
+        const hasPurchasedMasterclass = !!purchase?.masterclass;
 
-        return res.status(200).json({ hasPurchased: false });
+        return res.status(200).json({ hasPurchasedCourse, hasPurchasedMasterclass });
     } catch (error) {
         return res.status(500).json({ error: "Erreur interne" });
     }
@@ -156,6 +161,7 @@ export const createCheckoutSession = async (req, res) => {
                 itemType: isMasterclass ? "masterclass" : "course",
                 status: "pending",
                 amount: productPrice / 100,
+                title: productName,
             });
 
             // Créer un enregistrement de paiement en attente
@@ -279,16 +285,22 @@ export const verifyPayment = async (req, res) => {
             if (payment && payment.purchase) {
                 const item = modelAlias === "masterclass" ? payment.purchase.masterclass : payment.purchase.course;
 
-                // Envoi de l'email après paiement confirmé
+                // Vérifier si l'email a déjà été envoyé (ex : ajouter une colonne "emailSent" dans Payment)
+                if (payment.emailSent) {
+                    return res.json({ success: true, item });
+                }
+
+                // Envoi de l'email une seule fois
                 const userEmail = session.customer_email || "cherley95@hotmail.fr";
                 const fullname = payment.purchase.user?.fullname || "Cher utilisateur";
-
-                // Contenu de l'email
                 const subject = `Confirmation de votre achat : ${item.title}`;
-                const product = `${modelAlias === "masterclass" ? "la masterclass" : "la formation"}`;
+                const product = `${modelAlias === "masterclass" ? "masterclass" : "formation"}`;
                 const productTitle = `"${item.title}"`;
 
-                // Envoi de l'email
+                // Formatage des dates et heures
+                const startDate = new Date(item.startDate).toLocaleDateString("fr-FR");
+                const startTime = new Date(item.startDate).toLocaleTimeString("fr-FR", { hour: "2-digit", minute: "2-digit" });
+
                 await sendInvoiceEmail({
                     fullname,
                     email: userEmail,
@@ -297,13 +309,15 @@ export const verifyPayment = async (req, res) => {
                     item,
                     product,
                     productTitle,
+                    startDate,
+                    startTime,
+                    link: item.link,
                 });
 
-                // Réponse à l'API
-                res.json({
-                    success: true,
-                    item,
-                });
+                // Mettre à jour la base de données pour indiquer que l'email a été envoyé
+                await payment.update({ emailSent: true });
+
+                res.json({ success: true, item });
             } else {
                 res.status(404).json({ error: "Paiement non trouvé" });
             }
@@ -316,7 +330,7 @@ export const verifyPayment = async (req, res) => {
     }
 };
 
-const sendInvoiceEmail = async ({ fullname, email, subject, payment, item, product, productTitle }) => {
+const sendInvoiceEmail = async ({ fullname, email, subject, payment, item, product, productTitle, startDate, startTime, link }) => {
     let transporter = nodemailer.createTransport({
         host: process.env.EMAIL_HOST,
         port: parseInt(process.env.EMAIL_PORT || "587", 10),
@@ -335,6 +349,9 @@ const sendInvoiceEmail = async ({ fullname, email, subject, payment, item, produ
         item,
         product,
         productTitle,
+        startDate,
+        startTime,
+        link,
     });
 
     const mailOptions = {

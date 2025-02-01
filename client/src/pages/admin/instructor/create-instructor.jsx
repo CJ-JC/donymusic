@@ -66,8 +66,8 @@ export default function CreateInstructor() {
 
   return (
     <div className="container mx-auto px-4 py-8">
-      <Card className="mx-auto max-w-3xl p-6">
-        <Typography variant="h4" color="blue-gray" className="mb-6">
+      <Card className="mx-auto max-w-3xl p-6 dark:bg-[#25303F]">
+        <Typography variant="h4" color="blue-gray" className="dark:text-white">
           Créer un nouvel instructeur
         </Typography>
 
@@ -79,7 +79,11 @@ export default function CreateInstructor() {
 
         <form onSubmit={handleSubmit} className="space-y-6">
           <div>
-            <Typography variant="h6" color="blue-gray" className="mb-2">
+            <Typography
+              variant="h6"
+              color="blue-gray"
+              className="mb-2 dark:text-white"
+            >
               Nom
             </Typography>
             <Input
@@ -89,11 +93,16 @@ export default function CreateInstructor() {
               onChange={handleInputChange}
               required
               placeholder="Nom de l'instructeur"
+              className="bg-gray-50 dark:text-white"
             />
           </div>
 
           <div>
-            <Typography variant="h6" color="blue-gray" className="mb-2">
+            <Typography
+              variant="h6"
+              color="blue-gray"
+              className="mb-2 dark:text-white"
+            >
               Biographie
             </Typography>
             <Textarea
@@ -102,6 +111,7 @@ export default function CreateInstructor() {
               onChange={handleInputChange}
               required
               placeholder="Biographie de l'instructeur"
+              className="bg-gray-50 dark:text-white"
               rows={6}
             />
           </div>
@@ -114,7 +124,6 @@ export default function CreateInstructor() {
               type="file"
               accept="image/*"
               onChange={handleImageChange}
-              required
               className="mb-2"
             />
             {preview && (
@@ -129,7 +138,8 @@ export default function CreateInstructor() {
           <div className="flex justify-center gap-4">
             <Button
               variant="outlined"
-              onClick={() => navigate("/admin/instructors")}
+              onClick={() => navigate("/administrator/instructors")}
+              className="dark:bg-white dark:text-black"
             >
               Annuler
             </Button>

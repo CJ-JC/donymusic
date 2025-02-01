@@ -21,9 +21,11 @@ import ReactQuill from "react-quill";
 import { motion } from "framer-motion";
 import { Monitor, Rocket, UsersRound } from "lucide-react";
 import Contact from "@/components/Contact";
+import { useSelector } from "react-redux";
 
 export function Home() {
   const { discountedCourses, globalDiscount, availableRemises } = useCourses();
+  const { isLoggedIn, user } = useSelector((state) => state.auth);
 
   const [masterclasses, setMasterclasses] = useState([]);
   const [error, setError] = useState(null);
@@ -54,7 +56,7 @@ export function Home() {
     <>
       <div className="relative flex h-[700px] content-center items-center justify-center pb-32 pt-16">
         <video
-          className="absolute top-0 h-full w-full object-cover "
+          className="absolute top-0 h-full w-full object-cover"
           autoPlay
           muted
           loop
@@ -65,18 +67,15 @@ export function Home() {
         <div className="absolute top-0 h-full w-full bg-black/80 bg-cover bg-center" />
         <div className="max-w-8xl container relative mx-auto">
           <div className="flex flex-wrap items-center">
-            <div className="ml-auto mr-auto w-full px-4 text-center lg:w-8/12">
-              <Typography
-                variant="h1"
-                color="white"
-                className="mb-6 font-black"
-              >
+            <div className="lg:w-8/10 ml-auto mr-auto w-full px-4 text-center">
+              <Typography variant="h1" color="white" className="font-black">
                 Laissez la musique vous inspirer.
               </Typography>
               <Typography variant="lead" color="white" className="opacity-80">
                 Avec DonyMusic, découvrez une nouvelle façon d'apprendre à jouer
-                de vos instruments préférés. Suivez des cours interactifs,
-                progressez à votre rythme et réalisez vos rêves musicaux.
+                de vos instruments préférés. <br /> Suivez des cours
+                interactifs, progressez à votre rythme et réalisez vos rêves
+                musicaux.
               </Typography>
             </div>
           </div>
@@ -157,7 +156,7 @@ export function Home() {
                 </PageTitle>
 
                 <CourseList
-                  courses={discountedCourses}
+                  courses={discountedCourses.slice(0, 4)}
                   globalDiscount={globalDiscount}
                   availableRemises={availableRemises}
                 />
@@ -185,7 +184,6 @@ export function Home() {
           </PageTitle>
 
           <div className="mt-12 grid items-center gap-12 md:grid-cols-2">
-            {/* Section du formateur avec animation */}
             <motion.div
               initial={{ opacity: 0 }}
               whileInView={{ opacity: 1 }}
@@ -205,7 +203,7 @@ export function Home() {
                     expertise.
                   </p>
 
-                  <div className="mt-4 flex space-x-4">
+                  <div className="mt-2 flex space-x-4">
                     <a
                       href="https://www.linkedin.com/in/jeandupont"
                       target="_blank"
@@ -213,7 +211,7 @@ export function Home() {
                     >
                       <motion.i
                         whileHover={{ scale: 1.2 }}
-                        className="fab fa-facebook text-xl text-blue-600"
+                        className="fab fa-facebook text-2xl text-blue-600"
                       ></motion.i>
                     </a>
                     <a
@@ -223,7 +221,7 @@ export function Home() {
                     >
                       <motion.i
                         whileHover={{ scale: 1.2 }}
-                        className="fab fa-youtube text-xl text-red-500"
+                        className="fab fa-youtube text-2xl text-red-500"
                       ></motion.i>
                     </a>
                   </div>
@@ -231,13 +229,12 @@ export function Home() {
               </div>
             </motion.div>
 
-            {/* Image avec effet de zoom */}
             <motion.div
-              whileHover={{ scale: 1.05 }}
+              whileHover={{ scale: 1.03 }}
               initial={{ opacity: 0 }}
               whileInView={{ opacity: 1 }}
               viewport={{ once: true }}
-              transition={{ duration: 0.8, delay: 0.2 }}
+              transition={{ duration: 0.5, delay: 0.2 }}
               className="relative"
             >
               <img
@@ -247,6 +244,48 @@ export function Home() {
               />
             </motion.div>
           </div>
+        </div>
+      </section>
+
+      <section className="relative mx-auto my-10 flex h-96 items-center bg-[url('/img/bg-home-2.jpg')] bg-cover bg-scroll bg-center bg-no-repeat px-4 py-20">
+        <div className="absolute inset-0 bg-black/80" />
+
+        <div className="container relative z-10 mx-auto max-w-screen-xl">
+          <motion.div
+            initial={{ opacity: 0 }}
+            whileInView={{ opacity: 1 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.8, delay: 0.2 }}
+            className="text-center"
+          >
+            <h2 className="mb-4 text-3xl font-bold text-white">
+              Transformez votre avenir dès aujourd'hui !
+            </h2>
+            <p className="mb-6 text-lg text-gray-200">
+              Rejoignez notre communauté et accédez à des formations exclusives
+              pour développer vos compétences et réaliser vos ambitions. <br />{" "}
+              {!isLoggedIn && !user && (
+                <>
+                  Inscrivez-vous dès maintenant et commencez votre parcours vers
+                  le succès.
+                </>
+              )}{" "}
+              {isLoggedIn && user && (
+                <>Commencez votre parcours vers le succès.</>
+              )}
+            </p>
+            {!isLoggedIn && !user && (
+              <div className="flex justify-center">
+                <Button
+                  size="md"
+                  onClick={() => navigate("/sign-up")}
+                  className="bg-white px-6 py-3 text-black hover:bg-gray-300"
+                >
+                  Rejoignez-nous aujourd'hui
+                </Button>
+              </div>
+            )}
+          </motion.div>
         </div>
       </section>
 
@@ -266,7 +305,7 @@ export function Home() {
               Découvrez une plateforme de formation pour développer vos
               compétences musicales et professionnelles.
             </PageTitle>
-            <div className="mt-8 grid gap-8 sm:grid-cols-3">
+            <div className="mt-8 grid gap-8 sm:grid-cols-1 md:grid-cols-3">
               <motion.div
                 whileHover={{ scale: 1.1 }}
                 transition={{ type: "spring", stiffness: 300 }}
@@ -306,22 +345,13 @@ export function Home() {
                   </div>
                   <p className="mt-2 text-blue-gray-500 dark:text-white">
                     <strong>Atteignez de nouveaux sommets</strong> : Progresser
-                    n’a jamais été aussi simple. Développez vos compétences et
-                    avancez vers vos rêves.
+                    n'a jamais été aussi simple. Développez vos compétences et
+                    avancez vers vos ambitions.
                   </p>
                 </div>
               </motion.div>
             </div>
           </motion.div>
-          <div className="mt-24 flex justify-center">
-            <Button
-              size="md"
-              onClick={() => navigate("/sign-up")}
-              className="px-6 py-3 dark:bg-white dark:text-black dark:hover:bg-gray-400"
-            >
-              Rejoignez-nous aujourd'hui
-            </Button>
-          </div>
         </div>
       </section>
       {/* bg-[#F9FAFB] */}

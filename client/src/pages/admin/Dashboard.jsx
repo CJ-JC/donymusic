@@ -1,13 +1,17 @@
 import HeaderAdmin from "@/widgets/layout/header-admin";
 import { Typography } from "@material-tailwind/react";
 import axios from "axios";
+import { Eye } from "lucide-react";
 import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 const Dashboard = () => {
   const [users, setUsers] = useState([]);
   const [purchases, setPurchases] = useState([]);
   const [error, setError] = useState("");
   const [totalBenefits, setTotalBenefits] = useState(0);
+  const [courses, setCourses] = useState([]);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchUsers = async () => {
@@ -42,7 +46,24 @@ const Dashboard = () => {
     };
 
     fetchPurchases();
+  }, [purchases]);
+
+  useEffect(() => {
+    const fetchCourses = async () => {
+      try {
+        const response = await axios.get("/api/course");
+        setCourses(response.data);
+      } catch (error) {
+        setError("Erreur lors de la récupération des cours :", error);
+      }
+    };
+
+    fetchCourses();
   }, []);
+
+  const viewInvoice = (purchase) => {
+    navigate("/invoice-pdf", { state: { purchase } });
+  };
 
   return (
     <>
@@ -50,6 +71,7 @@ const Dashboard = () => {
         users={users}
         purchases={purchases}
         totalBenefits={totalBenefits}
+        courses={courses}
       />
       <div className="py-3">
         {error && (
@@ -80,11 +102,6 @@ const Dashboard = () => {
                 </th>
                 <th className="border-slate-200 bg-slate-50 border-b p-4">
                   <p className="text-slate-500 text-sm font-normal leading-none">
-                    Catégorie
-                  </p>
-                </th>
-                <th className="border-slate-200 bg-slate-50 border-b p-4">
-                  <p className="text-slate-500 text-sm font-normal leading-none">
                     Montant
                   </p>
                 </th>
@@ -96,6 +113,11 @@ const Dashboard = () => {
                 <th className="border-slate-200 bg-slate-50 border-b p-4">
                   <p className="text-slate-500 text-sm font-normal leading-none">
                     Date
+                  </p>
+                </th>
+                <th className="border-slate-200 bg-slate-50 border-b p-4">
+                  <p className="text-slate-500 text-sm font-normal leading-none">
+                    Facture
                   </p>
                 </th>
               </tr>
@@ -119,16 +141,9 @@ const Dashboard = () => {
                       <span className="font-semibold">
                         {" "}
                         {purchase.itemType === "course"
-                          ? purchase.course.title
-                          : purchase.masterclass.title}
+                          ? purchase.course?.title
+                          : purchase.masterclass?.title}
                       </span>
-                    </p>
-                  </td>
-                  <td className="p-4 py-5">
-                    <p className="text-slate-800 block text-sm">
-                      {purchase.course?.category
-                        ? purchase.course.category.title
-                        : "Catégorie non définie"}
                     </p>
                   </td>
                   <td className="p-4 py-5">
@@ -149,6 +164,15 @@ const Dashboard = () => {
                   </td>
                   <td className="p-4 py-5 text-sm">
                     {new Date(purchase.createdAt).toLocaleDateString()}
+                  </td>
+                  <td className="p-4 py-5">
+                    <button
+                      onClick={() => viewInvoice(purchase)}
+                      className="flex items-center gap-1 text-sm font-semibold text-blue-gray-900 hover:underline dark:text-white"
+                    >
+                      <Eye className="h-5 w-5" />
+                      Voir
+                    </button>
                   </td>
                 </tr>
               ))}

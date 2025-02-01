@@ -34,6 +34,9 @@ import Success from "./pages/Success";
 import InvoicePdf from "./pages/user/Invoice-pdf";
 import ForgotPassword from "./pages/auth/forgot-password";
 import ResetPassword from "./pages/auth/reset-password";
+import Politique from "./pages/Politique";
+import Cgu from "./pages/cgu";
+import Cgv from "./pages/Cgv";
 
 const Layout = ({
   globalDiscount,
@@ -41,10 +44,11 @@ const Layout = ({
   isExpired,
   toggleTheme,
   theme,
+  timeLeft,
 }) => (
   <>
     {!isExpired && globalDiscount && (
-      <div className="border-orange-30 text-primary text-md flex w-full items-center justify-center border bg-orange-700/60 p-4">
+      <div className="text-md flex w-full items-center justify-center bg-orange-700/60 p-4">
         <svg
           xmlns="http://www.w3.org/2000/svg"
           width="24"
@@ -55,14 +59,17 @@ const Layout = ({
           strokeWidth="2"
           strokeLinecap="round"
           strokeLinejoin="round"
-          className="lucide lucide-triangle-alert mr-2 h-4 w-4"
+          className="lucide lucide-triangle-alert mr-1 h-4 w-4"
         >
           <path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3"></path>
           <path d="M12 9v4"></path>
           <path d="M12 17h.01"></path>
         </svg>
         Bénéficiez de {discountPercentage}% de réductions sur les cours de votre
-        choix.
+        choix.{" "}
+        <span className="ml-1 font-bold">
+          ⏳ Offre expire dans : {timeLeft}
+        </span>
       </div>
     )}
     <Navbar toggleTheme={toggleTheme} theme={theme} />
@@ -77,6 +84,8 @@ function App() {
   const [authLoading, setAuthLoading] = useState(true);
   const [error, setError] = useState(null);
   const [isExpired, setIsExpired] = useState(false);
+  const [expirationDate, setExpirationDate] = useState(null);
+  const [timeLeft, setTimeLeft] = useState("");
 
   const [theme, setTheme] = useState(() => {
     return localStorage.getItem("theme") || "light";
@@ -88,6 +97,26 @@ function App() {
       localStorage.setItem("theme", newTheme);
       return newTheme;
     });
+  };
+
+  // Fonction pour calculer le temps restant
+  const calculateTimeLeft = (expiryDate) => {
+    const now = new Date();
+    const difference = expiryDate - now;
+
+    if (difference <= 0) {
+      setIsExpired(true);
+      return "Expiré";
+    }
+
+    const days = Math.floor(difference / (1000 * 60 * 60 * 24));
+    const hours = Math.floor((difference / (1000 * 60 * 60)) % 24);
+    const minutes = Math.floor((difference / (1000 * 60)) % 60);
+    const seconds = Math.floor((difference / 1000) % 60);
+
+    return days > 0
+      ? `${days}j ${hours}h ${minutes}m ${seconds}s`
+      : `${hours}h ${minutes}m ${seconds}s`;
   };
 
   useEffect(() => {
@@ -117,11 +146,13 @@ function App() {
           if (expirationDate > now) {
             setGlobalDiscount(true);
             setDiscountPercentage(globalRemise.discountPercentage);
-            setIsExpired(false); // La remise n'est pas expirée
+            setIsExpired(false);
+            setExpirationDate(expirationDate);
+            setTimeLeft(calculateTimeLeft(expirationDate));
           } else {
             setGlobalDiscount(false);
             setDiscountPercentage(0);
-            setIsExpired(true); // La remise est expirée
+            setIsExpired(true);
           }
         } else {
           setGlobalDiscount(false);
@@ -138,6 +169,17 @@ function App() {
 
     fetchRemises();
   }, []);
+
+  // Mise à jour du countdown toutes les secondes
+  useEffect(() => {
+    if (!expirationDate || isExpired) return;
+
+    const timer = setInterval(() => {
+      setTimeLeft(calculateTimeLeft(expirationDate));
+    }, 1000);
+
+    return () => clearInterval(timer);
+  }, [expirationDate, isExpired]);
 
   if (authLoading) {
     return (
@@ -162,6 +204,7 @@ function App() {
               isExpired={isExpired}
               toggleTheme={toggleTheme}
               theme={theme}
+              timeLeft={timeLeft}
             />
           }
         >
@@ -227,6 +270,11 @@ function App() {
         />
 
         <Route path="*" element={<NotFound />} />
+
+        {/* footer */}
+        <Route path="politique" element={<Politique />} />
+        <Route path="cgu" element={<Cgu />} />
+        <Route path="cgv" element={<Cgv />} />
       </Routes>
     </div>
   );
@@ -235,5 +283,5 @@ function App() {
 export default App;
 
 {
-  /* <h1>What is a webinar description?</h1><p><br></p><p>The webinar description is a piece of text that introduces the thematic scope of your webinar to your audience, and it's probably one of the most vital parts of your promotion strategy. You can do an outstanding social media campaign, do great email marketing, and prepare a marvelous presentation, but without a webinar description that grabs attention, you're not going to&nbsp;convince people to hit the "participate" button.</p><p><br></p><p>You can write a description of your&nbsp;webinar’s title, subject, as the agenda, and any special activities&nbsp;that you’ve prepared for your attendees are essential. This is the only way to show how valuable the content that you’re going to present is. With gripping text, you can make your webinar stand out from the crowd.</p><p><br></p><h2>What should a description include?</h2><p class="ql-align-justify">Here is some principal information that the webinar description should convey. Forgetting about some of them might cause misunderstandings and result in one of two scenarios. First, a person may send you a direct message asking about the missing details. Second, which is more likely and far worse for your business, a user could abandon your event and forget about it altogether.</p><p>To avoid such situations, you should write a description that includes the following points:</p><ul><li class="ql-align-justify"><strong>Set the time and date.</strong>&nbsp;It will also be visible in the event parameters, but to make everything crystal clear, it's good practice to add a note about the exact timing of the webinar. And although everything takes place online, you can show where exactly the event will be hosted from.</li><li class="ql-align-justify"><strong>Show the purpose of the webinar.</strong>&nbsp;People don't have much time to waste, and they seek ready-to-implement solutions. Although most of us spend some leisure moments scrolling social media or staring pointlessly at the TV, we still want to feel that if we spend an hour watching a live video then it will improve our life. So when you're writing a webinar description, make sure to show viewers how they can benefit from it.</li></ul> */
+  /* <h1>What is a webinar description?</h1><p><br></p><p>The webinar description is a piece of text that introduces the thematic scope of your webinar to your audience, and it's probably one of the most vital parts of your promotion strategy. You can do an outstanding social media campaign, do great email marketing, and prepare a marvelous presentation, but without a webinar description that grabs attention, you're not going to&nbsp;convince people to hit the "participate" button.</p><p><br></p><p>You can write a description of your&nbsp;webinar's title, subject, as the agenda, and any special activities&nbsp;that you've prepared for your attendees are essential. This is the only way to show how valuable the content that you're going to present is. With gripping text, you can make your webinar stand out from the crowd.</p><p><br></p><h2>What should a description include?</h2><p class="ql-align-justify">Here is some principal information that the webinar description should convey. Forgetting about some of them might cause misunderstandings and result in one of two scenarios. First, a person may send you a direct message asking about the missing details. Second, which is more likely and far worse for your business, a user could abandon your event and forget about it altogether.</p><p>To avoid such situations, you should write a description that includes the following points:</p><ul><li class="ql-align-justify"><strong>Set the time and date.</strong>&nbsp;It will also be visible in the event parameters, but to make everything crystal clear, it's good practice to add a note about the exact timing of the webinar. And although everything takes place online, you can show where exactly the event will be hosted from.</li><li class="ql-align-justify"><strong>Show the purpose of the webinar.</strong>&nbsp;People don't have much time to waste, and they seek ready-to-implement solutions. Although most of us spend some leisure moments scrolling social media or staring pointlessly at the TV, we still want to feel that if we spend an hour watching a live video then it will improve our life. So when you're writing a webinar description, make sure to show viewers how they can benefit from it.</li></ul> */
 }

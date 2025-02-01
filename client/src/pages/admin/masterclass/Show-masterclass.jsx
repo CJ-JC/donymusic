@@ -31,6 +31,7 @@ const ShowMasterclass = () => {
   const [masterclasses, setMasterclasses] = useState([]);
   const [deleteDialog, setDeleteDialog] = useState(false);
   const [selectedMasterclass, setMasterclass] = useState(null);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
     const fetchCourses = async () => {
@@ -51,6 +52,7 @@ const ShowMasterclass = () => {
     try {
       await axios.delete(`/api/masterclass/delete/${selectedMasterclass.id}`);
       setDeleteDialog(false);
+      window.location.reload();
     } catch (err) {
       setError("Erreur lors de la suppression de l'instructeur");
     }

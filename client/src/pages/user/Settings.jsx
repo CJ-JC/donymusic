@@ -23,8 +23,8 @@ const Settings = ({
         Vos paramètres
       </Typography>
       <p className="text-gray-600 dark:text-white">
-        Changez votre mot de passe Laissez vide pour garder votre mot de passe
-        actuel.
+        Changez votre mot de passe ou laissez vide pour garder votre mot de
+        passe actuel.
       </p>
 
       <div className="mx-auto my-4 grid grid-cols-1 gap-6 lg:grid-cols-2">

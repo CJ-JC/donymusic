@@ -1,5 +1,4 @@
 import { Instructor } from "../models/Instructor.js";
-import { Masterclass } from "../models/Masterclass.js";
 import fs from "fs";
 
 export const getInstructors = async (req, res) => {
@@ -111,7 +110,9 @@ export const deleteInstructor = async (req, res) => {
             return res.status(404).json({ message: "Instructeur non trouvé" });
         }
 
-        fs.unlinkSync(`public${instructor.imageUrl}`);
+        if (instructor.imageUrl) {
+            fs.unlinkSync(`public${instructor.imageUrl}`);
+        }
 
         await instructor.destroy();
 

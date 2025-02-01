@@ -5,6 +5,7 @@ import fs from "fs";
 import { Category } from "../models/Category.js";
 import { Purchase } from "../models/Purchase.js";
 import { UserProgress } from "../models/UserProgress.js";
+import Attachments from "../models/Attachments.js";
 
 export const getCourses = async (req, res) => {
     try {
@@ -16,11 +17,18 @@ export const getCourses = async (req, res) => {
             include: [
                 {
                     model: Chapter,
-                    attributes: ["id", "title", "description", "attachment"],
+                    attributes: ["id", "title", "description"],
                     include: [
                         {
                             model: Video,
                             attributes: ["id", "url", "title"],
+                            include: [
+                                {
+                                    model: Attachments,
+                                    as: "attachments",
+                                    attributes: ["id", "fileUrl", "title"],
+                                },
+                            ],
                         },
                     ],
                 },
@@ -60,6 +68,13 @@ export const getCourseByUserId = async (req, res) => {
                             {
                                 model: Video,
                                 attributes: ["id", "url", "title"],
+                                include: [
+                                    {
+                                        model: Attachments,
+                                        as: "attachments",
+                                        attributes: ["id", "fileUrl", "title"],
+                                    },
+                                ],
                             },
                         ],
                     },
@@ -164,6 +179,13 @@ export const getCourseById = async (req, res) => {
                         {
                             model: Video,
                             attributes: ["id", "url", "title"],
+                            include: [
+                                {
+                                    model: Attachments,
+                                    as: "attachments",
+                                    attributes: ["id", "fileUrl", "title"],
+                                },
+                            ],
                         },
                     ],
                 },
@@ -367,11 +389,18 @@ export const getCourseBySlug = async (req, res) => {
             include: [
                 {
                     model: Chapter,
-                    attributes: ["id", "title", "description", "attachment"],
+                    attributes: ["id", "title", "description"],
                     include: [
                         {
                             model: Video,
                             attributes: ["id", "url", "title"],
+                            include: [
+                                {
+                                    model: Attachments,
+                                    as: "attachments",
+                                    attributes: ["id", "fileUrl", "title"],
+                                },
+                            ],
                         },
                     ],
                 },

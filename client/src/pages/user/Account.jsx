@@ -200,7 +200,7 @@ const Account = () => {
 
   const data = [
     {
-      label: "Dashboard",
+      label: "Tableau de bord",
       value: "dashboard",
       icon: Square3Stack3DIcon,
       component: <Dashboard courseData={courseData} loading={loading} />,

@@ -52,7 +52,7 @@ function sendEmail({ email, fullname, message }) {
             if (error) {
                 return reject({ message: `An error has occurred` });
             }
-            return resolve({ message: "L'e-mail a été envoyé avec succès" });
+            return resolve({ message: "Votre message a été envoyé avec succès" });
         });
     });
 }

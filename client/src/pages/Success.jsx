@@ -13,19 +13,29 @@ const Success = () => {
 
   useEffect(() => {
     const verifyPayment = async () => {
-      try {
-        const sessionId = searchParams.get("session_id");
-        if (!sessionId) {
-          setError("Session ID manquant");
-          return;
-        }
+      const sessionId = searchParams.get("session_id");
 
+      if (!sessionId) {
+        setError("Session ID manquant");
+        return;
+      }
+
+      // Vérifier si l'utilisateur a déjà accédé à la page après paiement
+      if (sessionStorage.getItem(`payment_verified_${sessionId}`)) {
+        navigate("/user/account");
+        return;
+      }
+
+      try {
         const response = await axios.get(
           `/api/payment/verify?sessionId=${sessionId}`,
         );
         if (response.data.success) {
           setItem(response.data.item);
-          setItemType(response.data.item ? "masterclass" : "course");
+          setItemType(response.data.item.startDate ? "masterclass" : "course");
+
+          // Marquer le paiement comme vérifié
+          sessionStorage.setItem(`payment_verified_${sessionId}`, "true");
         }
       } catch (error) {
         setError("Erreur lors de la vérification du paiement");
@@ -35,7 +45,11 @@ const Success = () => {
     };
 
     verifyPayment();
-  }, [searchParams]);
+  }, [searchParams, navigate]);
+
+  useEffect(() => {
+    window.history.replaceState(null, "", "/user/account");
+  }, []);
 
   if (loading) {
     return (
@@ -81,7 +95,7 @@ const Success = () => {
           <div className="mb-6 rounded-lg bg-gray-50 p-4">
             {/* <h2 className="font-semibold text-gray-800">Détails :</h2> */}
             <p className="text-gray-600">{item.title}</p>
-            {/* <p className="text-gray-600">{item.price} €</p> */}
+            <p className="text-gray-600">{item.price} €</p>
           </div>
         )}
 
@@ -103,13 +117,10 @@ const Success = () => {
             color="gray"
             variant="outlined"
             onClick={() =>
-              navigate(
-                itemType === "masterclass" ? "/masterclasses" : "/courses",
-              )
+              navigate(itemType === "masterclass" ? "/masterclass" : "/courses")
             }
           >
-            Voir tous les{" "}
-            {itemType === "masterclass" ? "masterclasses" : "cours"}
+            Voir tous les {itemType === "masterclass" ? "masterclass" : "cours"}
           </Button>
         </div>
       </div>

@@ -1,7 +1,8 @@
 import { Chapter } from "../models/Chapter.js";
 import { Video } from "../models/Video.js";
+import { Attachments } from "../models/Attachments.js";
 import fs from "fs";
-import path from "path";
+import { Op } from "sequelize";
 
 export const getChapters = async (req, res) => {
     try {
@@ -21,6 +22,13 @@ export const getChapterById = async (req, res) => {
                 {
                     model: Video,
                     attributes: ["id", "url", "title"],
+                    include: [
+                        {
+                            model: Attachments,
+                            as: "attachments",
+                            attributes: ["id", "fileUrl", "title"],
+                        },
+                    ],
                 },
             ],
         });
@@ -51,9 +59,6 @@ export const createChapter = async (req, res) => {
             return res.status(400).json({ error: "Le format des vidéos est invalide." });
         }
 
-        // Gestion du fichier attaché
-        const attachment = req.file ? `/uploads/attachments/${req.file.filename}` : null;
-
         // Vérification des champs obligatoires
         if (!title || !description || !courseId || !Array.isArray(videos)) {
             return res.status(400).json({ error: "Tous les champs sont requis." });
@@ -64,7 +69,6 @@ export const createChapter = async (req, res) => {
             title,
             description,
             courseId,
-            attachment: attachment, // Ajouter le fichier
         });
 
         // Création des vidéos associées
@@ -76,17 +80,70 @@ export const createChapter = async (req, res) => {
             });
         });
 
-        await Promise.all(videoPromises);
+        const createdVideos = await Promise.all(videoPromises);
 
-        // Récupération du chapitre avec ses vidéos
-        const chapterWithVideos = await Chapter.findOne({
+        // Traitement des fichiers d'annexe
+        const files = req.files;
+        if (files && files.length > 0) {
+            const attachmentPromises = files.map(async (file, index) => {
+                const filePath = `/uploads/attachments/${file.filename}`;
+                const originalName = file.originalname;
+                const videoIndex = req.body[`videoId${index}`];
+                const videoId = videoIndex !== "" ? createdVideos[parseInt(videoIndex)]?.id : null;
+
+                // Vérifier si un fichier avec le même nom existe déjà
+                const existingAttachment = await Attachments.findOne({
+                    where: {
+                        title: originalName,
+                        chapterId: chapter.id,
+                    },
+                });
+
+                if (existingAttachment) {
+                    // Supprimer l'ancien fichier physique
+                    try {
+                        fs.unlinkSync(`public${existingAttachment.fileUrl}`);
+                    } catch (error) {
+                        console.error("Erreur lors de la suppression de l'ancien fichier:", error);
+                    }
+                    // Supprimer l'enregistrement en base de données
+                    await existingAttachment.destroy();
+                }
+
+                // Créer la nouvelle annexe
+                return Attachments.create({
+                    fileUrl: filePath,
+                    title: originalName,
+                    chapterId: chapter.id,
+                    videoId: videoId,
+                    courseId: courseId,
+                });
+            });
+
+            await Promise.all(attachmentPromises);
+        }
+
+        // Récupération du chapitre avec ses vidéos et annexes
+        const chapterWithData = await Chapter.findOne({
             where: { id: chapter.id },
-            include: [Video],
+            include: [
+                {
+                    model: Video,
+                    attributes: ["id", "title", "url"],
+                    include: [
+                        {
+                            model: Attachments,
+                            as: "attachments",
+                            attributes: ["id", "fileUrl", "title"],
+                        },
+                    ],
+                },
+            ],
         });
 
         res.status(201).json({
-            message: "Chapitre et vidéos créés avec succès",
-            chapter: chapterWithVideos,
+            message: "Chapitre, vidéos et annexes créés avec succès",
+            chapter: chapterWithData,
         });
     } catch (error) {
         res.status(500).json({ error: `Erreur lors de la création du chapitre: ${error.message}` });
@@ -112,26 +169,6 @@ export const editChapter = async (req, res) => {
             return res.status(404).json({ error: "Chapitre non trouvé" });
         }
 
-        // Gestion du fichier attaché
-        let attachment = chapter.attachment; // Garder l'ancien chemin par défaut
-        if (req.file) {
-            // Si un nouveau fichier est uploadé
-            attachment = `/uploads/attachments/${req.file.filename}`;
-
-            // Supprimer l'ancien fichier s'il existe
-            if (chapter.attachment) {
-                const oldFilePath = path.join(process.cwd(), "public", chapter.attachment);
-                try {
-                    if (fs.existsSync(oldFilePath)) {
-                        fs.unlinkSync(oldFilePath);
-                        console.log("Ancien fichier supprimé avec succès");
-                    }
-                } catch (err) {
-                    console.error("Erreur lors de la suppression de l'ancien fichier:", err);
-                }
-            }
-        }
-
         // Vérification des champs obligatoires
         if (!title || !description || !courseId) {
             return res.status(400).json({ error: "Les champs titre, description et courseId sont obligatoires" });
@@ -141,36 +178,110 @@ export const editChapter = async (req, res) => {
             title,
             description,
             courseId,
-            attachment,
         });
 
         // 2. Mise à jour des vidéos
-        // Supprimer toutes les anciennes vidéos
-        await Video.destroy({
+        const existingVideos = await Video.findAll({
             where: { chapterId: id },
         });
 
-        // Créer les nouvelles vidéos seulement si le tableau n'est pas vide
-        if (Array.isArray(videos) && videos.length > 0) {
-            const videoPromises = videos.map((video) => {
-                return Video.create({
-                    title: video.title,
-                    url: video.url,
+        // Créer un map des vidéos existantes pour un accès rapide
+        const existingVideosMap = new Map(existingVideos.map((video) => [video.id, video]));
+
+        // Mettre à jour ou créer les vidéos
+        const updatedVideos = await Promise.all(
+            videos.map(async (video) => {
+                if (video.id && existingVideosMap.has(video.id)) {
+                    // Mettre à jour la vidéo existante
+                    const existingVideo = existingVideosMap.get(video.id);
+                    await existingVideo.update({
+                        title: video.title,
+                        url: video.url,
+                    });
+                    return existingVideo;
+                } else {
+                    // Créer une nouvelle vidéo si elle n'existe pas
+                    return await Video.create({
+                        title: video.title,
+                        url: video.url,
+                        chapterId: id,
+                    });
+                }
+            })
+        );
+
+        // Supprimer les vidéos qui ne sont plus dans la liste
+        const updatedVideoIds = updatedVideos.map((video) => video.id);
+        await Video.destroy({
+            where: {
+                chapterId: id,
+                id: {
+                    [Op.notIn]: updatedVideoIds,
+                },
+            },
+        });
+
+        // 3. Gestion des annexes
+        const files = req.files;
+        if (files && files.length > 0) {
+            const attachmentPromises = files.map(async (file, index) => {
+                const filePath = `/uploads/attachments/${file.filename}`;
+                const originalName = file.originalname;
+                const videoIndex = req.body[`videoId${index}`];
+                const videoId = videoIndex !== "" ? updatedVideos[parseInt(videoIndex)]?.id : null;
+
+                // Vérifier si un fichier avec le même nom existe déjà
+                const existingAttachment = await Attachments.findOne({
+                    where: {
+                        title: originalName,
+                        chapterId: id,
+                    },
+                });
+
+                if (existingAttachment) {
+                    // Supprimer l'ancien fichier physique
+                    try {
+                        fs.unlinkSync(`public${existingAttachment.fileUrl}`);
+                    } catch (error) {
+                        console.error("Erreur lors de la suppression de l'ancien fichier:", error);
+                    }
+                    // Supprimer l'enregistrement en base de données
+                    await existingAttachment.destroy();
+                }
+
+                // Créer la nouvelle annexe
+                return Attachments.create({
+                    fileUrl: filePath,
+                    title: originalName,
                     chapterId: id,
+                    videoId: videoId,
+                    courseId: courseId,
                 });
             });
 
-            await Promise.all(videoPromises);
+            await Promise.all(attachmentPromises);
         }
 
-        // Récupérer le chapitre mis à jour avec ses vidéos
+        // Récupérer le chapitre mis à jour avec ses vidéos et annexes
         const updatedChapter = await Chapter.findOne({
             where: { id },
-            include: [Video],
+            include: [
+                {
+                    model: Video,
+                    attributes: ["id", "title", "url"],
+                    include: [
+                        {
+                            model: Attachments,
+                            as: "attachments",
+                            attributes: ["id", "fileUrl", "title"],
+                        },
+                    ],
+                },
+            ],
         });
 
         res.status(200).json({
-            message: "Chapitre et vidéos mis à jour avec succès",
+            message: "Chapitre, vidéos et annexes mis à jour avec succès",
             chapter: updatedChapter,
         });
     } catch (error) {
@@ -189,16 +300,17 @@ export const deleteChapter = async (req, res) => {
             return res.status(404).json({ error: "Chapitre non trouvé" });
         }
 
-        // Supprimer le fichier attaché s'il existe
-        if (chapter.attachment) {
-            const filePath = path.join(process.cwd(), "public", chapter.attachment);
+        // Récupérer et supprimer les fichiers d'annexe
+        const attachments = await Attachments.findAll({
+            where: { chapterId: id },
+        });
+
+        // Supprimer les fichiers physiques
+        for (const attachment of attachments) {
             try {
-                if (fs.existsSync(filePath)) {
-                    fs.unlinkSync(filePath);
-                    console.log("Fichier attaché supprimé avec succès");
-                }
-            } catch (err) {
-                console.error("Erreur lors de la suppression du fichier attaché:", err);
+                fs.unlinkSync(`public${attachment.fileUrl}`);
+            } catch (error) {
+                console.error("Erreur lors de la suppression du fichier:", error);
             }
         }
 
@@ -207,52 +319,18 @@ export const deleteChapter = async (req, res) => {
             where: { chapterId: id },
         });
 
+        // Supprimer les annexes en base de données
+        await Attachments.destroy({
+            where: { chapterId: id },
+        });
+
         // Supprimer le chapitre
         await chapter.destroy();
 
-        res.status(200).json({ message: "Chapitre supprimé avec succès" });
+        res.status(200).json({ message: "Chapitre et tous ses éléments associés supprimés avec succès" });
     } catch (error) {
         res.status(500).json({
             error: `Erreur lors de la suppression du chapitre: ${error.message}`,
-        });
-    }
-};
-
-export const deleteChapterAttachment = async (req, res) => {
-    try {
-        const { id } = req.params;
-        const chapter = await Chapter.findByPk(id);
-
-        if (!chapter) {
-            return res.status(404).json({ error: "Chapitre non trouvé" });
-        }
-
-        if (!chapter.attachment) {
-            return res.status(400).json({ error: "Aucun fichier attaché à supprimer" });
-        }
-
-        // Supprimer le fichier physiquement
-        const filePath = path.join(process.cwd(), "public", chapter.attachment);
-        try {
-            if (fs.existsSync(filePath)) {
-                fs.unlinkSync(filePath);
-                console.log("Fichier attaché supprimé avec succès");
-            }
-        } catch (err) {
-            console.error("Erreur lors de la suppression du fichier attaché:", err);
-            return res.status(500).json({ error: "Erreur lors de la suppression du fichier" });
-        }
-
-        // Mettre à jour le chapitre pour enlever la référence au fichier
-        await chapter.update({ attachment: null });
-
-        res.status(200).json({
-            message: "Fichier attaché supprimé avec succès",
-            chapter: chapter,
-        });
-    } catch (error) {
-        res.status(500).json({
-            error: `Erreur lors de la suppression du fichier: ${error.message}`,
         });
     }
 };

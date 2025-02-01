@@ -41,11 +41,15 @@ export const createNote = async (req, res) => {
 
 export const getNotes = async (req, res) => {
     try {
-        const { videoId } = req.query;
+        const userId = req.session.user?.id;
+        const { courseId } = req.query;
 
         const notes = await Note.findAll({
-            where: { videoId },
-            include: [{ model: User, as: "author" }],
+            where: {
+                userId,
+                courseId,
+            },
+            order: [["createdAt", "DESC"]],
         });
 
         return res.status(200).json(notes);

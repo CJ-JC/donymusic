@@ -3,7 +3,7 @@ import axios from "axios";
 import { Button, Input } from "@material-tailwind/react";
 
 const AddRemise = () => {
-  const [discountPercentage, setDiscountPercentage] = useState(0);
+  const [discountPercentage, setDiscountPercentage] = useState(null);
   const [expirationDate, setExpirationDate] = useState("");
   const [courseId, setCourseId] = useState(null);
   const [selectedRemise, setSelectedRemise] = useState("");
@@ -87,7 +87,6 @@ const AddRemise = () => {
         setCourseId(null);
         setIsGlobal(false);
         setError("");
-        alert("Remise ajoutée avec succès !");
       })
       .catch((err) => {
         setError(err.response?.data?.error || "Une erreur est survenue.");
@@ -151,15 +150,6 @@ const AddRemise = () => {
             ))}
           </select>
         </div>
-
-        {/* <label htmlFor="isGlobal">Appliquer la remise globale ?</label>
-          <input
-            type="checkbox"
-            id="isGlobal"
-            name="isGlobal"
-            checked={isGlobal}
-            onChange={(e) => setIsGlobal(e.target.checked)}
-          /> */}
 
         <div className="mb-4 inline-flex items-center">
           <label

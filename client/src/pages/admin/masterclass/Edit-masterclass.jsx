@@ -384,7 +384,7 @@ const EditMasterclass = () => {
                   htmlFor="duration"
                   className="text-sm font-medium text-blue-gray-900 dark:text-white"
                 >
-                  Durer de la masterclasse
+                  Durer de la masterclasse (en heures)
                 </label>
                 <Input
                   placeholder="Exemple: 2"

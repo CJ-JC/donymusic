@@ -3,6 +3,7 @@ import axios from "axios";
 import { Eye, EyeOff, Pencil, Trash } from "lucide-react";
 import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
+import { useParams } from "react-router-dom";
 
 const Note = ({ selectedVideo, createdNote }) => {
   const [notes, setNotes] = useState([]);
@@ -10,14 +11,15 @@ const Note = ({ selectedVideo, createdNote }) => {
   const [isContentVisible, setIsContentVisible] = useState({});
   const [editingNoteId, setEditingNoteId] = useState(null);
   const [error, setError] = useState(null);
+  const { courseId } = useParams();
 
   const fetchNotes = async () => {
-    if (selectedVideo) {
+    if (courseId) {
       try {
         const response = await axios.get(`/api/note/notes`, {
           params: {
             userId: user.id,
-            videoId: selectedVideo.id,
+            courseId: courseId,
           },
         });
 
@@ -30,7 +32,7 @@ const Note = ({ selectedVideo, createdNote }) => {
 
   useEffect(() => {
     fetchNotes();
-  }, [selectedVideo, user]);
+  }, [courseId, user]);
 
   useEffect(() => {
     if (createdNote) {

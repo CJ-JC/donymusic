@@ -9,8 +9,7 @@ import {
   DialogFooter,
 } from "@material-tailwind/react";
 import { Link, useNavigate } from "react-router-dom";
-import { PencilIcon, PlusCircle, Trash } from "lucide-react";
-import Loading from "@/widgets/utils/Loading";
+import { PencilIcon, PlusCircle, Trash, User2 } from "lucide-react";
 
 export default function Instructors() {
   const navigate = useNavigate();
@@ -84,17 +83,17 @@ export default function Instructors() {
           <tr>
             <th className="border-slate-200 bg-slate-50 border-b p-4">
               <p className="text-slate-500 text-sm font-normal leading-none">
-                Nom
+                Photo
               </p>
             </th>
             <th className="border-slate-200 bg-slate-50 border-b p-4">
               <p className="text-slate-500 text-sm font-normal leading-none">
-                Prénom
+                Nom complet
               </p>
             </th>
             <th className="border-slate-200 bg-slate-50 border-b p-4">
               <p className="text-slate-500 text-sm font-normal leading-none">
-                Email
+                Biographie
               </p>
             </th>
             <th className="border-slate-200 bg-slate-50 border-b p-4">
@@ -119,7 +118,7 @@ export default function Instructors() {
                   />
                 ) : (
                   <div className="rounded-full bg-gray-400">
-                    <User className="h-14 w-14" />
+                    <User2 className="h-14 w-14 p-2" />
                   </div>
                 )}
               </td>

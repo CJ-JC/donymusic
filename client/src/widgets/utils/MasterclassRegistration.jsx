@@ -1,8 +1,5 @@
 import { Button } from "@material-tailwind/react";
 import { useState, useEffect } from "react";
-import { handleCheckout } from "./PaymentService";
-import { useSelector } from "react-redux";
-import { useNavigate } from "react-router-dom";
 
 const MasterclassRegistration = ({ endDate, handleCheckoutClick }) => {
   const [isExpired, setIsExpired] = useState(false);
@@ -11,7 +8,7 @@ const MasterclassRegistration = ({ endDate, handleCheckoutClick }) => {
     const checkExpiration = () => {
       const now = new Date();
       const end = new Date(endDate);
-      setIsExpired(now > end); // Met à jour l'état si la date est passée
+      setIsExpired(now > end);
     };
 
     checkExpiration(); // Vérifie immédiatement

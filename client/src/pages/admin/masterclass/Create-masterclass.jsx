@@ -45,8 +45,8 @@ const CreateMasterclass = () => {
     slug: "",
     description: "",
     price: 0,
-    duration: 1,
-    maxParticipants: 10,
+    duration: 0,
+    maxParticipants: 0,
     imageUrl: "",
     startDate: new Date(),
     endDate: new Date(),
@@ -81,8 +81,8 @@ const CreateMasterclass = () => {
     formData.append("startDate", inputs.startDate.toISOString());
     formData.append("endDate", inputs.endDate.toISOString());
     formData.append("price", inputs.price || 0);
-    formData.append("duration", inputs.duration || 1); // Valeur par défaut 1 jour
-    formData.append("maxParticipants", inputs.maxParticipants || 10);
+    formData.append("duration", inputs.duration || 0); // Valeur par défaut 1 jour
+    formData.append("maxParticipants", inputs.maxParticipants || 0);
     formData.append("instructorId", inputs.instructorId);
     formData.append("link", inputs.link);
 
@@ -152,12 +152,13 @@ const CreateMasterclass = () => {
                   required
                   value={inputs.title}
                   onChange={handleChange}
+                  className="dark:text-white dark:focus:border-white"
                 />
               </div>
               <div className="mt-6 space-y-2 rounded-md border p-4">
                 <label
                   htmlFor="description"
-                  className="text-sm font-medium text-blue-gray-900"
+                  className="text-sm font-medium text-blue-gray-900 dark:text-white"
                 >
                   Description de la masterclass
                 </label>
@@ -192,12 +193,12 @@ const CreateMasterclass = () => {
               <div className="my-6 space-y-2 rounded-md border p-4">
                 <label
                   htmlFor="image"
-                  className="text-sm font-medium text-blue-gray-900"
+                  className="text-sm font-medium text-blue-gray-900 dark:text-white"
                 >
                   Image de la masterclass
                 </label>
                 <div className="bg-grey-lighter flex w-full items-center justify-between">
-                  <label className="flex w-52 cursor-pointer flex-col items-center rounded-lg border bg-white px-4 py-6 tracking-wide shadow-sm hover:text-gray-700">
+                  <label className="flex w-52 cursor-pointer flex-col items-center rounded-lg border bg-white px-4 py-6 tracking-wide shadow-sm dark:text-gray-700">
                     <svg
                       className="h-8 w-8"
                       fill="currentColor"
@@ -235,7 +236,7 @@ const CreateMasterclass = () => {
               <div className="my-6 space-y-2 rounded-md border p-4">
                 <label
                   htmlFor="instructor"
-                  className="mb-2 block text-sm font-medium text-gray-900"
+                  className="mb-2 block text-sm font-medium text-gray-900 dark:text-white"
                 >
                   Instructeur
                 </label>
@@ -249,7 +250,7 @@ const CreateMasterclass = () => {
                       instructorId: parseInt(e.target.value),
                     }))
                   }
-                  className="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400"
+                  className="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900  dark:bg-white dark:text-black dark:placeholder-gray-400"
                 >
                   <option value="" disabled>
                     -- Sélectionnez un instructeur --
@@ -289,7 +290,7 @@ const CreateMasterclass = () => {
                 <div className="mt-6 space-y-2 rounded-md border p-4">
                   <label
                     htmlFor="price"
-                    className="text-sm font-medium text-blue-gray-900"
+                    className="text-sm font-medium text-blue-gray-900 dark:text-white"
                   >
                     Prix de la masterclass
                   </label>
@@ -301,6 +302,7 @@ const CreateMasterclass = () => {
                     type="number"
                     value={inputs.price}
                     onChange={handleChange}
+                    className="dark:text-white dark:focus:border-white"
                   />
                 </div>
               </div>
@@ -309,7 +311,7 @@ const CreateMasterclass = () => {
               <div>
                 <h2 className="mb-4 text-xl">Choisissez les dates et heures</h2>
                 <div className="flex flex-col items-start gap-x-2 md:flex-row md:items-center">
-                  <label className="text-sm font-medium text-blue-gray-900">
+                  <label className="text-sm font-medium text-blue-gray-900 dark:text-white">
                     Date et heure de début
                   </label>
                   <DatePicker
@@ -320,11 +322,11 @@ const CreateMasterclass = () => {
                     timeFormat="HH:mm"
                     timeIntervals={15}
                     locale="fr"
-                    className="mt-2 w-full rounded-md border border-gray-300 px-2 py-2"
+                    className="mt-2 w-full rounded-md border border-gray-300 px-2 py-2 dark:text-black"
                   />
                 </div>
                 <div className="flex flex-col items-start gap-x-2 md:flex-row md:items-center">
-                  <label className="text-sm font-medium text-blue-gray-900">
+                  <label className="text-sm font-medium text-blue-gray-900 dark:text-white">
                     Date et heure de fin
                   </label>
                   <DatePicker
@@ -335,7 +337,7 @@ const CreateMasterclass = () => {
                     timeFormat="HH:mm"
                     timeIntervals={15}
                     locale="fr"
-                    className="mt-2 w-full rounded-md border border-gray-300 px-2 py-2"
+                    className="mt-2 w-full rounded-md border border-gray-300 px-2 py-2 dark:text-black"
                   />
                 </div>
               </div>
@@ -343,9 +345,9 @@ const CreateMasterclass = () => {
               <div className="mt-6 space-y-2 rounded-md border p-4">
                 <label
                   htmlFor="duration"
-                  className="text-sm font-medium text-blue-gray-900"
+                  className="text-sm font-medium text-blue-gray-900 dark:text-white"
                 >
-                  Durer de la masterclass
+                  Durer de la masterclass (en heures)
                 </label>
                 <Input
                   placeholder="Exemple: 2"
@@ -355,12 +357,13 @@ const CreateMasterclass = () => {
                   type="number"
                   value={inputs.duration}
                   onChange={handleChange}
+                  className="dark:text-white dark:focus:border-white"
                 />
               </div>
               <div className="mt-6 space-y-2 rounded-md border p-4">
                 <label
                   htmlFor="maxParticipants"
-                  className="text-sm font-medium text-blue-gray-900"
+                  className="text-sm font-medium text-blue-gray-900 dark:text-white"
                 >
                   Maximum de participants
                 </label>
@@ -372,22 +375,24 @@ const CreateMasterclass = () => {
                   type="number"
                   value={inputs.maxParticipants}
                   onChange={handleChange}
+                  className="dark:text-white dark:focus:border-white"
                 />
               </div>
               <div className="mt-6 space-y-2 rounded-md border p-4">
                 <label
                   htmlFor="link"
-                  className="text-sm font-medium text-blue-gray-900"
+                  className="text-sm font-medium text-blue-gray-900 dark:text-white"
                 >
                   Lien de la masterclass
                 </label>
                 <Input
-                  placeholder="Loen de la masterclass"
+                  placeholder="Lien de la masterclass"
                   required
                   name="link"
                   id="link"
                   value={inputs.link}
                   onChange={handleChange}
+                  className="dark:text-white dark:focus:border-white"
                 />
               </div>
             </div>

@@ -57,8 +57,8 @@ const Invoice = ({ purchases }) => {
               <td className="p-4 py-5">
                 <p className="text-slate-800 block text-sm font-medium">
                   {purchase.itemType === "course"
-                    ? purchase.course.title
-                    : purchase.masterclass.title}
+                    ? purchase.course?.title
+                    : purchase.masterclass?.title}
                 </p>
               </td>
               <td className="p-4 py-5">
@@ -85,7 +85,7 @@ const Invoice = ({ purchases }) => {
               <td className="flex items-center gap-4 p-4 py-5">
                 <button
                   onClick={() => viewInvoice(purchase)}
-                  className="flex items-center gap-1 text-sm font-semibold text-blue-gray-900 hover:underline"
+                  className="flex items-center gap-1 text-sm font-semibold text-blue-gray-900 hover:underline dark:text-white"
                 >
                   <Eye className="h-5 w-5" />
                   Voir

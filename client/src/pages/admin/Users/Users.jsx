@@ -15,6 +15,7 @@ const Users = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const UsersPerPage = 10;
   const [searchQuery, setSearchQuery] = useState("");
+  const [purchases, setPurchases] = useState([]);
 
   useEffect(() => {
     const fetchUsers = async () => {
@@ -29,6 +30,29 @@ const Users = () => {
     };
 
     fetchUsers();
+  }, []);
+
+  useEffect(() => {
+    const fetchPurchases = async () => {
+      try {
+        const response = await axios.get("/api/payment/get-purchases");
+        setPurchases(response.data);
+        const completedPurchases = response.data.filter(
+          (purchase) => purchase.status === "completed",
+        );
+
+        const total = completedPurchases.reduce(
+          (acc, purchase) => acc + purchase.amount,
+          0,
+        );
+
+        setTotalBenefits(total);
+      } catch (error) {
+        setError("Erreur lors de la récupération des achats :", error);
+      }
+    };
+
+    fetchPurchases();
   }, []);
 
   // Filtrer les utilisateurs en fonction de la recherche
@@ -89,11 +113,6 @@ const Users = () => {
               </th>
               <th className="border-slate-200 bg-slate-50 border-b p-4">
                 <p className="text-slate-500 text-sm font-normal leading-none">
-                  Formation
-                </p>
-              </th>
-              <th className="border-slate-200 bg-slate-50 border-b p-4">
-                <p className="text-slate-500 text-sm font-normal leading-none">
                   Rôle
                 </p>
               </th>
@@ -121,15 +140,12 @@ const Users = () => {
                   </p>
                 </td>
                 <td className="p-4 py-5">
-                  <p className="text-slate-800 block text-sm font-semibold">
-                    {user.email}
+                  <p className="text-slate-800 block text-sm">{user.email}</p>
+                </td>
+                <td className="p-4 py-5">
+                  <p className="text-slate-500 text-sm">
+                    {user.role && user.role === "admin" ? "Admin" : "Client"}
                   </p>
-                </td>
-                <td className="p-4 py-5">
-                  <p className="text-slate-500 text-sm">Rien pour le moment</p>
-                </td>
-                <td className="p-4 py-5">
-                  <p className="text-slate-500 text-sm">{user.role}</p>
                 </td>
                 <td className="p-4 py-5">
                   <Link to={`/administrator/instructor/delete/${user.id}`}>
@@ -137,8 +153,7 @@ const Users = () => {
                       size="sm"
                       className="flex items-center bg-red-600 text-white focus:outline-none"
                     >
-                      <Trash className="mr-2 h-4 w-4" />
-                      Supprimer
+                      <Trash className="h-4 w-4" />
                     </Button>
                   </Link>
                 </td>

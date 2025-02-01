@@ -23,8 +23,6 @@ export function Navbar({ toggleTheme, theme }) {
   const dispatch = useDispatch();
   const { isLoggedIn, user } = useSelector((state) => state.auth);
 
-  const navigate = useNavigate();
-
   useEffect(() => {
     window.addEventListener(
       "resize",
@@ -102,7 +100,7 @@ export function Navbar({ toggleTheme, theme }) {
   return (
     <MTNavbar
       color="transparent"
-      className="mx-auto max-w-screen-xl border-b p-3"
+      className="mx-auto max-w-screen-xl rounded-none border-b p-3"
     >
       <div className="container mx-auto flex items-center justify-between text-black">
         <Link to="/" onClick={handleLinkClick}>
@@ -131,7 +129,8 @@ export function Navbar({ toggleTheme, theme }) {
               <Link to={"#"}>
                 <Button
                   variant="gradient"
-                  className="border border-black font-medium dark:bg-black dark:text-white"
+                  color="red"
+                  className="border border-red-500 font-medium dark:bg-black dark:text-white"
                   size="sm"
                   onClick={logout}
                 >

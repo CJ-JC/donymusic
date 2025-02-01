@@ -173,7 +173,6 @@ const editCourse = () => {
     } else if (courseToDelete) {
       try {
         await axios.delete(`/api/course/delete/${courseToDelete}`);
-        navigate(`/administrator`);
         window.location.reload();
       } catch (error) {
         console.error("Error deleting course:", error);

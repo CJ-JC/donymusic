@@ -1,4 +1,4 @@
-const generateInvoiceEmailTemplate = ({ fullname, product, payment, item, productTitle }) => {
+const generateInvoiceEmailTemplate = ({ fullname, product, payment, item, productTitle, startDate, startTime, link }) => {
     return `
 <section class="mx-auto max-w-2xl bg-white px-6 py-8 dark:bg-gray-900">
   <main class="mt-8">
@@ -17,20 +17,37 @@ const generateInvoiceEmailTemplate = ({ fullname, product, payment, item, produc
      </div>
      <div class="mt-6 rounded-lg bg-gray-100 p-4 dark:bg-gray-800">
         <ul>
-            <li><strong>${product} :</strong> ${productTitle}</li>
+            <li><strong>La ${product} :</strong> ${productTitle}</li>
             <li><strong>montant payé :</strong> ${payment.amount}€</li>
+            ${
+                product === "masterclass"
+                    ? `
+                    <li>
+                        <strong>Date :</strong> ${startDate}
+                    </li>`
+                    : ""
+            }
+            ${
+                product === "masterclass"
+                    ? `
+                    <li>
+                        <strong>Heure :</strong> ${startTime}
+                    </li>`
+                    : ""
+            }
         </ul>
      </div>
 
     <p class="mt-8 text-gray-600 dark:text-gray-300">
-      Vous pouvez accéder à votre produit via votre espace utilisateur ou en cliquant sur le lien suivant :
+      Vous pouvez accéder à votre ${product} via votre espace utilisateur ou en cliquant sur le lien suivant :
     </p>
 
     <a
-      href="${item.slug}"
+      href="${product === "masterclass" ? link : `http://localhost:5173/detail/slug/${item.slug}`}"
+      target="_blank"
       class="mt-4 inline-block rounded bg-blue-600 px-6 py-2 text-white hover:bg-blue-700"
     >
-      Accéder à ${product}
+      Accéder à la ${product}
     </a>
   </main>
 

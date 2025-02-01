@@ -19,7 +19,7 @@ export const Instructor = sequelize.define(
         },
         imageUrl: {
             type: DataTypes.STRING,
-            allowNull: false,
+            allowNull: true,
         },
         createdAt: {
             type: DataTypes.DATE,

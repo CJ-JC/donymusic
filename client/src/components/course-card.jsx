@@ -1,4 +1,4 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { BookOpen, Trophy } from "lucide-react";
 import { useEffect, useState } from "react";
 import axios from "axios";
@@ -9,6 +9,7 @@ const CourseCard = ({
   title,
   imageUrl,
   chaptersLength,
+  chapters,
   price,
   slug,
   discountedPrice,
@@ -17,22 +18,24 @@ const CourseCard = ({
   const BASE_URL = import.meta.env.VITE_API_URL;
 
   const [color, setColor] = useState("#FF6C02");
-  const [hasPurchased, setHasPurchased] = useState(false);
+  const [hasPurchasedCourse, setHasPurchasedCourse] = useState(false);
   const [progress, setProgress] = useState(null);
   const [error, setError] = useState(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const checkPurchase = async () => {
       try {
-        const response = await axios.get(
-          `/api/payment/check-purchase?id=${id}`,
-          {
-            withCredentials: true,
-          },
-        );
-        setHasPurchased(response.data.hasPurchased);
+        if (id) {
+          const response = await axios.get(
+            `/api/payment/check-purchase?id=${id}`,
+            { withCredentials: true },
+          );
+
+          setHasPurchasedCourse(response.data.hasPurchasedCourse);
+        }
       } catch (error) {
-        setError("Erreur lors de la vérification de l'achat:", error);
+        setError("Erreur lors de la vérification de l'achat.");
       }
     };
 
@@ -43,7 +46,11 @@ const CourseCard = ({
         });
         setProgress(response.data.progress);
       } catch (error) {
-        setError("Erreur lors de la récupération de la progression:", error);
+        if (error.response?.status === 401) {
+          setProgress(null);
+        } else {
+          setError("Erreur lors de la récupération de la progression.");
+        }
       }
     };
 
@@ -63,10 +70,20 @@ const CourseCard = ({
     }
   }, [category]);
 
+  // Je veux récupérer l'url de la page user/account
+  const linkUserAccount = window.location.href;
+
   return (
     <>
-      <Link to={`/detail/slug/${slug}`} key={id}>
-        <article className="pt-30 relative isolate mx-auto flex h-72 max-w-sm flex-col justify-end overflow-hidden rounded-2xl border px-4 pb-4 dark:border-white/30">
+      <Link
+        to={
+          linkUserAccount.includes("user/account")
+            ? `/course-player/course/${id}/chapters/${chapters[0].id}`
+            : `/detail/slug/${slug}`
+        }
+        key={id}
+      >
+        <article className="pt-30 relative isolate mx-auto flex h-72 max-w-sm flex-col justify-end overflow-hidden rounded-2xl border px-4 pb-4 transition duration-500 ease-in-out hover:scale-105 dark:border-white/30">
           <img
             alt={title}
             src={`${BASE_URL}${imageUrl}`}
@@ -77,7 +94,8 @@ const CourseCard = ({
               <Trophy className="text-xl text-[#ffd700]" />
             </div>
           )}
-          <div className="absolute inset-0 bg-gradient-to-t from-gray-900 via-gray-900/80"></div>
+          {/* <div className="absolute inset-0 bg-black/50 bg-gradient-to-t from-gray-900"></div> */}
+          <div className="absolute inset-0 bg-black/70"></div>
           <h3 className="z-10 text-xl font-medium text-white">{title}</h3>
           <div className="z-10 my-2 flex items-center space-x-2">
             <div className="flex items-center justify-center rounded-full bg-light-blue-50 p-1">
@@ -89,11 +107,11 @@ const CourseCard = ({
                 : `${chaptersLength} Chapitre`}
             </span>
           </div>
-          {hasPurchased ? (
+          {hasPurchasedCourse ? (
             <CourseProgress size="sm" value={progress} />
           ) : (
             <p className="text-md z-10 font-medium text-white md:text-sm">
-              {!hasPurchased &&
+              {!hasPurchasedCourse &&
                 (discountedPrice && discountedPrice < price ? (
                   <>
                     <span className="text-lg text-gray-300 line-through">
@@ -110,7 +128,7 @@ const CourseCard = ({
           )}
           <span
             style={{ backgroundColor: color, display: "block" }}
-            className={`absolute bottom-5 right-0 mr-3 mt-3 rounded-full px-2 py-1 text-sm text-white`}
+            className={`absolute bottom-5 right-0 mr-3 mt-3 rounded-full px-2 py-1 text-sm font-medium text-white`}
           >
             {category}
           </span>

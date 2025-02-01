@@ -92,8 +92,8 @@ export default function EditInstructor() {
 
   return (
     <div className="container mx-auto px-4 py-8">
-      <Card className="mx-auto max-w-3xl p-6">
-        <Typography variant="h4" color="blue-gray" className="mb-6">
+      <Card className="mx-auto max-w-3xl p-6 dark:bg-[#25303F]">
+        <Typography variant="h4" color="blue-gray" className="dark:text-white">
           Modifier l'instructeur
         </Typography>
 
@@ -114,6 +114,7 @@ export default function EditInstructor() {
               value={formData.name}
               onChange={handleInputChange}
               required
+              className="bg-gray-50 dark:text-white"
               placeholder="Nom de l'instructeur"
             />
           </div>
@@ -128,6 +129,7 @@ export default function EditInstructor() {
               onChange={handleInputChange}
               required
               placeholder="Biographie de l'instructeur"
+              className="bg-gray-50 dark:text-white"
               rows={6}
             />
           </div>
@@ -163,6 +165,7 @@ export default function EditInstructor() {
             <Button
               variant="outlined"
               onClick={() => navigate("/administrator/instructors")}
+              className="dark:bg-white dark:text-black"
             >
               Annuler
             </Button>

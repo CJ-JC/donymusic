@@ -51,7 +51,7 @@ const Contact = () => {
             {emailMessage.content}
           </Alert>
         )}
-        <div className="mb-8 flex flex-col justify-center gap-8 md:flex-row">
+        <div className="mb-8 flex flex-col justify-center gap-4 md:flex-row">
           <Input
             variant="outlined"
             size="lg"

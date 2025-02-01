@@ -11,6 +11,7 @@ const CourseList = ({ courses }) => {
             title={course.title}
             imageUrl={course.imageUrl}
             chaptersLength={course.chapters.length}
+            chapters={course.chapters}
             price={course.price}
             videoUrl={course.videoUrl}
             slug={course.slug}

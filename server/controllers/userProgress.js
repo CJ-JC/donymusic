@@ -183,3 +183,43 @@ export const getVideoProgress = async (req, res) => {
         });
     }
 };
+
+export const deleteCourseProgress = async (req, res) => {
+    try {
+        const userId = req.session.user?.id;
+        const courseId = req.params.courseId;
+
+        if (!userId) {
+            return res.status(401).json({ message: "Utilisateur non authentifié" });
+        }
+
+        // Récupérer tous les chapitres du cours
+        const chapters = await Chapter.findAll({ where: { courseId } });
+        const chapterIds = chapters.map((chapter) => chapter.id);
+
+        // Récupérer toutes les vidéos des chapitres
+        const videos = await Video.findAll({
+            where: { chapterId: chapterIds },
+        });
+        const videoIds = videos.map((video) => video.id);
+
+        // Supprimer toutes les progressions pour ces vidéos
+        const deleted = await UserProgress.destroy({
+            where: {
+                userId: userId,
+                videoId: videoIds,
+            },
+        });
+
+        res.status(200).json({
+            message: "Progression du cours réinitialisée avec succès",
+            deletedCount: deleted,
+        });
+    } catch (error) {
+        console.error("Erreur lors de la réinitialisation de la progression :", error);
+        res.status(500).json({
+            message: "Erreur lors de la réinitialisation de la progression",
+            error: error.message,
+        });
+    }
+};

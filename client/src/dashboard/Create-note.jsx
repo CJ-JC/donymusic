@@ -10,7 +10,7 @@ const CreateNote = ({ selectedVideo }) => {
   const { courseId } = useParams();
   const [isCreating, setIsCreating] = useState(false);
   const [createdNote, setCreatedNote] = useState(null);
-  const { isLoggedIn, user } = useSelector((state) => state.auth);
+  const { user } = useSelector((state) => state.auth);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const [notes, setNotes] = useState([]);
@@ -108,7 +108,7 @@ const CreateNote = ({ selectedVideo }) => {
                 type="submit"
                 fullWidth
               >
-                Publier
+                Créer la note
               </Button>
             </form>
           </div>

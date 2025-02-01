@@ -43,13 +43,6 @@ export function SignUp() {
   return (
     <>
       <section className="mx-auto flex h-auto w-full max-w-screen-xl items-center justify-center p-4 md:h-screen md:py-4 lg:justify-around">
-        {/* <div className="hidden w-2/5 overflow-hidden lg:block">
-          <img
-            src="/img/piano.jpg"
-            alt="Image de piano"
-            className="h-full w-full rounded-3xl object-cover"
-          />
-        </div> */}
         <div className="hidden w-2/5 overflow-hidden lg:block">
           <img
             src="/img/piano.jpg"
@@ -77,7 +70,7 @@ export function SignUp() {
             <Input
               size="lg"
               placeholder="Votre nom"
-              className=" dark:text-white"
+              className=" dark:text-white dark:focus:border-gray-50"
               name="lastName"
               id="lastname"
               type="text"
@@ -93,7 +86,7 @@ export function SignUp() {
             <Input
               size="lg"
               placeholder="Votre prénom"
-              className=" dark:text-white"
+              className=" dark:text-white dark:focus:border-gray-50"
               name="firstName"
               id="firstname"
               type="text"
@@ -108,7 +101,7 @@ export function SignUp() {
             <Input
               size="lg"
               placeholder="Email"
-              className=" dark:text-white"
+              className=" dark:text-white dark:focus:border-gray-50"
               name="email"
               id="email"
               type="email"
@@ -123,7 +116,7 @@ export function SignUp() {
             <Input
               size="lg"
               placeholder="Votre mot de passe"
-              className=" dark:text-white"
+              className=" dark:text-white dark:focus:border-gray-50"
               name="password"
               id="password"
               type="password"
@@ -140,12 +133,12 @@ export function SignUp() {
                 className="flex flex-wrap items-center justify-start font-medium dark:text-white"
               >
                 J'accepte les&nbsp;
-                <a
-                  href="#"
+                <Link
+                  to="/cgu"
                   className="font-normal text-black underline transition-colors hover:text-gray-900 dark:text-white"
                 >
                   Conditions générales d'utilisation
-                </a>
+                </Link>
               </Typography>
             }
             containerProps={{ className: "-ml-2.5" }}

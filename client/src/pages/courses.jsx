@@ -1,17 +1,17 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import CourseList from "@/components/Course-list";
 import SearchInput from "@/components/search/search-input";
 import Categories from "@/components/search/categories";
 import useCourses from "@/widgets/utils/UseCourses";
-import axios from "axios";
 import usePagination from "@/widgets/utils/usePagination";
 import { useSearchParams } from "react-router-dom";
+import { motion } from "framer-motion";
 
 export function Courses() {
   const categories = [
-    { id: "1", name: "Guitare", icon: "/img/guitare.svg" },
+    { id: "1", name: "Basse", icon: "/img/basse.svg" },
     { id: "2", name: "Batterie", icon: "/img/batterie.svg" },
-    { id: "3", name: "Basse", icon: "/img/basse.svg" },
+    { id: "3", name: "Guitare", icon: "/img/guitare.svg" },
     { id: "4", name: "Piano", icon: "/img/piano.svg" },
   ];
 
@@ -20,15 +20,18 @@ export function Courses() {
   const [searchQuery, setSearchQuery] = useState(
     searchParams.get("title") || "",
   );
+
   const categoryId = searchParams.get("categoryId");
+  const parsedCategoryId = categoryId ? parseInt(categoryId, 10) : null;
 
   const filteredCourses = discountedCourses.filter((course) => {
     const matchesSearch = course.title
       .toLowerCase()
       .includes(searchQuery.toLowerCase());
-    const matchesCategory = categoryId
-      ? course.category?.id === categoryId
+    const matchesCategory = parsedCategoryId
+      ? course.category?.id === parsedCategoryId
       : true;
+
     return matchesSearch && matchesCategory;
   });
 
@@ -45,76 +48,83 @@ export function Courses() {
 
   return (
     <section className="mx-auto max-w-screen-xl px-4 py-6">
-      <div className="">
+      <>
         {/* Search bar */}
-        <div className="block py-6 pt-6 md:mb-0 md:hidden">
-          <SearchInput handleSearch={handleSearch} searchQuery={searchQuery} />
-        </div>
-        <div className="max-md:justify-center flex">
-          <div className="mr-5 hidden md:block">
+        <motion.div
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.8, delay: 0.2 }}
+        >
+          <div className="block py-6 pt-6 md:mb-0 md:hidden">
             <SearchInput
               handleSearch={handleSearch}
               searchQuery={searchQuery}
             />
           </div>
-          <Categories items={categories} />
-        </div>
+          <div className="max-md:justify-center flex">
+            <div className="mr-5 hidden md:block">
+              <SearchInput
+                handleSearch={handleSearch}
+                searchQuery={searchQuery}
+              />
+            </div>
+            <Categories items={categories} />
+          </div>
 
-        {/* Course list */}
-        {/* <CourseList courses={currentCourses} /> */}
+          <div className="h-auto">
+            <CourseList courses={currentItems} />
+          </div>
 
-        <div className="h-auto md:h-screen">
-          <CourseList courses={currentItems} />
-        </div>
-
-        {/* Pagination */}
-        <div className="mt-6 flex justify-center">
-          <nav>
-            <ul className="inline-flex space-x-1">
-              <li>
-                <button
-                  onClick={() => paginate(currentPage - 1)}
-                  disabled={currentPage === 1}
-                  className={`border px-4 py-2 ${
-                    currentPage === 1
-                      ? "bg-gray-200 text-gray-400"
-                      : "bg-white text-gray-700 hover:bg-gray-100"
-                  }`}
-                >
-                  Précédent
-                </button>
-              </li>
-              {Array.from({ length: totalPages }, (_, i) => (
-                <li key={i + 1}>
+          {/* Pagination */}
+          <div className="mt-20 flex justify-center">
+            <nav>
+              <ul className="inline-flex space-x-1">
+                <li>
                   <button
-                    onClick={() => paginate(i + 1)}
+                    onClick={() => paginate(currentPage - 1)}
+                    disabled={currentPage === 1}
                     className={`border px-4 py-2 ${
-                      currentPage === i + 1
-                        ? "bg-gray-800 text-white"
+                      currentPage === 1
+                        ? "bg-gray-200 text-gray-400"
                         : "bg-white text-gray-700 hover:bg-gray-100"
                     }`}
                   >
-                    {i + 1}
+                    Précédent
                   </button>
                 </li>
-              ))}
-              <li>
-                <button
-                  onClick={() => paginate(currentPage + 1)}
-                  disabled={currentPage === totalPages}
-                  className={`border px-4 py-2 ${
-                    currentPage === totalPages
-                      ? "bg-gray-200 text-gray-400"
-                      : "bg-white text-gray-700 hover:bg-gray-100"
-                  }`}
-                >
-                  Suivant
-                </button>
-              </li>
-            </ul>
-          </nav>
-        </div>
-      </div>
+                {Array.from({ length: totalPages }, (_, i) => (
+                  <li key={i + 1}>
+                    <button
+                      onClick={() => paginate(i + 1)}
+                      className={`border px-4 py-2 ${
+                        currentPage === i + 1
+                          ? "bg-gray-800 text-white"
+                          : "bg-white text-gray-700 hover:bg-gray-100"
+                      }`}
+                    >
+                      {i + 1}
+                    </button>
+                  </li>
+                ))}
+                <li>
+                  <button
+                    onClick={() => paginate(currentPage + 1)}
+                    disabled={currentPage === totalPages}
+                    className={`border px-4 py-2 ${
+                      currentPage === totalPages
+                        ? "bg-gray-200 text-gray-400"
+                        : "bg-white text-gray-700 hover:bg-gray-100"
+                    }`}
+                  >
+                    Suivant
+                  </button>
+                </li>
+              </ul>
+            </nav>
+          </div>
+        </motion.div>
+      </>
     </section>
   );
 }

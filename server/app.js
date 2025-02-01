@@ -21,6 +21,7 @@ import remarkRoutes from "./routes/remarkRoutes.js";
 import replyRoutes from "./routes/replyRoutes.js";
 import noteRoutes from "./routes/noteRoutes.js";
 import resetPasswordRoutes from "./routes/resetPassword.js";
+import attachmentRoutes from "./routes/attachmentRoutes.js";
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
 
@@ -130,6 +131,8 @@ app.use("/api/remark", remarkRoutes);
 app.use("/api/reply", replyRoutes);
 
 app.use("/api/note", noteRoutes);
+
+app.use("/api/attachment", attachmentRoutes);
 
 app.use("/api/reset-password", resetPasswordRoutes);
 

@@ -8,7 +8,7 @@ const Dashboard = ({ courseData, loading }) => {
     return <Loading />;
   }
   return (
-    <div className="container mx-auto">
+    <div className="container mx-auto p-0 md:p-2">
       <Typography variant="h4" className="dark:text-white">
         Vos formations
       </Typography>

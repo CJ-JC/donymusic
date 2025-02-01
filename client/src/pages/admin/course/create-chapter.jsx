@@ -1,6 +1,6 @@
 import React, { useState } from "react";
-import { Button, Input, Textarea } from "@material-tailwind/react";
-import { Check, PlusCircle, Trash2, TrashIcon } from "lucide-react";
+import { Button, Input } from "@material-tailwind/react";
+import { PlusCircle, Trash2, Paperclip } from "lucide-react";
 import axios from "axios";
 import { useParams, useNavigate } from "react-router-dom";
 import Editor from "@/widgets/utils/Editor";
@@ -10,16 +10,30 @@ const CreateChapter = () => {
   const { courseId } = useParams();
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
-  const [attachment, setAttachment] = useState(null);
 
   const [chapterData, setChapterData] = useState({
     title: "",
     description: "",
     courseId: courseId,
+    videos: [],
   });
 
-  // État pour gérer plusieurs vidéos
-  const [videos, setVideos] = useState([{ title: "", url: "" }]);
+  // État pour gérer plusieurs vidéos avec leurs annexes
+  const [videos, setVideos] = useState([
+    {
+      title: "",
+      url: "",
+    },
+  ]);
+
+  // État pour gérer les annexes
+  const [attachments, setAttachments] = useState([
+    {
+      title: "",
+      file: null,
+      videoId: "",
+    },
+  ]);
 
   const handleChapterChange = (e) => {
     setChapterData((prev) => ({
@@ -28,22 +42,40 @@ const CreateChapter = () => {
     }));
   };
 
-  // Gestion des changements pour chaque vidéo
   const handleVideoChange = (index, e) => {
     const newVideos = [...videos];
     newVideos[index][e.target.name] = e.target.value;
     setVideos(newVideos);
   };
 
-  // Ajouter un nouveau champ vidéo
+  const handleAttachmentChange = (index, e) => {
+    const newAttachments = [...attachments];
+    if (e.target.type === "file") {
+      newAttachments[index].file = e.target.files[0];
+    } else if (e.target.name === "videoId") {
+      newAttachments[index].videoId = e.target.value;
+    } else {
+      newAttachments[index].title = e.target.value;
+    }
+    setAttachments(newAttachments);
+  };
+
   const handleAddVideo = () => {
     setVideos([...videos, { title: "", url: "" }]);
   };
 
-  // Supprimer un champ vidéo
+  const handleAddAttachment = () => {
+    setAttachments([...attachments, { title: "", file: null, videoId: "" }]);
+  };
+
   const handleRemoveVideo = (index) => {
     const newVideos = videos.filter((_, i) => i !== index);
     setVideos(newVideos);
+  };
+
+  const handleRemoveAttachment = (index) => {
+    const newAttachments = attachments.filter((_, i) => i !== index);
+    setAttachments(newAttachments);
   };
 
   const handleSubmit = async (e) => {
@@ -51,38 +83,39 @@ const CreateChapter = () => {
     setLoading(true);
     setError("");
 
-    const formData = new FormData();
+    const validVideos = videos.filter((video) => video.title && video.url);
+    if (validVideos.length === 0) {
+      setError("Au moins une vidéo avec un titre et une URL est requise");
+      setLoading(false);
+      return;
+    }
 
-    // Ajouter les données du chapitre
+    const formData = new FormData();
     formData.append("title", chapterData.title);
     formData.append("description", chapterData.description);
     formData.append("courseId", chapterData.courseId);
-    formData.append("videos", JSON.stringify(videos));
+    formData.append("videos", JSON.stringify(validVideos));
 
-    // Ajouter le fichier attaché
-    if (attachment) {
-      formData.append("attachment", attachment);
-    }
+    // Ajouter les fichiers d'annexe au formData avec leurs videoId
+    attachments.forEach((attachment, index) => {
+      if (attachment.file) {
+        formData.append(`attachments`, attachment.file);
+        formData.append(`videoId${index}`, attachment.videoId || "");
+      }
+    });
 
     try {
-      await axios.post("/api/chapter/create", formData);
-
+      await axios.post("/api/chapter/create", formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
       navigate(`/administrator/edit-course/${courseId}`);
     } catch (error) {
       setError(error.response?.data?.error || "Une erreur est survenue");
     } finally {
       setLoading(false);
     }
-  };
-
-  const handleAttachmentChange = (e) => {
-    if (e.target.files && e.target.files[0]) {
-      setAttachment(e.target.files[0]);
-    }
-  };
-
-  const removeAttachment = () => {
-    setAttachment(null);
   };
 
   return (
@@ -166,99 +199,117 @@ const CreateChapter = () => {
             </div>
             <h2 className="text-xl">Mise en place des vidéos</h2>
           </div>
-          <button
+          <Button
+            variant="gradient"
             type="button"
             onClick={handleAddVideo}
-            className="flex items-center rounded-md p-2 hover:bg-gray-100 focus:outline-none dark:hover:bg-gray-400 dark:hover:text-black"
+            className="flex items-center rounded-md p-2 hover:bg-gray-100 focus:outline-none dark:hover:bg-gray-400"
           >
             <PlusCircle className="mr-2 h-4 w-4" />
             Ajouter des vidéos
-          </button>
+          </Button>
         </div>
 
         {videos.map((video, index) => (
-          <div
-            key={index}
-            className="mt-6 grid grid-cols-1 gap-6 md:grid-cols-2"
-          >
-            <div className="space-y-2 rounded-md border p-4">
-              <Input
-                label="Titre de la vidéo"
-                required
-                name="title"
-                value={video.title}
-                onChange={(e) => handleVideoChange(index, e)}
-                type="text"
-                className="dark:text-white dark:focus:border-white"
-              />
-            </div>
-            <div className="relative space-y-2 rounded-md border p-4">
-              <div className="flex items-center gap-2">
+          <div key={index} className="mt-6 space-y-4">
+            <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
+              <div className="space-y-2 rounded-md border p-4">
                 <Input
-                  label="Vidéo aperçu de la formation"
+                  label="Titre de la vidéo"
                   required
-                  name="url"
-                  value={video.url}
+                  name="title"
+                  value={video.title}
                   onChange={(e) => handleVideoChange(index, e)}
                   type="text"
                   className="dark:text-white dark:focus:border-white"
                 />
-                {videos.length > 1 && (
-                  <button
-                    type="button"
-                    onClick={() => handleRemoveVideo(index)}
-                    className="text-red-500 hover:text-red-700"
-                  >
-                    <Trash2 className="h-5 w-5" />
-                  </button>
-                )}
+              </div>
+              <div className="relative space-y-2 rounded-md border p-4">
+                <div className="flex items-center gap-2">
+                  <Input
+                    label="Vidéo aperçu de la formation"
+                    required
+                    name="url"
+                    value={video.url}
+                    onChange={(e) => handleVideoChange(index, e)}
+                    type="text"
+                    className="dark:text-white dark:focus:border-white"
+                  />
+                  {videos.length > 1 && (
+                    <button
+                      type="button"
+                      onClick={() => handleRemoveVideo(index)}
+                      className="text-red-500 hover:text-red-700"
+                    >
+                      <Trash2 className="h-5 w-5" />
+                    </button>
+                  )}
+                </div>
               </div>
             </div>
           </div>
         ))}
 
-        <div className="mt-10 flex items-center gap-x-2">
-          <div className="flex items-center justify-center rounded-full bg-blue-100 p-2">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="24"
-              height="24"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              className="lucide lucide-paperclip text-green-700"
-            >
-              <path d="M13.234 20.252 21 12.3" />
-              <path d="m16 6-8.414 8.586a2 2 0 0 0 0 2.828 2 2 0 0 0 2.828 0l8.414-8.586a4 4 0 0 0 0-5.656 4 4 0 0 0-5.656 0l-8.415 8.585a6 6 0 1 0 8.486 8.486" />
-            </svg>
+        <div className="mt-10 flex items-center justify-between gap-x-2">
+          <div className="flex items-center gap-x-2">
+            <div className="flex items-center justify-center rounded-full bg-blue-100 p-2">
+              <Paperclip className="h-8 w-8 text-green-700" />
+            </div>
+            <h2 className="text-xl">Annexes du chapitre</h2>
           </div>
-          <h2 className="text-xl">Annexes de la formation</h2>
+          <Button
+            variant="gradient"
+            type="button"
+            onClick={handleAddAttachment}
+            className="flex items-center rounded-md p-2 hover:bg-gray-100 focus:outline-none"
+          >
+            <PlusCircle className="mr-2 h-4 w-4" />
+            Ajouter une annexe
+          </Button>
         </div>
-        <div className="mt-6 w-2/4 gap-6 space-y-2 rounded-md border p-4">
-          <Input
-            label="Fichier annexe"
-            type="file"
-            name="attachment"
-            id="attachment"
-            onChange={handleAttachmentChange}
-          />
 
-          {attachment && (
-            <div className="mt-2">
-              <div className="flex justify-between">
-                {attachment.name.substring(0, 50)}{" "}
-                <div className="flex gap-x-2">
-                  <button onClick={removeAttachment} className="text-red-500">
-                    <TrashIcon className="h-5 w-5" />
-                  </button>
+        {attachments.map((attachment, index) => (
+          <div key={index} className="mt-6 space-y-4">
+            <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
+              <div className="relative space-y-2 rounded-md border p-4">
+                <div className="flex items-center gap-2">
+                  <Input
+                    label="Fichier annexe"
+                    name="file"
+                    type="file"
+                    onChange={(e) => handleAttachmentChange(index, e)}
+                    className="dark:text-white dark:focus:border-white"
+                  />
+                  {attachments.length > 1 && (
+                    <button
+                      type="button"
+                      onClick={() => handleRemoveAttachment(index)}
+                      className="text-red-500 hover:text-red-700"
+                    >
+                      <Trash2 className="h-5 w-5" />
+                    </button>
+                  )}
                 </div>
               </div>
+              <div className="space-y-2 rounded-md border p-4">
+                <select
+                  name="videoId"
+                  value={attachment.videoId}
+                  onChange={(e) => handleAttachmentChange(index, e)}
+                  className="w-full rounded-lg border border-gray-300 p-2 focus:border-blue-500 focus:outline-none dark:border-gray-600 dark:bg-gray-700 dark:text-white"
+                >
+                  <option value="">Sélectionner la vidéo (optionnel)</option>
+                  {videos.map((video, videoIndex) => (
+                    <option key={videoIndex} value={videoIndex}>
+                      {video.title || `Vidéo ${videoIndex + 1}`}
+                    </option>
+                  ))}
+                </select>
+              </div>
             </div>
-          )}
-        </div>
+          </div>
+        ))}
+
         <div className="flex justify-center">
           <Button
             type="submit"

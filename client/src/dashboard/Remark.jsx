@@ -126,8 +126,10 @@ const Remark = ({ selectedVideo, createdRemark }) => {
                   <User2Icon className="h-10 w-10" />
                 </div>
 
-                <p className="font-bold">{remark.author?.firstName}</p>
-                <p className="px-2 text-sm font-bold text-gray-600 dark:text-gray-400">
+                <p className="text-sm font-medium">
+                  {remark.author?.firstName}
+                </p>
+                <p className="px-2 text-sm font-medium text-gray-600 dark:text-gray-400">
                   <time
                     dateTime={remark.createdAt}
                     title={new Date(remark.createdAt).toLocaleDateString(

@@ -66,7 +66,7 @@ export function SignIn() {
             <Input
               size="lg"
               placeholder="Votre email"
-              className=" dark:text-white"
+              className=" dark:text-white dark:focus:border-gray-50"
               id="email"
               name="email"
               type="email"
@@ -83,7 +83,7 @@ export function SignIn() {
               type="password"
               size="lg"
               placeholder="********"
-              className=" dark:text-white"
+              className=" dark:text-white dark:focus:border-gray-50"
               id="password"
               name="password"
               onChange={handleChange}
