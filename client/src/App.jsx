@@ -19,8 +19,8 @@ const CreateChapter = lazy(() =>
 const EditChapter = lazy(() => import("./pages/admin/course/edit-chapter.jsx"));
 const Home = lazy(() => import("./pages/home.jsx"));
 const Account = lazy(() => import("@/pages/user/account.jsx"));
-const SignIn = lazy(() => import("./pages/auth/Sign-in.jsx"));
-const SignUp = lazy(() => import("./pages/auth/Sign-up.jsx"));
+const SignIn = lazy(() => import("@/pages/auth/Sign-in.jsx"));
+const SignUp = lazy(() => import("@/pages/auth/Sign-up.jsx"));
 const Remise = lazy(() => import("./pages/admin/remise.jsx"));
 const ShowCourses = lazy(() => import("./pages/admin/course/show-courses.jsx"));
 const Masterclass = lazy(() =>
