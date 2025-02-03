@@ -4,7 +4,7 @@ import { PlusCircle } from "lucide-react";
 import React, { useState } from "react";
 import { useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
-import Remark from "./remark.jsx";
+import Remark from "@/remark.jsx";
 
 const CreateRemark = ({ selectedVideo }) => {
   const { courseId } = useParams();

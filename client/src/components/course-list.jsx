@@ -1,4 +1,4 @@
-import CourseCard from "./Course-card.jsx";
+import CourseCard from "@/Course-card.jsx";
 
 const CourseList = ({ courses }) => {
   return (
