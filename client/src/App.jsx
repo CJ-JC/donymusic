@@ -1,7 +1,8 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, Suspense } from "react";
 import { Routes, Route, Outlet } from "react-router-dom";
 import { Footer, Navbar } from "@/widgets/layout";
-import CoursePlayer from "@/dashboard/Course-player.jsx";
+import Loading from "@/widgets/utils/Loading.jsx";
+import CoursePlayer from "@/dashboard/CoursePlayer.jsx";
 import { Courses } from "@/pages/Courses.jsx";
 import Admin from "@/pages/admin/Admin.jsx";
 import CreateCourse from "@/pages/admin/course/Create-course.jsx";
@@ -16,7 +17,6 @@ import SignUp from "@/pages/auth/sign-up.jsx";
 import Remise from "@/pages/admin/Remise.jsx";
 import ShowCourses from "@/pages/admin/course/Show-courses.jsx";
 import axios from "axios";
-import Loading from "@/widgets/utils/Loading.jsx";
 import Masterclass from "@/pages/admin/masterclass/Show-masterclass.jsx";
 import MasterClass from "@/components/Masterclass.jsx";
 import MasterclassDetail from "@/components/Masterclass-detail.jsx";
@@ -266,7 +266,11 @@ function App() {
         {/* Autres routes */}
         <Route
           path="/course-player/course/:courseId/chapters/:chapterId"
-          element={<CoursePlayer toggleTheme={toggleTheme} theme={theme} />}
+          element={
+            <Suspense fallback={<Loading />}>
+              <CoursePlayer toggleTheme={toggleTheme} theme={theme} />
+            </Suspense>
+          }
         />
 
         <Route path="*" element={<NotFound />} />
@@ -281,7 +285,3 @@ function App() {
 }
 
 export default App;
-
-{
-  /* <h1>What is a webinar description?</h1><p><br></p><p>The webinar description is a piece of text that introduces the thematic scope of your webinar to your audience, and it's probably one of the most vital parts of your promotion strategy. You can do an outstanding social media campaign, do great email marketing, and prepare a marvelous presentation, but without a webinar description that grabs attention, you're not going to&nbsp;convince people to hit the "participate" button.</p><p><br></p><p>You can write a description of your&nbsp;webinar's title, subject, as the agenda, and any special activities&nbsp;that you've prepared for your attendees are essential. This is the only way to show how valuable the content that you're going to present is. With gripping text, you can make your webinar stand out from the crowd.</p><p><br></p><h2>What should a description include?</h2><p class="ql-align-justify">Here is some principal information that the webinar description should convey. Forgetting about some of them might cause misunderstandings and result in one of two scenarios. First, a person may send you a direct message asking about the missing details. Second, which is more likely and far worse for your business, a user could abandon your event and forget about it altogether.</p><p>To avoid such situations, you should write a description that includes the following points:</p><ul><li class="ql-align-justify"><strong>Set the time and date.</strong>&nbsp;It will also be visible in the event parameters, but to make everything crystal clear, it's good practice to add a note about the exact timing of the webinar. And although everything takes place online, you can show where exactly the event will be hosted from.</li><li class="ql-align-justify"><strong>Show the purpose of the webinar.</strong>&nbsp;People don't have much time to waste, and they seek ready-to-implement solutions. Although most of us spend some leisure moments scrolling social media or staring pointlessly at the TV, we still want to feel that if we spend an hour watching a live video then it will improve our life. So when you're writing a webinar description, make sure to show viewers how they can benefit from it.</li></ul> */
-}
