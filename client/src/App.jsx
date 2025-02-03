@@ -35,7 +35,7 @@ import InvoicePdf from "@/pages/user/Invoice-pdf.jsx";
 import ForgotPassword from "@/pages/auth/forgot-password.jsx";
 import ResetPassword from "@/pages/auth/reset-password.jsx";
 import Politique from "@/pages/Politique.jsx";
-import Cgu from "@/pages/cgu.jsx";
+import Cgu from "@/pages/Cgu.jsx";
 import Cgv from "@/pages/Cgv.jsx";
 
 // Lazy imports
