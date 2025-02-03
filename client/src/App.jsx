@@ -1,42 +1,64 @@
-import React, { useEffect, useState, Suspense } from "react";
+import React, { useEffect, useState, Suspense, lazy } from "react";
 import { Routes, Route, Outlet } from "react-router-dom";
 import { Footer, Navbar } from "@/widgets/layout/index.js";
 import Loading from "@/widgets/utils/Loading.jsx";
 import ScrollToTop from "@/widgets/utils/ScrollToTop.jsx";
 import axios from "axios";
-import CoursePlayer from "@/dashboard/CoursePlayer.jsx";
-import Admin from "@/pages/admin/Admin.jsx";
-import CreateCourse from "@/pages/admin/course/Create-course.jsx";
-import NotFound from "@/pages/404.jsx";
-import EditCourse from "@/pages/admin/course/Edit-course.jsx";
-import CreateChapter from "@/pages/admin/course/Create-chapter.jsx";
-import EditChapter from "@/pages/admin/course/Edit-chapter.jsx";
-import Courses from "@/pages/courses.jsx";
-import Home from "@/pages/Home.jsx";
-import Account from "@/pages/user/Account.jsx";
-import SignIn from "@/pages/auth/Sign-in.jsx";
-import SignUp from "@/pages/auth/Sign-up.jsx";
-import Remise from "@/pages/admin/Remise.jsx";
-import ShowCourses from "@/pages/admin/course/Show-courses.jsx";
-import Masterclass from "@/pages/admin/masterclass/Show-masterclass.jsx";
-import MasterClass from "@/components/Masterclass.jsx";
-import MasterclassDetail from "@/components/Masterclass-detail.jsx";
-import CreateMasterclass from "@/pages/admin/masterclass/Create-masterclass.jsx";
-import EditMasterclass from "@/pages/admin/masterclass/Edit-masterclass.jsx";
-import Coursedetail from "@/components/Course-detail.jsx";
-import CreateInstructor from "@/pages/admin/instructor/Create-instructor.jsx";
-import Instructors from "@/pages/admin/instructor/Instructors.jsx";
-import EditInstructor from "@/pages/admin/instructor/Edit-instructor.jsx";
-import Users from "@/pages/admin/Users/Users.jsx";
-import AccountAdmin from "@/pages/admin/Users/Account-admin.jsx";
-import Setting from "@/pages/user/Settings.jsx";
-import Success from "@/pages/Success.jsx";
-import InvoicePdf from "@/pages/user/Invoice-pdf.jsx";
-import ForgotPassword from "@/pages/auth/Forgot-password.jsx";
-import ResetPassword from "@/pages/auth/Reset-password.jsx";
-import Politique from "@/pages/Politique.jsx";
-import Cgu from "@/pages/Cgu.jsx";
-import Cgv from "@/pages/Cgv.jsx";
+
+// Lazy loading des composants
+const CoursePlayer = lazy(() => import("@/dashboard/CoursePlayer.jsx"));
+const Admin = lazy(() => import("@/pages/admin/Admin.jsx"));
+const CreateCourse = lazy(() =>
+  import("@/pages/admin/course/Create-course.jsx"),
+);
+const NotFound = lazy(() => import("@/pages/404.jsx"));
+const EditCourse = lazy(() => import("@/pages/admin/course/Edit-course.jsx"));
+const CreateChapter = lazy(() =>
+  import("@/pages/admin/course/Create-chapter.jsx"),
+);
+const EditChapter = lazy(() => import("@/pages/admin/course/Edit-chapter.jsx"));
+const Courses = lazy(() => import("@/pages/courses.jsx"));
+const Home = lazy(() => import("@/pages/Home.jsx"));
+const Account = lazy(() => import("@/pages/user/Account.jsx"));
+const SignIn = lazy(() => import("@/pages/auth/Sign-in.jsx"));
+const SignUp = lazy(() => import("@/pages/auth/Sign-up.jsx"));
+const Remise = lazy(() => import("@/pages/admin/Remise.jsx"));
+const ShowCourses = lazy(() => import("@/pages/admin/course/Show-courses.jsx"));
+const Masterclass = lazy(() =>
+  import("@/pages/admin/masterclass/Show-masterclass.jsx"),
+);
+const MasterClass = lazy(() => import("@/components/Masterclass.jsx"));
+const MasterclassDetail = lazy(() =>
+  import("@/components/Masterclass-detail.jsx"),
+);
+const CreateMasterclass = lazy(() =>
+  import("@/pages/admin/masterclass/Create-masterclass.jsx"),
+);
+const EditMasterclass = lazy(() =>
+  import("@/pages/admin/masterclass/Edit-masterclass.jsx"),
+);
+const Coursedetail = lazy(() => import("@/components/Course-detail.jsx"));
+const CreateInstructor = lazy(() =>
+  import("@/pages/admin/instructor/Create-instructor.jsx"),
+);
+const Instructors = lazy(() =>
+  import("@/pages/admin/instructor/Instructors.jsx"),
+);
+const EditInstructor = lazy(() =>
+  import("@/pages/admin/instructor/Edit-instructor.jsx"),
+);
+const Users = lazy(() => import("@/pages/admin/Users/Users.jsx"));
+const AccountAdmin = lazy(() =>
+  import("@/pages/admin/Users/Account-admin.jsx"),
+);
+const Setting = lazy(() => import("@/pages/user/Settings.jsx"));
+const Success = lazy(() => import("@/pages/Success.jsx"));
+const InvoicePdf = lazy(() => import("@/pages/user/Invoice-pdf.jsx"));
+const ForgotPassword = lazy(() => import("@/pages/auth/Forgot-password.jsx"));
+const ResetPassword = lazy(() => import("@/pages/auth/Reset-password.jsx"));
+const Politique = lazy(() => import("@/pages/Politique.jsx"));
+const Cgu = lazy(() => import("@/pages/Cgu.jsx"));
+const Cgv = lazy(() => import("@/pages/Cgv.jsx"));
 
 const Layout = ({
   globalDiscount,
@@ -76,6 +98,13 @@ const Layout = ({
     <Outlet />
     <Footer toggleTheme={toggleTheme} theme={theme} />
   </>
+);
+
+// Wrapper pour le lazy loading
+const LazyComponent = ({ component: Component, ...props }) => (
+  <Suspense fallback={<Loading />}>
+    <Component {...props} />
+  </Suspense>
 );
 
 function App() {
@@ -208,84 +237,154 @@ function App() {
             />
           }
         >
-          <Route index element={<Home />} />
+          <Route index element={<LazyComponent component={Home} />} />
           <Route
             path="courses"
-            element={
-              <Suspense fallback={<Loading />}>
-                <Courses />
-              </Suspense>
-            }
+            element={<LazyComponent component={Courses} />}
           />
-          <Route path="detail/slug/:id" element={<Coursedetail />} />
-          <Route path="masterclass" element={<MasterClass />} />
+          <Route
+            path="detail/slug/:id"
+            element={<LazyComponent component={Coursedetail} />}
+          />
+          <Route
+            path="masterclass"
+            element={<LazyComponent component={MasterClass} />}
+          />
           <Route
             path="masterclass/slug/:slug"
-            element={<MasterclassDetail />}
+            element={<LazyComponent component={MasterclassDetail} />}
           />
-          <Route path="/invoice-pdf" element={<InvoicePdf />} />
+          <Route
+            path="/invoice-pdf"
+            element={<LazyComponent component={InvoicePdf} />}
+          />
 
           {/* compte */}
-          <Route path="user/account" element={<Account />} />
-          <Route path="user/account/settings" element={<Setting />} />
+          <Route
+            path="user/account"
+            element={<LazyComponent component={Account} />}
+          />
+          <Route
+            path="user/account/settings"
+            element={<LazyComponent component={Setting} />}
+          />
 
           {/* s'authentifier */}
-          <Route path="sign-in" element={<SignIn />} />
-          <Route path="sign-up" element={<SignUp />} />
-          <Route path="forgot-password" element={<ForgotPassword />} />
-          <Route path="reset-password" element={<ResetPassword />} />
+          <Route
+            path="sign-in"
+            element={<LazyComponent component={SignIn} />}
+          />
+          <Route
+            path="sign-up"
+            element={<LazyComponent component={SignUp} />}
+          />
+          <Route
+            path="forgot-password"
+            element={<LazyComponent component={ForgotPassword} />}
+          />
+          <Route
+            path="reset-password"
+            element={<LazyComponent component={ResetPassword} />}
+          />
 
           {/* payment */}
-          <Route path="success" element={<Success />} />
+          <Route
+            path="success"
+            element={<LazyComponent component={Success} />}
+          />
         </Route>
 
         {/* Routes admin */}
         <Route
           path="/administrator"
-          element={<Admin toggleTheme={toggleTheme} theme={theme} />}
+          element={
+            <LazyComponent
+              component={Admin}
+              toggleTheme={toggleTheme}
+              theme={theme}
+            />
+          }
         >
           {/* Chapters */}
-          <Route path="create-chapter/:courseId" element={<CreateChapter />} />
+          <Route
+            path="create-chapter/:courseId"
+            element={<LazyComponent component={CreateChapter} />}
+          />
           <Route
             path="course/:courseId/edit-chapter/:id"
-            element={<EditChapter />}
+            element={<LazyComponent component={EditChapter} />}
           />
           {/* Courses */}
-          <Route path="create-course" element={<CreateCourse />} />
-          <Route path="edit-course/:id" element={<EditCourse />} />
-          <Route path="courses" element={<ShowCourses />} />
+          <Route
+            path="create-course"
+            element={<LazyComponent component={CreateCourse} />}
+          />
+          <Route
+            path="edit-course/:id"
+            element={<LazyComponent component={EditCourse} />}
+          />
+          <Route
+            path="courses"
+            element={<LazyComponent component={ShowCourses} />}
+          />
           {/* Masterclass */}
-          <Route path="masterclass" element={<Masterclass />} />
-          <Route path="create-masterclass" element={<CreateMasterclass />} />
-          <Route path="edit-masterclass/:id" element={<EditMasterclass />} />
+          <Route
+            path="masterclass"
+            element={<LazyComponent component={Masterclass} />}
+          />
+          <Route
+            path="create-masterclass"
+            element={<LazyComponent component={CreateMasterclass} />}
+          />
+          <Route
+            path="edit-masterclass/:id"
+            element={<LazyComponent component={EditMasterclass} />}
+          />
           {/* instructors */}
-          <Route path="instructors" element={<Instructors />} />
-          <Route path="instructor/create" element={<CreateInstructor />} />
-          <Route path="instructor/edit/:id" element={<EditInstructor />} />
+          <Route
+            path="instructors"
+            element={<LazyComponent component={Instructors} />}
+          />
+          <Route
+            path="instructor/create"
+            element={<LazyComponent component={CreateInstructor} />}
+          />
+          <Route
+            path="instructor/edit/:id"
+            element={<LazyComponent component={EditInstructor} />}
+          />
           {/* users */}
-          <Route path="users" element={<Users />} />
+          <Route path="users" element={<LazyComponent component={Users} />} />
 
-          <Route path="profile" element={<AccountAdmin />} />
+          <Route
+            path="profile"
+            element={<LazyComponent component={AccountAdmin} />}
+          />
           {/* remise */}
-          <Route path="remise" element={<Remise />} />
+          <Route path="remise" element={<LazyComponent component={Remise} />} />
         </Route>
 
         {/* Autres routes */}
         <Route
           path="/course-player/course/:courseId/chapters/:chapterId"
           element={
-            <Suspense fallback={<Loading />}>
-              <CoursePlayer toggleTheme={toggleTheme} theme={theme} />
-            </Suspense>
+            <LazyComponent
+              component={CoursePlayer}
+              toggleTheme={toggleTheme}
+              theme={theme}
+            />
           }
         />
 
-        <Route path="*" element={<NotFound />} />
+        <Route path="*" element={<LazyComponent component={NotFound} />} />
 
         {/* footer */}
-        <Route path="politique" element={<Politique />} />
-        <Route path="cgu" element={<Cgu />} />
-        <Route path="cgv" element={<Cgv />} />
+        <Route
+          path="politique"
+          element={<LazyComponent component={Politique} />}
+        />
+        <Route path="cgu" element={<LazyComponent component={Cgu} />} />
+        <Route path="cgv" element={<LazyComponent component={Cgv} />} />
       </Routes>
     </div>
   );
