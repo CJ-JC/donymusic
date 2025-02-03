@@ -12,7 +12,7 @@ import logoNight from "/img/logo-night.svg";
 import axios from "axios";
 import { checkAuthStatus } from "../utils/CheckAuthStatus";
 import { useDispatch, useSelector } from "react-redux";
-import { loggedOut } from "@/reducer/Auth";
+import { loggedOut } from "@/reducer/auth";
 import Loading from "../utils/Loading";
 import AccountDropdown from "../utils/AccountDropdown";
 import { MoonIcon, SunIcon } from "lucide-react";

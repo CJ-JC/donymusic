@@ -22,7 +22,7 @@ import ReactPlayer from "react-player";
 import { useDispatch, useSelector } from "react-redux";
 import { checkAuthStatus } from "@/widgets/utils/CheckAuthStatus";
 import Confetti from "@/widgets/utils/Confetti";
-import { loggedOut } from "@/reducer/Auth";
+import { loggedOut } from "@/reducer/auth";
 import { ArrowBack } from "@mui/icons-material";
 import CreateRemark from "./Create-remark";
 import CreateNote from "./Create-note";
