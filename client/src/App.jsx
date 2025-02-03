@@ -40,7 +40,7 @@ import Cgv from "@/pages/Cgv.jsx";
 
 // Lazy imports
 const CoursePlayerLazy = lazy(() => import("@/dashboard/CoursePlayer.jsx"));
-const CoursesLazy = lazy(() => import("@/pages/Courses.jsx"));
+const CoursesLazy = lazy(() => import("@/pages/courses.jsx"));
 const AdminLazy = lazy(() => import("@/pages/admin/Admin.jsx"));
 const CreateCourseLazy = lazy(() =>
   import("@/pages/admin/course/Create-course.jsx"),
