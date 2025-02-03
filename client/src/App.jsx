@@ -46,7 +46,7 @@ const Instructors = lazy(() =>
 const EditInstructor = lazy(() =>
   import("@/pages/admin/instructor/edit-instructor.jsx"),
 );
-const Users = lazy(() => import("./pages/admin/Users/users.jsx"));
+const Users = lazy(() => import("@/pages/admin/Users/users.jsx"));
 const AccountAdmin = lazy(() =>
   import("@/pages/admin/Users/account-admin.jsx"),
 );
@@ -55,7 +55,7 @@ const Success = lazy(() => import("@/pages/success.jsx"));
 const InvoicePdf = lazy(() => import("@/pages/user/invoice-pdf.jsx"));
 const ForgotPassword = lazy(() => import("@/pages/auth/Forgot-password.jsx"));
 const ResetPassword = lazy(() => import("@/pages/auth/Reset-password.jsx"));
-const Politique = lazy(() => import("./pages/politique.jsx"));
+const Politique = lazy(() => import("@/pages/politique.jsx"));
 const Cgu = lazy(() => import("@/pages/cgu.jsx"));
 const Cgv = lazy(() => import("@/pages/cgv.jsx"));
 
