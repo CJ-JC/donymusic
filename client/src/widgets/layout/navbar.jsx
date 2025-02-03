@@ -13,7 +13,7 @@ import axios from "axios";
 import { checkAuthStatus } from "../utils/CheckAuthStatus";
 import { useDispatch, useSelector } from "react-redux";
 import { loggedOut } from "@/reducer/auth";
-import Loading from "../utils/Loading";
+import Loading from "../utils/Loading.jsx";
 import AccountDropdown from "../utils/AccountDropdown";
 import { MoonIcon, SunIcon } from "lucide-react";
 

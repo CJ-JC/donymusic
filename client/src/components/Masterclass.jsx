@@ -5,7 +5,7 @@ import Countdown from "../widgets/utils/Countdown";
 import { Link } from "react-router-dom";
 import axios from "axios";
 import ReactQuill from "react-quill";
-import Loading from "@/widgets/utils/Loading";
+import Loading from "@/widgets/utils/Loading.jsx";
 import { motion } from "framer-motion";
 
 const MasterClass = () => {

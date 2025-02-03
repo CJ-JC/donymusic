@@ -6,8 +6,8 @@ import { Pen, PlusCircle, TrashIcon } from "lucide-react";
 import Vimeo from "@u-wave/react-vimeo";
 import axios from "axios";
 import PublishButton from "@/widgets/utils/PublishButton";
-import Editor from "@/widgets/utils/Editor";
-import Modal from "@/widgets/utils/Modal";
+import Editor from "@/widgets/utils/Editor.jsx";
+import Modal from "@/widgets/utils/Modal.jsx";
 
 const editCourse = () => {
   const BASE_URL = import.meta.env.VITE_API_URL;

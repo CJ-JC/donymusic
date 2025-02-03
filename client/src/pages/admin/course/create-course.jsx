@@ -4,7 +4,7 @@ import axios from "axios";
 import AlertError from "@/widgets/utils/AlertError";
 import { PlusCircle } from "lucide-react";
 import { useNavigate } from "react-router-dom";
-import Editor from "@/widgets/utils/Editor";
+import Editor from "@/widgets/utils/Editor.jsx";
 
 const CreateCourse = () => {
   const navigate = useNavigate();

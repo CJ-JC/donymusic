@@ -2,7 +2,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { BookOpen, Trophy } from "lucide-react";
 import { useEffect, useState } from "react";
 import axios from "axios";
-import CourseProgress from "@/widgets/utils/Course-progress";
+import CourseProgress from "@/widgets/utils/Course-progress.jsx";
 
 const CourseCard = ({
   id,

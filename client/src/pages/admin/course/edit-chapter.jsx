@@ -3,7 +3,7 @@ import { Button, Input } from "@material-tailwind/react";
 import { Paperclip, PlusCircle, Trash2, TrashIcon } from "lucide-react";
 import axios from "axios";
 import { useParams, useNavigate } from "react-router-dom";
-import Editor from "@/widgets/utils/Editor";
+import Editor from "@/widgets/utils/Editor.jsx";
 
 const EditChapter = () => {
   const BASE_URL = import.meta.env.VITE_API_URL;

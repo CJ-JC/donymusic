@@ -1,5 +1,5 @@
-import AlertError from "@/widgets/utils/AlertError";
-import Editor from "@/widgets/utils/Editor";
+import AlertError from "@/widgets/utils/AlertError.jsx";
+import Editor from "@/widgets/utils/Editor.jsx";
 import { Button, Input } from "@material-tailwind/react";
 import axios from "axios";
 import React, { useEffect, useState } from "react";

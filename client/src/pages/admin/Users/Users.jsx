@@ -2,10 +2,10 @@ import { Button } from "@material-tailwind/react";
 import { Trash } from "lucide-react";
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import SearchInput from "@/components/search/Search-input";
+import SearchInput from "@/components/search/Search-input.jsx";
 import { Typography } from "@material-tailwind/react";
 import axios from "axios";
-import Loading from "@/widgets/utils/Loading";
+import Loading from "@/widgets/utils/Loading.jsx";
 
 const Users = () => {
   const [users, setUsers] = useState([]);

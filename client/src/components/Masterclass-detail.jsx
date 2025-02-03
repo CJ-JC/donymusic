@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { Typography, Card, CardBody } from "@material-tailwind/react";
-import Countdown from "../widgets/utils/Countdown";
+import Countdown from "../widgets/utils/Countdown.jsx";
 import {
   Calendar,
   Clock,
@@ -11,10 +11,10 @@ import {
   CalendarClock,
 } from "lucide-react";
 import ReactQuill from "react-quill";
-import FormatHour from "@/widgets/utils/FormatHour";
+import FormatHour from "@/widgets/utils/FormatHour.jsx";
 import Loading from "@/widgets/utils/Loading";
-import { CalculateDuration } from "@/widgets/utils/calculateDuration";
-import MasterclassRegistration from "@/widgets/utils/MasterclassRegistration";
+import { CalculateDuration } from "@/widgets/utils/calculateDuration.jsx";
+import MasterclassRegistration from "@/widgets/utils/MasterclassRegistration.jsx";
 import axios from "axios";
 import { handleCheckout } from "@/widgets/utils/PaymentService";
 import { useSelector } from "react-redux";

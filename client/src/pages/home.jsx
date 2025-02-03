@@ -12,15 +12,15 @@ import {
   Checkbox,
 } from "@material-tailwind/react";
 import { PageTitle } from "@/widgets/layout";
-import CourseList from "@/components/Course-list";
+import CourseList from "@/components/Course-list.jsx";
 import useCourses from "@/widgets/utils/UseCourses";
-import Countdown from "@/widgets/utils/Countdown";
-import Loading from "@/widgets/utils/Loading";
+import Countdown from "@/widgets/utils/Countdown.jsx";
+import Loading from "@/widgets/utils/Loading.jsx";
 import axios from "axios";
 import ReactQuill from "react-quill";
 import { motion } from "framer-motion";
 import { Monitor, Rocket, UsersRound } from "lucide-react";
-import Contact from "@/components/Contact";
+import Contact from "@/components/Contact.jsx";
 import { useSelector } from "react-redux";
 
 export function Home() {

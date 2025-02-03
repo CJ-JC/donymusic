@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from "react";
 import { Button, Input } from "@material-tailwind/react";
 import axios from "axios";
-import AlertError from "@/widgets/utils/AlertError";
+import AlertError from "@/widgets/utils/AlertError.jsx";
 import { useNavigate } from "react-router-dom";
-import Editor from "@/widgets/utils/Editor";
+import Editor from "@/widgets/utils/Editor.jsx";
 import DatePicker, { registerLocale } from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { fr } from "date-fns/locale";

@@ -3,7 +3,7 @@ import { Button, Input } from "@material-tailwind/react";
 import { PlusCircle, Trash2, Paperclip } from "lucide-react";
 import axios from "axios";
 import { useParams, useNavigate } from "react-router-dom";
-import Editor from "@/widgets/utils/Editor";
+import Editor from "@/widgets/utils/Editor.jsx";
 
 const CreateChapter = () => {
   const navigate = useNavigate();

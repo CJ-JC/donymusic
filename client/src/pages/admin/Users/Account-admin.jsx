@@ -11,7 +11,7 @@ import { PencilIcon, EyeIcon, EyeSlashIcon } from "@heroicons/react/24/solid";
 import axios from "axios";
 import { useDispatch, useSelector } from "react-redux";
 import { checkAuthStatus } from "@/widgets/utils/CheckAuthStatus";
-import Loading from "@/widgets/utils/Loading";
+import Loading from "@/widgets/utils/Loading.jsx";
 
 const AccountAdmin = () => {
   const [userData, setUserData] = useState(null);
