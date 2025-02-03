@@ -5,7 +5,7 @@ import Loading from "@/widgets/utils/Loading.jsx";
 import ScrollToTop from "@/widgets/utils/ScrollToTop.jsx";
 import axios from "axios";
 import CoursePlayer from "./dashboard/CoursePlayer.jsx";
-import Courses from "./pages/ourses.jsx";
+import Courses from "./pages/courses.jsx";
 import Admin from "@/pages/admin/admin.jsx";
 import CreateCourse from "@/pages/admin/course/create-course.jsx";
 import NotFound from "@/pages/404.jsx";
