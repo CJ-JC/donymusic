@@ -5,23 +5,23 @@ import Loading from "@/widgets/utils/Loading.jsx";
 import ScrollToTop from "@/widgets/utils/ScrollToTop.jsx";
 import axios from "axios";
 import CoursePlayer from "./dashboard/CoursePlayer.jsx";
-import Courses from "./pages/courses.jsx";
-import Admin from "@/pages/admin/Admin.jsx";
-import CreateCourse from "@/pages/admin/course/Create-course.jsx";
+import Courses from "./pages/ourses.jsx";
+import Admin from "@/pages/admin/admin.jsx";
+import CreateCourse from "@/pages/admin/course/create-course.jsx";
 import NotFound from "@/pages/404.jsx";
-import EditCourse from "@/pages/admin/course/Edit-course.jsx";
-import CreateChapter from "@/pages/admin/course/Create-chapter.jsx";
-import EditChapter from "@/pages/admin/course/Edit-chapter.jsx";
+import EditCourse from "@/pages/admin/course/edit-course.jsx";
+import CreateChapter from "@/pages/admin/course/create-chapter.jsx";
+import EditChapter from "@/pages/admin/course/edit-chapter.jsx";
 import Home from "@/pages/home.jsx";
 import Account from "@/pages/user/Account.jsx";
 import SignIn from "@/pages/auth/sign-in.jsx";
 import SignUp from "@/pages/auth/sign-up.jsx";
 import Remise from "@/pages/admin/Remise.jsx";
-import ShowCourses from "@/pages/admin/course/Show-courses.jsx";
+import ShowCourses from "@/pages/admin/course/show-courses.jsx";
 import Masterclass from "@/pages/admin/masterclass/Show-masterclass.jsx";
 import MasterClass from "@/components/Masterclass.jsx";
 import MasterclassDetail from "@/components/Masterclass-detail.jsx";
-import CreateMasterclass from "@/pages/admin/masterclass/create-masterclass.jsx";
+import CreateMasterclass from "@/pages/admin/masterclass/Create-masterclass.jsx";
 import EditMasterclass from "@/pages/admin/masterclass/Edit-masterclass.jsx";
 import Coursedetail from "@/components/Course-detail.jsx";
 import CreateInstructor from "@/pages/admin/instructor/create-instructor.jsx";
@@ -43,16 +43,16 @@ const CoursePlayerLazy = lazy(() => import("@/dashboard/CoursePlayer.jsx"));
 const CoursesLazy = lazy(() => import("@/pages/courses.jsx"));
 const AdminLazy = lazy(() => import("@/pages/admin/Admin.jsx"));
 const CreateCourseLazy = lazy(() =>
-  import("@/pages/admin/course/Create-course.jsx"),
+  import("@/pages/admin/course/create-course.jsx"),
 );
 const EditCourseLazy = lazy(() =>
-  import("@/pages/admin/course/Edit-course.jsx"),
+  import("@/pages/admin/course/edit-course.jsx"),
 );
 const CreateChapterLazy = lazy(() =>
-  import("@/pages/admin/course/Create-chapter.jsx"),
+  import("@/pages/admin/course/create-chapter.jsx"),
 );
 const EditChapterLazy = lazy(() =>
-  import("@/pages/admin/course/Edit-chapter.jsx"),
+  import("@/pages/admin/course/edit-chapter.jsx"),
 );
 const HomeLazy = lazy(() => import("@/pages/home.jsx"));
 const AccountLazy = lazy(() => import("@/pages/user/Account.jsx"));
@@ -60,7 +60,7 @@ const SignInLazy = lazy(() => import("@/pages/auth/sign-in.jsx"));
 const SignUpLazy = lazy(() => import("@/pages/auth/sign-up.jsx"));
 const RemiseLazy = lazy(() => import("@/pages/admin/Remise.jsx"));
 const ShowCoursesLazy = lazy(() =>
-  import("@/pages/admin/course/Show-courses.jsx"),
+  import("@/pages/admin/course/show-courses.jsx"),
 );
 const MasterclassLazy = lazy(() =>
   import("@/pages/admin/masterclass/Show-masterclass.jsx"),
