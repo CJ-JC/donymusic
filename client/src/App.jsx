@@ -1,4 +1,4 @@
-import React, { useEffect, useState, Suspense, lazy } from "react";
+import React, { useEffect, useState, Suspense } from "react";
 import { Routes, Route, Outlet } from "react-router-dom";
 import { Footer, Navbar } from "@/widgets/layout";
 import Loading from "@/widgets/utils/Loading.jsx";
@@ -37,45 +37,6 @@ import ResetPassword from "@/pages/auth/reset-password.jsx";
 import Politique from "@/pages/Politique.jsx";
 import Cgu from "@/pages/Cgu.jsx";
 import Cgv from "@/pages/Cgv.jsx";
-
-// Lazy imports
-const CoursePlayerLazy = lazy(() => import("@/dashboard/CoursePlayer.jsx"));
-const CoursesLazy = lazy(() => import("@/pages/courses.jsx"));
-const AdminLazy = lazy(() => import("@/pages/admin/Admin.jsx"));
-const CreateCourseLazy = lazy(() =>
-  import("@/pages/admin/course/create-course.jsx"),
-);
-const EditCourseLazy = lazy(() =>
-  import("@/pages/admin/course/edit-course.jsx"),
-);
-const CreateChapterLazy = lazy(() =>
-  import("@/pages/admin/course/create-chapter.jsx"),
-);
-const EditChapterLazy = lazy(() =>
-  import("@/pages/admin/course/edit-chapter.jsx"),
-);
-const HomeLazy = lazy(() => import("@/pages/home.jsx"));
-const AccountLazy = lazy(() => import("@/pages/user/Account.jsx"));
-const SignInLazy = lazy(() => import("@/pages/auth/sign-in.jsx"));
-const SignUpLazy = lazy(() => import("@/pages/auth/sign-up.jsx"));
-const RemiseLazy = lazy(() => import("@/pages/admin/Remise.jsx"));
-const ShowCoursesLazy = lazy(() =>
-  import("@/pages/admin/course/show-courses.jsx"),
-);
-const MasterclassLazy = lazy(() =>
-  import("@/pages/admin/masterclass/Show-masterclass.jsx"),
-);
-const MasterClassLazy = lazy(() => import("@/components/Masterclass.jsx"));
-const MasterclassDetailLazy = lazy(() =>
-  import("@/components/Masterclass-detail.jsx"),
-);
-const CreateMasterclassLazy = lazy(() =>
-  import("@/pages/admin/masterclass/create-masterclass.jsx"),
-);
-const EditMasterclassLazy = lazy(() =>
-  import("@/pages/admin/masterclass/Edit-masterclass.jsx"),
-);
-const CoursedetailLazy = lazy(() => import("@/components/Course-detail.jsx"));
 
 const Layout = ({
   globalDiscount,
@@ -247,30 +208,30 @@ function App() {
             />
           }
         >
-          <Route index element={<HomeLazy />} />
+          <Route index element={<Home />} />
           <Route
             path="courses"
             element={
               <Suspense fallback={<Loading />}>
-                <CoursesLazy />
+                <Courses />
               </Suspense>
             }
           />
-          <Route path="detail/slug/:id" element={<CoursedetailLazy />} />
-          <Route path="masterclass" element={<MasterClassLazy />} />
+          <Route path="detail/slug/:id" element={<Coursedetail />} />
+          <Route path="masterclass" element={<MasterClass />} />
           <Route
             path="masterclass/slug/:slug"
-            element={<MasterclassDetailLazy />}
+            element={<MasterclassDetail />}
           />
           <Route path="/invoice-pdf" element={<InvoicePdf />} />
 
           {/* compte */}
-          <Route path="user/account" element={<AccountLazy />} />
+          <Route path="user/account" element={<Account />} />
           <Route path="user/account/settings" element={<Setting />} />
 
           {/* s'authentifier */}
-          <Route path="sign-in" element={<SignInLazy />} />
-          <Route path="sign-up" element={<SignUpLazy />} />
+          <Route path="sign-in" element={<SignIn />} />
+          <Route path="sign-up" element={<SignUp />} />
           <Route path="forgot-password" element={<ForgotPassword />} />
           <Route path="reset-password" element={<ResetPassword />} />
 
@@ -281,31 +242,22 @@ function App() {
         {/* Routes admin */}
         <Route
           path="/administrator"
-          element={<AdminLazy toggleTheme={toggleTheme} theme={theme} />}
+          element={<Admin toggleTheme={toggleTheme} theme={theme} />}
         >
           {/* Chapters */}
-          <Route
-            path="create-chapter/:courseId"
-            element={<CreateChapterLazy />}
-          />
+          <Route path="create-chapter/:courseId" element={<CreateChapter />} />
           <Route
             path="course/:courseId/edit-chapter/:id"
-            element={<EditChapterLazy />}
+            element={<EditChapter />}
           />
           {/* Courses */}
-          <Route path="create-course" element={<CreateCourseLazy />} />
-          <Route path="edit-course/:id" element={<EditCourseLazy />} />
-          <Route path="courses" element={<ShowCoursesLazy />} />
+          <Route path="create-course" element={<CreateCourse />} />
+          <Route path="edit-course/:id" element={<EditCourse />} />
+          <Route path="courses" element={<ShowCourses />} />
           {/* Masterclass */}
-          <Route path="masterclass" element={<MasterclassLazy />} />
-          <Route
-            path="create-masterclass"
-            element={<CreateMasterclassLazy />}
-          />
-          <Route
-            path="edit-masterclass/:id"
-            element={<EditMasterclassLazy />}
-          />
+          <Route path="masterclass" element={<Masterclass />} />
+          <Route path="create-masterclass" element={<CreateMasterclass />} />
+          <Route path="edit-masterclass/:id" element={<EditMasterclass />} />
           {/* instructors */}
           <Route path="instructors" element={<Instructors />} />
           <Route path="instructor/create" element={<CreateInstructor />} />
@@ -315,7 +267,7 @@ function App() {
 
           <Route path="profile" element={<AccountAdmin />} />
           {/* remise */}
-          <Route path="remise" element={<RemiseLazy />} />
+          <Route path="remise" element={<Remise />} />
         </Route>
 
         {/* Autres routes */}
@@ -323,7 +275,7 @@ function App() {
           path="/course-player/course/:courseId/chapters/:chapterId"
           element={
             <Suspense fallback={<Loading />}>
-              <CoursePlayerLazy toggleTheme={toggleTheme} theme={theme} />
+              <CoursePlayer toggleTheme={toggleTheme} theme={theme} />
             </Suspense>
           }
         />
