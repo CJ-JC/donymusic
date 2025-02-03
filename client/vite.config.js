@@ -11,50 +11,38 @@ export default defineConfig({
     chunkSizeWarningLimit: 1500,
     rollupOptions: {
       output: {
-        manualChunks: {
-          // Vendors
-          "vendor-react": ["react", "react-dom", "react-router-dom"],
-          "vendor-ui": ["@material-tailwind/react", "@heroicons/react"],
-          "vendor-utils": ["axios", "dompurify"],
-
-          // App features
-          "feature-admin": [
-            "./src/pages/admin/Admin.jsx",
-            "./src/pages/admin/course/Create-course.jsx",
-            "./src/pages/admin/course/Edit-course.jsx",
-          ],
-          "feature-auth": [
-            "./src/pages/auth/Sign-in.jsx",
-            "./src/pages/auth/Sign-up.jsx",
-            "./src/pages/auth/Forgot-password.jsx",
-          ],
-          "feature-courses": [
-            "./src/pages/courses.jsx",
-            "./src/components/Course-detail.jsx",
-            "./src/dashboard/CoursePlayer.jsx",
-          ],
-          "feature-masterclass": [
-            "./src/components/Masterclass.jsx",
-            "./src/components/Masterclass-detail.jsx",
-          ],
-        },
-        assetFileNames: (assetInfo) => {
-          let extType = assetInfo.name.split(".").at(1);
-          if (/png|jpe?g|svg|gif|tiff|bmp|ico/i.test(extType)) {
-            extType = "img";
+        manualChunks: (id) => {
+          // Modules de node_modules
+          if (id.includes("node_modules")) {
+            if (id.includes("react")) {
+              return "vendor-react";
+            }
+            if (id.includes("@material-tailwind")) {
+              return "vendor-material";
+            }
+            if (id.includes("axios") || id.includes("query")) {
+              return "vendor-data";
+            }
+            return "vendor-others";
           }
-          return `assets/${extType}/[name]-[hash][extname]`;
+
+          // Modules de l'application
+          if (id.includes("/src/pages/admin/")) {
+            return "admin";
+          }
+          if (id.includes("/src/pages/auth/")) {
+            return "auth";
+          }
+          if (id.includes("/src/components/")) {
+            return "components";
+          }
+          if (id.includes("/src/widgets/")) {
+            return "widgets";
+          }
+          if (id.includes("/src/pages/")) {
+            return "pages";
+          }
         },
-        chunkFileNames: "assets/js/[name]-[hash].js",
-        entryFileNames: "assets/js/[name]-[hash].js",
-      },
-    },
-    sourcemap: false,
-    minify: "terser",
-    terserOptions: {
-      compress: {
-        drop_console: true,
-        drop_debugger: true,
       },
     },
   },

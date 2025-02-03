@@ -5,19 +5,18 @@ import Loading from "@/widgets/utils/Loading.jsx";
 import ScrollToTop from "@/widgets/utils/ScrollToTop.jsx";
 import axios from "axios";
 
-// Lazy loading des composants
+// Lazy imports
 const CoursePlayer = lazy(() => import("@/dashboard/CoursePlayer.jsx"));
+const Courses = lazy(() => import("@/pages/courses.jsx"));
 const Admin = lazy(() => import("@/pages/admin/Admin.jsx"));
 const CreateCourse = lazy(() =>
   import("@/pages/admin/course/Create-course.jsx"),
 );
-const NotFound = lazy(() => import("@/pages/404.jsx"));
 const EditCourse = lazy(() => import("@/pages/admin/course/Edit-course.jsx"));
 const CreateChapter = lazy(() =>
   import("@/pages/admin/course/Create-chapter.jsx"),
 );
 const EditChapter = lazy(() => import("@/pages/admin/course/Edit-chapter.jsx"));
-const Courses = lazy(() => import("@/pages/courses.jsx"));
 const Home = lazy(() => import("@/pages/Home.jsx"));
 const Account = lazy(() => import("@/pages/user/Account.jsx"));
 const SignIn = lazy(() => import("@/pages/auth/Sign-in.jsx"));
@@ -60,6 +59,13 @@ const Politique = lazy(() => import("@/pages/Politique.jsx"));
 const Cgu = lazy(() => import("@/pages/Cgu.jsx"));
 const Cgv = lazy(() => import("@/pages/Cgv.jsx"));
 
+// Wrapper pour le lazy loading
+const LazyComponent = ({ component: Component, ...props }) => (
+  <Suspense fallback={<Loading />}>
+    <Component {...props} />
+  </Suspense>
+);
+
 const Layout = ({
   globalDiscount,
   discountPercentage,
@@ -98,13 +104,6 @@ const Layout = ({
     <Outlet />
     <Footer toggleTheme={toggleTheme} theme={theme} />
   </>
-);
-
-// Wrapper pour le lazy loading
-const LazyComponent = ({ component: Component, ...props }) => (
-  <Suspense fallback={<Loading />}>
-    <Component {...props} />
-  </Suspense>
 );
 
 function App() {
@@ -222,8 +221,6 @@ function App() {
     <div className="mx-auto h-auto md:h-screen">
       <ScrollToTop />
       <Routes>
-        {/* Routes principales */}
-
         <Route
           path="/"
           element={
@@ -314,6 +311,7 @@ function App() {
             path="course/:courseId/edit-chapter/:id"
             element={<LazyComponent component={EditChapter} />}
           />
+
           {/* Courses */}
           <Route
             path="create-course"
@@ -327,6 +325,7 @@ function App() {
             path="courses"
             element={<LazyComponent component={ShowCourses} />}
           />
+
           {/* Masterclass */}
           <Route
             path="masterclass"
@@ -340,6 +339,7 @@ function App() {
             path="edit-masterclass/:id"
             element={<LazyComponent component={EditMasterclass} />}
           />
+
           {/* instructors */}
           <Route
             path="instructors"
@@ -353,13 +353,14 @@ function App() {
             path="instructor/edit/:id"
             element={<LazyComponent component={EditInstructor} />}
           />
+
           {/* users */}
           <Route path="users" element={<LazyComponent component={Users} />} />
-
           <Route
             path="profile"
             element={<LazyComponent component={AccountAdmin} />}
           />
+
           {/* remise */}
           <Route path="remise" element={<LazyComponent component={Remise} />} />
         </Route>
