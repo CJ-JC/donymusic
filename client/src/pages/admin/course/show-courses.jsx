@@ -2,7 +2,7 @@ import { Button } from "@material-tailwind/react";
 import { PencilIcon, PlusCircle } from "lucide-react";
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import SearchInput from "@/components/search/search-input";
+import SearchInput from "@/components/search/Search-input";
 import { Typography } from "@material-tailwind/react";
 import axios from "axios";
 

@@ -2,7 +2,7 @@ import { Button } from "@material-tailwind/react";
 import React, { useEffect, useState } from "react";
 import { Link, Outlet, useLocation, useNavigate } from "react-router-dom";
 import axios from "axios";
-import { loggedOut } from "@/reducer/auth";
+import { loggedOut } from "@/reducer/Auth";
 import { useDispatch, useSelector } from "react-redux";
 import { checkAuthStatus } from "@/widgets/utils/CheckAuthStatus";
 import Loading from "@/widgets/utils/Loading";

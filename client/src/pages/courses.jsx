@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import CourseList from "@/components/Course-list";
-import SearchInput from "@/components/search/search-input";
-import Categories from "@/components/search/categories";
+import SearchInput from "@/components/search/Search-input";
+import Categories from "@/components/search/Categories";
 import useCourses from "@/widgets/utils/UseCourses";
 import usePagination from "@/widgets/utils/usePagination";
 import { useSearchParams } from "react-router-dom";

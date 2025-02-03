@@ -1,5 +1,5 @@
 import axios from "axios";
-import { loggedFaillure, loggedInSuccess, loggedOut } from "../../reducer/auth";
+import { loggedFaillure, loggedInSuccess, loggedOut } from "../../reducer/Auth";
 
 export const checkAuthStatus = async (dispatch, setAuthLoading) => {
   try {

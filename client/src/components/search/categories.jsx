@@ -1,5 +1,5 @@
 import React from "react";
-import CategoryItem from "./category-item";
+import CategoryItem from "./Category-item";
 
 const Categories = ({ items }) => {
   // Map des icônes associées aux catégories
