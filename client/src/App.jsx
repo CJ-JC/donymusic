@@ -1,7 +1,9 @@
-import React, { useEffect, useState, Suspense } from "react";
+import React, { useEffect, useState, Suspense, lazy } from "react";
 import { Routes, Route, Outlet } from "react-router-dom";
 import { Footer, Navbar } from "@/widgets/layout";
 import Loading from "@/widgets/utils/Loading.jsx";
+import ScrollToTop from "@/widgets/utils/ScrollToTop.jsx";
+import axios from "axios";
 import CoursePlayer from "./dashboard/CoursePlayer.jsx";
 import Courses from "./pages/Courses.jsx";
 import Admin from "@/pages/admin/Admin.jsx";
@@ -16,14 +18,12 @@ import SignIn from "@/pages/auth/sign-in.jsx";
 import SignUp from "@/pages/auth/sign-up.jsx";
 import Remise from "@/pages/admin/Remise.jsx";
 import ShowCourses from "@/pages/admin/course/Show-courses.jsx";
-import axios from "axios";
 import Masterclass from "@/pages/admin/masterclass/Show-masterclass.jsx";
 import MasterClass from "@/components/Masterclass.jsx";
 import MasterclassDetail from "@/components/Masterclass-detail.jsx";
 import CreateMasterclass from "@/pages/admin/masterclass/create-masterclass.jsx";
 import EditMasterclass from "@/pages/admin/masterclass/Edit-masterclass.jsx";
 import Coursedetail from "@/components/Course-detail.jsx";
-import ScrollToTop from "@/widgets/utils/ScrollToTop.jsx";
 import CreateInstructor from "@/pages/admin/instructor/create-instructor.jsx";
 import Instructors from "@/pages/admin/instructor/Instructors.jsx";
 import EditInstructor from "@/pages/admin/instructor/edit-instructor.jsx";
@@ -37,6 +37,45 @@ import ResetPassword from "@/pages/auth/reset-password.jsx";
 import Politique from "@/pages/Politique.jsx";
 import Cgu from "@/pages/cgu.jsx";
 import Cgv from "@/pages/Cgv.jsx";
+
+// Lazy imports
+const CoursePlayerLazy = lazy(() => import("./dashboard/CoursePlayer.jsx"));
+const CoursesLazy = lazy(() => import("./pages/Courses.jsx"));
+const AdminLazy = lazy(() => import("@/pages/admin/Admin.jsx"));
+const CreateCourseLazy = lazy(() =>
+  import("@/pages/admin/course/Create-course.jsx"),
+);
+const EditCourseLazy = lazy(() =>
+  import("@/pages/admin/course/Edit-course.jsx"),
+);
+const CreateChapterLazy = lazy(() =>
+  import("@/pages/admin/course/Create-chapter.jsx"),
+);
+const EditChapterLazy = lazy(() =>
+  import("@/pages/admin/course/Edit-chapter.jsx"),
+);
+const HomeLazy = lazy(() => import("@/pages/home.jsx"));
+const AccountLazy = lazy(() => import("@/pages/user/Account.jsx"));
+const SignInLazy = lazy(() => import("@/pages/auth/sign-in.jsx"));
+const SignUpLazy = lazy(() => import("@/pages/auth/sign-up.jsx"));
+const RemiseLazy = lazy(() => import("@/pages/admin/Remise.jsx"));
+const ShowCoursesLazy = lazy(() =>
+  import("@/pages/admin/course/Show-courses.jsx"),
+);
+const MasterclassLazy = lazy(() =>
+  import("@/pages/admin/masterclass/Show-masterclass.jsx"),
+);
+const MasterClassLazy = lazy(() => import("@/components/Masterclass.jsx"));
+const MasterclassDetailLazy = lazy(() =>
+  import("@/components/Masterclass-detail.jsx"),
+);
+const CreateMasterclassLazy = lazy(() =>
+  import("@/pages/admin/masterclass/create-masterclass.jsx"),
+);
+const EditMasterclassLazy = lazy(() =>
+  import("@/pages/admin/masterclass/Edit-masterclass.jsx"),
+);
+const CoursedetailLazy = lazy(() => import("@/components/Course-detail.jsx"));
 
 const Layout = ({
   globalDiscount,
@@ -208,23 +247,30 @@ function App() {
             />
           }
         >
-          <Route index element={<Home />} />
-          <Route path="courses" element={<Courses />} />
-          <Route path="detail/slug/:id" element={<Coursedetail />} />
-          <Route path="masterclass" element={<MasterClass />} />
+          <Route index element={<HomeLazy />} />
+          <Route
+            path="courses"
+            element={
+              <Suspense fallback={<Loading />}>
+                <CoursesLazy />
+              </Suspense>
+            }
+          />
+          <Route path="detail/slug/:id" element={<CoursedetailLazy />} />
+          <Route path="masterclass" element={<MasterClassLazy />} />
           <Route
             path="masterclass/slug/:slug"
-            element={<MasterclassDetail />}
+            element={<MasterclassDetailLazy />}
           />
           <Route path="/invoice-pdf" element={<InvoicePdf />} />
 
           {/* compte */}
-          <Route path="user/account" element={<Account />} />
+          <Route path="user/account" element={<AccountLazy />} />
           <Route path="user/account/settings" element={<Setting />} />
 
           {/* s'authentifier */}
-          <Route path="sign-in" element={<SignIn />} />
-          <Route path="sign-up" element={<SignUp />} />
+          <Route path="sign-in" element={<SignInLazy />} />
+          <Route path="sign-up" element={<SignUpLazy />} />
           <Route path="forgot-password" element={<ForgotPassword />} />
           <Route path="reset-password" element={<ResetPassword />} />
 
@@ -235,22 +281,31 @@ function App() {
         {/* Routes admin */}
         <Route
           path="/administrator"
-          element={<Admin toggleTheme={toggleTheme} theme={theme} />}
+          element={<AdminLazy toggleTheme={toggleTheme} theme={theme} />}
         >
           {/* Chapters */}
-          <Route path="create-chapter/:courseId" element={<CreateChapter />} />
+          <Route
+            path="create-chapter/:courseId"
+            element={<CreateChapterLazy />}
+          />
           <Route
             path="course/:courseId/edit-chapter/:id"
-            element={<EditChapter />}
+            element={<EditChapterLazy />}
           />
           {/* Courses */}
-          <Route path="create-course" element={<CreateCourse />} />
-          <Route path="edit-course/:id" element={<EditCourse />} />
-          <Route path="courses" element={<ShowCourses />} />
+          <Route path="create-course" element={<CreateCourseLazy />} />
+          <Route path="edit-course/:id" element={<EditCourseLazy />} />
+          <Route path="courses" element={<ShowCoursesLazy />} />
           {/* Masterclass */}
-          <Route path="masterclass" element={<Masterclass />} />
-          <Route path="create-masterclass" element={<CreateMasterclass />} />
-          <Route path="edit-masterclass/:id" element={<EditMasterclass />} />
+          <Route path="masterclass" element={<MasterclassLazy />} />
+          <Route
+            path="create-masterclass"
+            element={<CreateMasterclassLazy />}
+          />
+          <Route
+            path="edit-masterclass/:id"
+            element={<EditMasterclassLazy />}
+          />
           {/* instructors */}
           <Route path="instructors" element={<Instructors />} />
           <Route path="instructor/create" element={<CreateInstructor />} />
@@ -260,7 +315,7 @@ function App() {
 
           <Route path="profile" element={<AccountAdmin />} />
           {/* remise */}
-          <Route path="remise" element={<Remise />} />
+          <Route path="remise" element={<RemiseLazy />} />
         </Route>
 
         {/* Autres routes */}
@@ -268,7 +323,7 @@ function App() {
           path="/course-player/course/:courseId/chapters/:chapterId"
           element={
             <Suspense fallback={<Loading />}>
-              <CoursePlayer toggleTheme={toggleTheme} theme={theme} />
+              <CoursePlayerLazy toggleTheme={toggleTheme} theme={theme} />
             </Suspense>
           }
         />
