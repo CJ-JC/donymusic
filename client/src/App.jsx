@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Routes, Route, Outlet } from "react-router-dom";
 import { Footer, Navbar } from "@/widgets/layout";
-import CoursePlayer from "./dashboard/Course-player.jsx";
+import CoursePlayer from "@/dashboard/Course-player";
 import { Courses } from "@/pages/Courses";
 import Admin from "./pages/admin/Admin";
 import CreateCourse from "./pages/admin/course/Create-course";
