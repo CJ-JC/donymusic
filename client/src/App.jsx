@@ -7,7 +7,7 @@ import axios from "axios";
 
 // Lazy imports
 const CoursePlayer = lazy(() => import("./dashboard/CoursePlayer.jsx"));
-const Courses = lazy(() => import("./pages/Courses.jsx"));
+const Courses = lazy(() => import("./pages/courses.jsx"));
 const Admin = lazy(() => import("./pages/admin/Admin.jsx"));
 const CreateCourse = lazy(() =>
   import("./pages/admin/course/Create-course.jsx"),
