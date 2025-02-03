@@ -7,7 +7,7 @@ import usePagination from "@/widgets/utils/usePagination";
 import { useSearchParams } from "react-router-dom";
 import { motion } from "framer-motion";
 
-export function Courses() {
+const Courses = () => {
   const categories = [
     { id: "1", name: "Basse", icon: "/img/basse.svg" },
     { id: "2", name: "Batterie", icon: "/img/batterie.svg" },
@@ -127,6 +127,6 @@ export function Courses() {
       </>
     </section>
   );
-}
+};
 
 export default Courses;
