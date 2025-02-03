@@ -3,7 +3,7 @@ import { Routes, Route, Outlet } from "react-router-dom";
 import { Footer, Navbar } from "@/widgets/layout";
 import Loading from "@/widgets/utils/Loading.jsx";
 import CoursePlayer from "@/dashboard/CoursePlayer.jsx";
-import { Courses } from "@/pages/Courses.jsx";
+import Courses from "@/pages/Courses.jsx";
 import Admin from "@/pages/admin/Admin.jsx";
 import CreateCourse from "@/pages/admin/course/Create-course.jsx";
 import NotFound from "@/pages/404.jsx";
