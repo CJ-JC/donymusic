@@ -8,56 +8,56 @@ import axios from "axios";
 // Lazy imports
 const CoursePlayer = lazy(() => import("./dashboard/CoursePlayer.jsx"));
 const Courses = lazy(() => import("./pages/courses.jsx"));
-const Admin = lazy(() => import("./pages/admin/Admin.jsx"));
+const Admin = lazy(() => import("./pages/admin/admin.jsx"));
 const CreateCourse = lazy(() =>
-  import("./pages/admin/course/Create-course.jsx"),
+  import("./pages/admin/course/create-course.jsx"),
 );
-const EditCourse = lazy(() => import("./pages/admin/course/Edit-course.jsx"));
+const EditCourse = lazy(() => import("./pages/admin/course/edit-course.jsx"));
 const CreateChapter = lazy(() =>
-  import("./pages/admin/course/Create-chapter.jsx"),
+  import("./pages/admin/course/create-chapter.jsx"),
 );
-const EditChapter = lazy(() => import("./pages/admin/course/Edit-chapter.jsx"));
-const Home = lazy(() => import("./pages/Home.jsx"));
-const Account = lazy(() => import("./pages/user/Account.jsx"));
+const EditChapter = lazy(() => import("./pages/admin/course/edit-chapter.jsx"));
+const Home = lazy(() => import("./pages/home.jsx"));
+const Account = lazy(() => import("./pages/user/account.jsx"));
 const SignIn = lazy(() => import("./pages/auth/Sign-in.jsx"));
 const SignUp = lazy(() => import("./pages/auth/Sign-up.jsx"));
-const Remise = lazy(() => import("./pages/admin/Remise.jsx"));
-const ShowCourses = lazy(() => import("./pages/admin/course/Show-courses.jsx"));
+const Remise = lazy(() => import("./pages/admin/remise.jsx"));
+const ShowCourses = lazy(() => import("./pages/admin/course/show-courses.jsx"));
 const Masterclass = lazy(() =>
-  import("./pages/admin/masterclass/Show-masterclass.jsx"),
+  import("./pages/admin/masterclass/show-masterclass.jsx"),
 );
 const MasterClass = lazy(() => import("./components/Masterclass.jsx"));
 const MasterclassDetail = lazy(() =>
   import("./components/Masterclass-detail.jsx"),
 );
 const CreateMasterclass = lazy(() =>
-  import("./pages/admin/masterclass/Create-masterclass.jsx"),
+  import("./pages/admin/masterclass/create-masterclass.jsx"),
 );
 const EditMasterclass = lazy(() =>
-  import("./pages/admin/masterclass/Edit-masterclass.jsx"),
+  import("./pages/admin/masterclass/edit-masterclass.jsx"),
 );
 const Coursedetail = lazy(() => import("./components/Course-detail.jsx"));
 const CreateInstructor = lazy(() =>
-  import("./pages/admin/instructor/Create-instructor.jsx"),
+  import("./pages/admin/instructor/create-instructor.jsx"),
 );
 const Instructors = lazy(() =>
-  import("./pages/admin/instructor/Instructors.jsx"),
+  import("./pages/admin/instructor/instructors.jsx"),
 );
 const EditInstructor = lazy(() =>
-  import("./pages/admin/instructor/Edit-instructor.jsx"),
+  import("./pages/admin/instructor/edit-instructor.jsx"),
 );
-const Users = lazy(() => import("./pages/admin/Users/Users.jsx"));
+const Users = lazy(() => import("./pages/admin/Users/users.jsx"));
 const AccountAdmin = lazy(() =>
-  import("./pages/admin/Users/Account-admin.jsx"),
+  import("./pages/admin/Users/account-admin.jsx"),
 );
-const Setting = lazy(() => import("./pages/user/Settings.jsx"));
-const Success = lazy(() => import("./pages/Success.jsx"));
-const InvoicePdf = lazy(() => import("./pages/user/Invoice-pdf.jsx"));
+const Setting = lazy(() => import("./pages/user/settings.jsx"));
+const Success = lazy(() => import("./pages/success.jsx"));
+const InvoicePdf = lazy(() => import("./pages/user/invoice-pdf.jsx"));
 const ForgotPassword = lazy(() => import("./pages/auth/Forgot-password.jsx"));
 const ResetPassword = lazy(() => import("./pages/auth/Reset-password.jsx"));
-const Politique = lazy(() => import("./pages/Politique.jsx"));
-const Cgu = lazy(() => import("./pages/Cgu.jsx"));
-const Cgv = lazy(() => import("./pages/Cgv.jsx"));
+const Politique = lazy(() => import("./pages/politique.jsx"));
+const Cgu = lazy(() => import("./pages/cgu.jsx"));
+const Cgv = lazy(() => import("./pages/cgv.jsx"));
 
 // Wrapper pour le lazy loading
 const LazyComponent = ({ component: Component, ...props }) => (

@@ -6,9 +6,9 @@ import { loggedOut } from "@/reducer/auth";
 import { useDispatch, useSelector } from "react-redux";
 import { checkAuthStatus } from "@/widgets/utils/CheckAuthStatus";
 import Loading from "@/widgets/utils/Loading";
-import Aside from "@/widgets/layout/Aside";
+import Aside from "@/widgets/layout/aside";
 import { LogOut, MoonIcon, SunIcon } from "lucide-react";
-import Dashboard from "./Dashboard";
+import Dashboard from "./dashboard";
 import { motion } from "framer-motion";
 
 const Admin = ({ theme, toggleTheme }) => {

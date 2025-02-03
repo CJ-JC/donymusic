@@ -10,7 +10,7 @@ import {
   User2Icon,
 } from "lucide-react";
 import { useSelector } from "react-redux";
-import Reply from "./Reply";
+import Reply from "./reply";
 
 const Remark = ({ selectedVideo, createdRemark }) => {
   const [remarks, setRemarks] = useState([]);

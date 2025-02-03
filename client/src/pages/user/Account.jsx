@@ -14,11 +14,11 @@ import {
   UserCircleIcon,
   Cog6ToothIcon,
 } from "@heroicons/react/24/solid";
-import Dashboard from "./Dashboard";
-import Invoice from "./Invoice";
-import Settings from "./Settings";
+import Dashboard from "./dashboard";
+import Invoice from "./invoice";
+import Settings from "./settings";
 import { ReceiptTextIcon } from "lucide-react";
-import Profile from "./Profile";
+import Profile from "./profile";
 import axios from "axios";
 
 const Account = () => {

@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import Note from "./Note";
+import Note from "./note";
 import { Button, Textarea, Typography } from "@material-tailwind/react";
 import { PlusCircle } from "lucide-react";
 import { useParams } from "react-router-dom";
