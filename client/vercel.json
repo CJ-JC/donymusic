@@ -2,9 +2,7 @@
   "rewrites": [
     {
       "source": "/(.*)",
-      "destination": "/index.html"
+      "destination": "/"
     }
-  ],
-  "buildCommand": "npm install && npm run build",
-  "outputDirectory": "dist"
+  ]
 }
