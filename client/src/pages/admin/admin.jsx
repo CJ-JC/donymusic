@@ -2,14 +2,14 @@ import { Button } from "@material-tailwind/react";
 import React, { useEffect, useState } from "react";
 import { Link, Outlet, useLocation, useNavigate } from "react-router-dom";
 import axios from "axios";
-import { loggedOut } from "@/reducer/auth";
 import { useDispatch, useSelector } from "react-redux";
-import { checkAuthStatus } from "@/widgets/utils/CheckAuthStatus";
 import Loading from "@/widgets/utils/Loading.jsx";
 import Aside from "@/widgets/layout/aside.jsx";
 import { LogOut, MoonIcon, SunIcon } from "lucide-react";
-import Dashboard from "./dashboard";
+import Dashboard from "@/pages/admin/dashboard.jsx";
 import { motion } from "framer-motion";
+import { loggedOut } from "@/reducer/auth";
+import { checkAuthStatus } from "@/widgets/utils/CheckAuthStatus";
 
 const Admin = ({ theme, toggleTheme }) => {
   const [authLoading, setAuthLoading] = useState(true);

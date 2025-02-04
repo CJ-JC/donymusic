@@ -4,7 +4,7 @@ import jsPDF from "jspdf";
 import { ArrowBack } from "@mui/icons-material";
 import { Button } from "@material-tailwind/react";
 import { useDispatch, useSelector } from "react-redux";
-import { checkAuthStatus } from "@/widgets/utils/CheckAuthStatus";
+import { checkAuthStatus } from "../../widgets/utils/CheckAuthStatus";
 
 const InvoicePdf = () => {
   const { state } = useLocation();

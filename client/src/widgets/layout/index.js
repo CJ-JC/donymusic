@@ -1,3 +1,3 @@
-export * from "@/widgets/layout/navbar";
-export * from "@/widgets/layout/footer";
-export * from "@/widgets/layout/page-title";
+export * from "./navbar";
+export * from "./footer";
+export * from "./page-title";

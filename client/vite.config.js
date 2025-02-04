@@ -4,56 +4,39 @@ import path from "path";
 
 export default defineConfig({
   plugins: [react()],
+  base: "/",
   optimizeDeps: {
     include: ["dompurify"],
   },
+  resolve: {
+    extensions: [".js", ".jsx", ".json"],
+    alias: {
+      "@": path.resolve(__dirname, "src"),
+    },
+  },
   build: {
-    chunkSizeWarningLimit: 1500,
     rollupOptions: {
       output: {
-        manualChunks: (id) => {
-          // Modules de node_modules
+        manualChunks(id) {
           if (id.includes("node_modules")) {
-            if (id.includes("react")) {
-              return "vendor-react";
-            }
-            if (id.includes("@material-tailwind")) {
-              return "vendor-material";
-            }
-            if (id.includes("axios") || id.includes("query")) {
-              return "vendor-data";
-            }
-            return "vendor-others";
-          }
-
-          // Modules de l'application
-          if (id.includes("/src/pages/admin/")) {
-            return "admin";
-          }
-          if (id.includes("/src/pages/auth/")) {
-            return "auth";
-          }
-          if (id.includes("/src/components/")) {
-            return "components";
-          }
-          if (id.includes("/src/widgets/")) {
-            return "widgets";
-          }
-          if (id.includes("/src/pages/")) {
-            return "pages";
+            return id
+              .toString()
+              .split("node_modules/")[1]
+              .split("/")[0]
+              .toString();
           }
         },
       },
     },
   },
-  resolve: {
-    alias: [{ find: "@", replacement: "/src" }],
-    extensions: [".js", ".jsx", ".json"],
-  },
+  // resolve: {
+  //   extensions: [".js", ".jsx", ".json"],
+  // },
   server: {
     proxy: {
       "/api": {
-        target: "https://donymusic-server.vercel.app",
+        // target: "https://donymusic-server.vercel.app",
+        target: "http://localhost:8001",
         changeOrigin: true,
       },
     },

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { Typography, Card, CardBody } from "@material-tailwind/react";
-import Countdown from "../widgets/utils/Countdown.jsx";
+import Countdown from "@/widgets/utils/Countdown.jsx";
 import {
   Calendar,
   Clock,

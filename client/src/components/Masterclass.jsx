@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Card, CardBody, Button, Typography } from "@material-tailwind/react";
 import { Mic, User } from "lucide-react";
-import Countdown from "../widgets/utils/Countdown";
+import Countdown from "@/widgets/utils/Countdown";
 import { Link } from "react-router-dom";
 import axios from "axios";
 import ReactQuill from "react-quill";

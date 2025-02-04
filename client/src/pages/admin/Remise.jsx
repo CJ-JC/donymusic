@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { Button, Input } from "@material-tailwind/react";
 
-const AddRemise = () => {
+const Remise = () => {
   const [discountPercentage, setDiscountPercentage] = useState(null);
   const [expirationDate, setExpirationDate] = useState("");
   const [courseId, setCourseId] = useState(null);
@@ -266,4 +266,4 @@ const AddRemise = () => {
   );
 };
 
-export default AddRemise;
+export default Remise;

@@ -1,6 +1,6 @@
 import React from "react";
-import Loading from "@/widgets/utils/Loading.jsx";
-import CourseList from "@/components/Course-list.jsx";
+import Loading from "../../widgets/utils/Loading.jsx";
+import CourseList from "../../components/Course-list.jsx";
 import { Typography } from "@material-tailwind/react";
 
 const Dashboard = ({ courseData, loading }) => {

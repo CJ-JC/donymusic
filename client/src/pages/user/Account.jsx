@@ -1,4 +1,4 @@
-import { checkAuthStatus } from "@/widgets/utils/CheckAuthStatus";
+import { checkAuthStatus } from "../../widgets/utils/CheckAuthStatus";
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";

@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
-import { Button, Progress, Typography } from "@material-tailwind/react";
 import {
   Check,
   File,
@@ -15,6 +14,9 @@ import {
   Accordion,
   AccordionHeader,
   AccordionBody,
+  Button,
+  Progress,
+  Typography,
 } from "@material-tailwind/react";
 import Loading from "@/widgets/utils/Loading";
 import ReactQuill from "react-quill";
