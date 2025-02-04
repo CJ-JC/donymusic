@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import CourseList from "@/components/Course-list.jsx";
 import SearchInput from "@/components/search/Search-input.jsx";
 import Categories from "@/components/search/Categories.jsx";
-import useCourses from "@/widgets/utils/UseCourses.jsx";
+import useCourses from "@/widgets/utils/UseCourses";
 import usePagination from "@/widgets/utils/usePagination";
 import { useSearchParams } from "react-router-dom";
 import { motion } from "framer-motion";
