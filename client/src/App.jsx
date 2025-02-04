@@ -37,22 +37,22 @@ const EditMasterclass = lazy(() =>
 );
 const Coursedetail = lazy(() => import("@/components/Course-detail.jsx"));
 const CreateInstructor = lazy(() =>
-  import("./pages/admin/instructor/create-instructor.jsx"),
+  import("@/pages/admin/instructor/create-instructor.jsx"),
 );
 const Instructors = lazy(() =>
-  import("./pages/admin/instructor/instructors.jsx"),
+  import("@/pages/admin/instructor/instructors.jsx"),
 );
 const EditInstructor = lazy(() =>
-  import("./pages/admin/instructor/edit-instructor.jsx"),
+  import("@/pages/admin/instructor/edit-instructor.jsx"),
 );
 const Users = lazy(() => import("./pages/admin/Users/users.jsx"));
 const AccountAdmin = lazy(() =>
-  import("./pages/admin/Users/account-admin.jsx"),
+  import("@/pages/admin/Users/account-admin.jsx"),
 );
-const Account = lazy(() => import("@/pages/user/account.jsx"));
 const Setting = lazy(() => import("@/pages/user/settings.jsx"));
 const Success = lazy(() => import("@/pages/success.jsx"));
 const InvoicePdf = lazy(() => import("@/pages/user/invoice-pdf.jsx"));
+const Account = lazy(() => import("@/pages/user/account.jsx"));
 const ForgotPassword = lazy(() => import("@/pages/auth/Forgot-password.jsx"));
 const ResetPassword = lazy(() => import("@/pages/auth/Reset-password.jsx"));
 const Politique = lazy(() => import("@/pages/politique.jsx"));
