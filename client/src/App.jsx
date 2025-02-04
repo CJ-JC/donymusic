@@ -20,34 +20,34 @@ const EditChapter = lazy(() => import("./pages/admin/course/edit-chapter.jsx"));
 const Home = lazy(() => import("./pages/home.jsx"));
 const SignIn = lazy(() => import("@/pages/auth/sign-in.jsx"));
 const SignUp = lazy(() => import("@/pages/auth/sign-up.jsx"));
-const Remise = lazy(() => import("@/pages/admin/remise.jsx"));
-const ShowCourses = lazy(() => import("@/pages/admin/course/show-courses.jsx"));
+const Remise = lazy(() => import("./pages/admin/remise.jsx"));
+const ShowCourses = lazy(() => import("./pages/admin/course/show-courses.jsx"));
 const Masterclass = lazy(() =>
-  import("@/pages/admin/masterclass/show-masterclass.jsx"),
+  import("./pages/admin/masterclass/show-masterclass.jsx"),
 );
 const MasterClass = lazy(() => import("@/components/Masterclass.jsx"));
 const MasterclassDetail = lazy(() =>
   import("@/components/Masterclass-detail.jsx"),
 );
 const CreateMasterclass = lazy(() =>
-  import("@/pages/admin/masterclass/create-masterclass.jsx"),
+  import("./pages/admin/masterclass/create-masterclass.jsx"),
 );
 const EditMasterclass = lazy(() =>
-  import("@/pages/admin/masterclass/edit-masterclass.jsx"),
+  import("./pages/admin/masterclass/edit-masterclass.jsx"),
 );
 const Coursedetail = lazy(() => import("@/components/Course-detail.jsx"));
 const CreateInstructor = lazy(() =>
-  import("@/pages/admin/instructor/create-instructor.jsx"),
+  import("./pages/admin/instructor/create-instructor.jsx"),
 );
 const Instructors = lazy(() =>
-  import("@/pages/admin/instructor/instructors.jsx"),
+  import("./pages/admin/instructor/instructors.jsx"),
 );
 const EditInstructor = lazy(() =>
-  import("@/pages/admin/instructor/edit-instructor.jsx"),
+  import("./pages/admin/instructor/edit-instructor.jsx"),
 );
-const Users = lazy(() => import("@/pages/admin/Users/users.jsx"));
+const Users = lazy(() => import("./pages/admin/Users/users.jsx"));
 const AccountAdmin = lazy(() =>
-  import("@/pages/admin/Users/account-admin.jsx"),
+  import("./pages/admin/Users/account-admin.jsx"),
 );
 const Account = lazy(() => import("@/pages/user/account.jsx"));
 const Setting = lazy(() => import("@/pages/user/settings.jsx"));
