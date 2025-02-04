@@ -1,4 +1,4 @@
-import HeaderAdmin from "@/widgets/layout/header-admin";
+import HeaderAdmin from "@/widgets/layout/header-admin.jsx";
 import { Typography } from "@material-tailwind/react";
 import axios from "axios";
 import { Eye } from "lucide-react";
