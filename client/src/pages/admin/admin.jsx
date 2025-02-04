@@ -8,7 +8,7 @@ import { checkAuthStatus } from "@/widgets/utils/CheckAuthStatus";
 import Loading from "@/widgets/utils/Loading.jsx";
 import Aside from "@/widgets/layout/aside.jsx";
 import { LogOut, MoonIcon, SunIcon } from "lucide-react";
-import Dashboard from "./dashboard.jsx";
+import Dashboard from "./dashboard";
 import { motion } from "framer-motion";
 
 const Admin = ({ theme, toggleTheme }) => {
