@@ -23,17 +23,17 @@ const SignUp = lazy(() => import("@/pages/auth/sign-up.jsx"));
 const Remise = lazy(() => import("@/pages/admin/remise.jsx"));
 const ShowCourses = lazy(() => import("@/pages/admin/course/show-courses.jsx"));
 const Masterclass = lazy(() =>
-  import("./pages/admin/masterclass/show-masterclass.jsx"),
+  import("@/pages/admin/masterclass/show-masterclass.jsx"),
 );
 const MasterClass = lazy(() => import("@/components/Masterclass.jsx"));
 const MasterclassDetail = lazy(() =>
   import("@/components/Masterclass-detail.jsx"),
 );
 const CreateMasterclass = lazy(() =>
-  import("./pages/admin/masterclass/create-masterclass.jsx"),
+  import("@/pages/admin/masterclass/create-masterclass.jsx"),
 );
 const EditMasterclass = lazy(() =>
-  import("./pages/admin/masterclass/edit-masterclass.jsx"),
+  import("@/pages/admin/masterclass/edit-masterclass.jsx"),
 );
 const Coursedetail = lazy(() => import("@/components/Course-detail.jsx"));
 const CreateInstructor = lazy(() =>
