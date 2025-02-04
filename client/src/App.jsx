@@ -45,7 +45,7 @@ const Instructors = lazy(() =>
 const EditInstructor = lazy(() =>
   import("@/pages/admin/instructor/edit-instructor.jsx"),
 );
-const Users = lazy(() => import("./pages/admin/Users/users.jsx"));
+const Users = lazy(() => import("@/pages/admin/Users/users.jsx"));
 const AccountAdmin = lazy(() =>
   import("@/pages/admin/Users/account-admin.jsx"),
 );
