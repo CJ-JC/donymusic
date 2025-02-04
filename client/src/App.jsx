@@ -18,7 +18,6 @@ const CreateChapter = lazy(() =>
 );
 const EditChapter = lazy(() => import("./pages/admin/course/edit-chapter.jsx"));
 const Home = lazy(() => import("./pages/home.jsx"));
-const Account = lazy(() => import("./pages/user/account.jsx"));
 const SignIn = lazy(() => import("@/pages/auth/Sign-in.jsx"));
 const SignUp = lazy(() => import("@/pages/auth/Sign-up.jsx"));
 const Remise = lazy(() => import("@/pages/admin/remise.jsx"));
@@ -50,6 +49,7 @@ const Users = lazy(() => import("@/pages/admin/Users/users.jsx"));
 const AccountAdmin = lazy(() =>
   import("@/pages/admin/Users/account-admin.jsx"),
 );
+const Account = lazy(() => import("@/pages/user/account.jsx"));
 const Setting = lazy(() => import("@/pages/user/settings.jsx"));
 const Success = lazy(() => import("@/pages/success.jsx"));
 const InvoicePdf = lazy(() => import("@/pages/user/invoice-pdf.jsx"));
