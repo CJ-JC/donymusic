@@ -7,7 +7,7 @@ import { Typography } from "@material-tailwind/react";
 import axios from "axios";
 import Loading from "@/widgets/utils/Loading.jsx";
 
-const Users = () => {
+const users = () => {
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -219,4 +219,4 @@ const Users = () => {
   );
 };
 
-export default Users;
+export default users;
