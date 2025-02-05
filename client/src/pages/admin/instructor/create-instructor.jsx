@@ -9,7 +9,7 @@ import {
 } from "@material-tailwind/react";
 import { useNavigate } from "react-router-dom";
 
-export default function CreateInstructor() {
+const CreateInstructor = () => {
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
     name: "",
@@ -151,4 +151,5 @@ export default function CreateInstructor() {
       </Card>
     </div>
   );
-}
+};
+export default CreateInstructor;

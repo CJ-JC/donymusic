@@ -9,7 +9,7 @@ import PublishButton from "@/widgets/utils/PublishButton";
 import Editor from "@/widgets/utils/Editor.jsx";
 import Modal from "@/widgets/utils/Modal.jsx";
 
-const editCourse = () => {
+const EditCourse = () => {
   const BASE_URL = import.meta.env.VITE_API_URL;
 
   const { id } = useParams();
@@ -579,4 +579,4 @@ const editCourse = () => {
   );
 };
 
-export default editCourse;
+export default EditCourse;

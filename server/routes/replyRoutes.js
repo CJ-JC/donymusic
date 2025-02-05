@@ -1,5 +1,6 @@
 import { Router } from "express";
-import { createReply, deleteReply, getRepliesByVideoId, updateReply } from "../controllers/Reply.js";
+
+import { createReply, deleteReply, getRepliesByVideoId, updateReply } from "../controllers/reply.js";
 
 const router = Router();
 

@@ -11,7 +11,7 @@ import {
 import { Link, useNavigate } from "react-router-dom";
 import { PencilIcon, PlusCircle, Trash, User2 } from "lucide-react";
 
-export default function Instructors() {
+const Instructors = () => {
   const navigate = useNavigate();
   const [instructors, setInstructors] = useState([]);
   const [error, setError] = useState("");
@@ -182,4 +182,6 @@ export default function Instructors() {
       </Dialog>
     </div>
   );
-}
+};
+
+export default Instructors;
