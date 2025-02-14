@@ -1,42 +1,42 @@
 import React, { useEffect, useState } from "react";
 import { Routes, Route, Outlet } from "react-router-dom";
 import { Footer, Navbar } from "@/widgets/layout";
-import CoursePlayer from "@/dashboard/CoursePlayer";
-import Courses from "@/pages/Courses_temp";
-import Admin from "@/pages/admin/Admin";
-import CreateCourse from "@/pages/admin/course/CreateCourse";
+// import CoursePlayer from "@/dashboard/CoursePlayer";
+// import Courses from "@/pages/Courses";
+// import Admin from "@/pages/admin/Admin";
+// import CreateCourse from "@/pages/admin/course/CreateCourse";
 import NotFound from "@/pages/404";
-import EditCourse from "@/pages/admin/course/EditCourse";
-import CreateChapter from "@/pages/admin/course/CreateChapter";
-import EditChapter from "@/pages/admin/course/EditChapter";
+// import EditCourse from "@/pages/admin/course/EditCourse";
+// import CreateChapter from "@/pages/admin/course/CreateChapter";
+// import EditChapter from "@/pages/admin/course/EditChapter";
 import Home from "@/pages/Home";
-import Account from "@/pages/user/Account";
-import SignIn from "@/pages/auth/SignIn";
-import SignUp from "@/pages/auth/SignUp";
-import Remise from "@/pages/admin/Remise";
-import ShowCourses from "@/pages/admin/course/ShowCourses";
+// import Account from "@/pages/user/Account";
+// import SignIn from "@/pages/auth/SignIn";
+// import SignUp from "@/pages/auth/SignUp";
+// import Remise from "@/pages/admin/Remise";
+// import ShowCourses from "@/pages/admin/course/ShowCourses";
 import axios from "axios";
 import Loading from "@/widgets/utils/Loading";
-import Masterclass from "@/pages/admin/masterclass/ShowMasterclass";
-import MasterClass from "@/components/Masterclass";
-import MasterclassDetail from "@/components/MasterclassDetail";
-import CreateMasterclass from "@/pages/admin/masterclass/CreateMasterclass";
-import EditMasterclass from "@/pages/admin/masterclass/EditMasterclass";
-import CourseDetail from "@/components/CourseDetail";
+// import Masterclass from "@/pages/admin/masterclass/ShowMasterclass";
+// import MasterClass from "@/components/Masterclass";
+// import MasterclassDetail from "@/components/MasterclassDetail";
+// import CreateMasterclass from "@/pages/admin/masterclass/CreateMasterclass";
+// import EditMasterclass from "@/pages/admin/masterclass/EditMasterclass";
+// import CourseDetail from "@/components/CourseDetail";
 import ScrollToTop from "@/widgets/utils/ScrollToTop";
-import CreateInstructor from "@/pages/admin/instructor/CreateInstructor";
-import Instructors from "@/pages/admin/instructor/Instructors";
-import EditInstructor from "@/pages/admin/instructor/EditInstructor";
-import Users from "@/pages/admin/Users/Users";
-import AccountAdmin from "@/pages/admin/users/AccountAdmin";
-import Setting from "@/pages/user/Settings";
-import Success from "@/pages/Success";
-import InvoicePdf from "@/pages/user/InvoicePdf";
-import ForgotPassword from "@/pages/auth/ForgotPassword";
-import ResetPassword from "@/pages/auth/ResetPassword";
-import Politique from "@/pages/Politique";
-import Cgu from "@/pages/cgu";
-import Cgv from "@/pages/Cgv";
+// import CreateInstructor from "@/pages/admin/instructor/CreateInstructor";
+// import Instructors from "@/pages/admin/instructor/Instructors";
+// import EditInstructor from "@/pages/admin/instructor/EditInstructor";
+// import Users from "@/pages/admin/Users/Users";
+// import AccountAdmin from "@/pages/admin/users/AccountAdmin";
+// import Setting from "@/pages/user/Settings";
+// import Success from "@/pages/Success";
+// import InvoicePdf from "@/pages/user/InvoicePdf";
+// import ForgotPassword from "@/pages/auth/ForgotPassword";
+// import ResetPassword from "@/pages/auth/ResetPassword";
+// import Politique from "@/pages/Politique";
+// import Cgu from "@/pages/cgu";
+// import Cgv from "@/pages/Cgv";
 
 const Layout = ({
   globalDiscount,
@@ -193,8 +193,6 @@ function App() {
     <div className="mx-auto h-auto md:h-screen">
       <ScrollToTop />
       <Routes>
-        {/* Routes principales */}
-
         <Route
           path="/"
           element={
@@ -208,8 +206,8 @@ function App() {
             />
           }
         >
-          <Route index element={<Home />} />
-          <Route path="courses" element={<Courses />} />
+          <Route path="/" element={<Home />} />
+          {/* <Route path="courses" element={<Courses />} />
           <Route path="detail/slug/:id" element={<CourseDetail />} />
           <Route path="masterclass" element={<MasterClass />} />
           <Route
@@ -218,63 +216,56 @@ function App() {
           />
           <Route path="/invoice-pdf" element={<InvoicePdf />} />
 
-          {/* compte */}
           <Route path="user/account" element={<Account />} />
           <Route path="user/account/settings" element={<Setting />} />
 
-          {/* s'authentifier */}
           <Route path="sign-in" element={<SignIn />} />
           <Route path="sign-up" element={<SignUp />} />
           <Route path="forgot-password" element={<ForgotPassword />} />
           <Route path="reset-password" element={<ResetPassword />} />
 
-          {/* payment */}
-          <Route path="success" element={<Success />} />
+          <Route path="success" element={<Success />} /> */}
         </Route>
 
-        {/* Routes admin */}
-        <Route
+        {/* <Route
           path="/administrator"
           element={<Admin toggleTheme={toggleTheme} theme={theme} />}
         >
-          {/* Chapters */}
           <Route path="create-chapter/:courseId" element={<CreateChapter />} />
           <Route
             path="course/:courseId/edit-chapter/:id"
             element={<EditChapter />}
           />
-          {/* Courses */}
+
           <Route path="create-course" element={<CreateCourse />} />
           <Route path="edit-course/:id" element={<EditCourse />} />
           <Route path="courses" element={<ShowCourses />} />
-          {/* Masterclass */}
+
           <Route path="masterclass" element={<Masterclass />} />
           <Route path="create-masterclass" element={<CreateMasterclass />} />
           <Route path="edit-masterclass/:id" element={<EditMasterclass />} />
-          {/* instructors */}
+
           <Route path="instructors" element={<Instructors />} />
           <Route path="instructor/create" element={<CreateInstructor />} />
           <Route path="instructor/edit/:id" element={<EditInstructor />} />
-          {/* users */}
+
           <Route path="users" element={<Users />} />
 
           <Route path="profile" element={<AccountAdmin />} />
-          {/* remise */}
-          <Route path="remise" element={<Remise />} />
-        </Route>
 
-        {/* Autres routes */}
-        <Route
+          <Route path="remise" element={<Remise />} />
+        </Route> */}
+
+        {/* <Route
           path="/course-player/course/:courseId/chapters/:chapterId"
           element={<CoursePlayer toggleTheme={toggleTheme} theme={theme} />}
-        />
+        /> */}
 
         <Route path="*" element={<NotFound />} />
 
-        {/* footer */}
-        <Route path="politique" element={<Politique />} />
+        {/* <Route path="politique" element={<Politique />} />
         <Route path="cgu" element={<Cgu />} />
-        <Route path="cgv" element={<Cgv />} />
+        <Route path="cgv" element={<Cgv />} /> */}
       </Routes>
     </div>
   );
