@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Routes, Route, Outlet } from "react-router-dom";
 import { Footer, Navbar } from "@/widgets/layout";
 import CoursePlayer from "@/dashboard/CoursePlayer";
-import Courses from "@/pages/Courses.jsx";
+import Courses from "@/pages/Courses_temp";
 import Admin from "@/pages/admin/Admin";
 import CreateCourse from "@/pages/admin/course/CreateCourse";
 import NotFound from "@/pages/404";
