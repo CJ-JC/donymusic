@@ -24,8 +24,8 @@ import { checkAuthStatus } from "@/widgets/utils/CheckAuthStatus";
 import Confetti from "@/widgets/utils/Confetti";
 import { loggedOut } from "@/reducer/auth";
 import { ArrowBack } from "@mui/icons-material";
-import CreateRemark from "./Create-remark";
-import CreateNote from "./Create-note";
+import CreateRemark from "./CreateRemark";
+import CreateNote from "./CreateNote";
 import { motion } from "framer-motion";
 
 function Icon({ id, open }) {

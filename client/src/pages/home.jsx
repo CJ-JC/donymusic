@@ -12,7 +12,7 @@ import {
   Checkbox,
 } from "@material-tailwind/react";
 import { PageTitle } from "@/widgets/layout";
-import CourseList from "@/components/Course-list";
+import CourseList from "@/components/CourseList";
 import useCourses from "@/widgets/utils/UseCourses";
 import Countdown from "@/widgets/utils/Countdown";
 import Loading from "@/widgets/utils/Loading";

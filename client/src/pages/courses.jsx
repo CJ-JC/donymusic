@@ -1,13 +1,13 @@
 import React, { useState } from "react";
-import CourseList from "@/components/Course-list";
-import SearchInput from "@/components/search/search-input";
+import CourseList from "@/components/CourseList";
+import SearchInput from "@/components/search/SearchInput";
 import Categories from "@/components/search/Categories";
 import useCourses from "@/widgets/utils/UseCourses";
 import usePagination from "@/widgets/utils/usePagination";
 import { useSearchParams } from "react-router-dom";
 import { motion } from "framer-motion";
 
-export function Courses() {
+const Courses = () => {
   const categories = [
     { id: "1", name: "Basse", icon: "/img/basse.svg" },
     { id: "2", name: "Batterie", icon: "/img/batterie.svg" },
@@ -127,6 +127,6 @@ export function Courses() {
       </>
     </section>
   );
-}
+};
 
 export default Courses;

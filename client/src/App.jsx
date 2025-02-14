@@ -1,39 +1,39 @@
 import React, { useEffect, useState } from "react";
 import { Routes, Route, Outlet } from "react-router-dom";
 import { Footer, Navbar } from "@/widgets/layout";
-import CoursePlayer from "@/dashboard/Course-player";
-import { Courses } from "@/pages/Courses";
+import CoursePlayer from "@/dashboard/CoursePlayer";
+import Courses from "@/pages/Courses.jsx";
 import Admin from "@/pages/admin/Admin";
-import CreateCourse from "@/pages/admin/course/Create-course";
+import CreateCourse from "@/pages/admin/course/CreateCourse";
 import NotFound from "@/pages/404";
-import EditCourse from "@/pages/admin/course/Edit-course";
-import CreateChapter from "@/pages/admin/course/Create-chapter";
-import EditChapter from "@/pages/admin/course/Edit-chapter";
+import EditCourse from "@/pages/admin/course/EditCourse";
+import CreateChapter from "@/pages/admin/course/CreateChapter";
+import EditChapter from "@/pages/admin/course/EditChapter";
 import Home from "@/pages/Home";
 import Account from "@/pages/user/Account";
-import SignIn from "@/pages/auth/sign-in";
-import SignUp from "@/pages/auth/sign-up";
+import SignIn from "@/pages/auth/SignIn";
+import SignUp from "@/pages/auth/SignUp";
 import Remise from "@/pages/admin/Remise";
-import ShowCourses from "@/pages/admin/course/Show-courses";
+import ShowCourses from "@/pages/admin/course/ShowCourses";
 import axios from "axios";
 import Loading from "@/widgets/utils/Loading";
-import Masterclass from "@/pages/admin/masterclass/Show-masterclass";
+import Masterclass from "@/pages/admin/masterclass/ShowMasterclass";
 import MasterClass from "@/components/Masterclass";
-import MasterclassDetail from "@/components/Masterclass-detail";
-import CreateMasterclass from "@/pages/admin/masterclass/create-masterclass";
-import EditMasterclass from "@/pages/admin/masterclass/Edit-masterclass";
-import Coursedetail from "@/components/Course-detail";
+import MasterclassDetail from "@/components/MasterclassDetail";
+import CreateMasterclass from "@/pages/admin/masterclass/CreateMasterclass";
+import EditMasterclass from "@/pages/admin/masterclass/EditMasterclass";
+import CourseDetail from "@/components/CourseDetail";
 import ScrollToTop from "@/widgets/utils/ScrollToTop";
-import CreateInstructor from "@/pages/admin/instructor/Create-instructor";
+import CreateInstructor from "@/pages/admin/instructor/CreateInstructor";
 import Instructors from "@/pages/admin/instructor/Instructors";
-import EditInstructor from "@/pages/admin/instructor/Edit-instructor";
+import EditInstructor from "@/pages/admin/instructor/EditInstructor";
 import Users from "@/pages/admin/Users/Users";
-import AccountAdmin from "@/pages/admin/Users/Account-admin";
+import AccountAdmin from "@/pages/admin/users/AccountAdmin";
 import Setting from "@/pages/user/Settings";
 import Success from "@/pages/Success";
-import InvoicePdf from "@/pages/user/Invoice-pdf";
-import ForgotPassword from "@/pages/auth/forgot-password";
-import ResetPassword from "@/pages/auth/reset-password";
+import InvoicePdf from "@/pages/user/InvoicePdf";
+import ForgotPassword from "@/pages/auth/ForgotPassword";
+import ResetPassword from "@/pages/auth/ResetPassword";
 import Politique from "@/pages/Politique";
 import Cgu from "@/pages/cgu";
 import Cgv from "@/pages/Cgv";
@@ -210,7 +210,7 @@ function App() {
         >
           <Route index element={<Home />} />
           <Route path="courses" element={<Courses />} />
-          <Route path="detail/slug/:id" element={<Coursedetail />} />
+          <Route path="detail/slug/:id" element={<CourseDetail />} />
           <Route path="masterclass" element={<MasterClass />} />
           <Route
             path="masterclass/slug/:slug"

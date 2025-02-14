@@ -1,5 +1,6 @@
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
+import path from "path";
 
 export default defineConfig({
   plugins: [react()],
@@ -7,14 +8,6 @@ export default defineConfig({
     include: ["dompurify"],
   },
   resolve: {
-    alias: [{ find: "@", replacement: "/src" }],
+    alias: [{ find: "@", replacement: path.resolve(__dirname, "src") }],
   },
-  // server: {
-  //   proxy: {
-  //     "/api": {
-  //       target: "https://donymusic-server.vercel.app",
-  //       changeOrigin: true,
-  //     },
-  //   },
-  // },
 });

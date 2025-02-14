@@ -1,72 +1,117 @@
-import { Button } from "@material-tailwind/react";
-import { PencilIcon, PlusCircle } from "lucide-react";
+import {
+  Button,
+  Dialog,
+  DialogBody,
+  DialogFooter,
+  DialogHeader,
+} from "@material-tailwind/react";
+import { PencilIcon, PlusCircle, Trash } from "lucide-react";
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import SearchInput from "@/components/search/search-input";
+import SearchInput from "@/components/search/SearchInput";
 import { Typography } from "@material-tailwind/react";
 import axios from "axios";
+import "react-datepicker/dist/react-datepicker.css"; // Importez le CSS de react-datepicker
+import { fr } from "date-fns/locale";
+import { format } from "date-fns";
 
-const ShowCourses = () => {
-  const [courses, setCourses] = useState([]);
+// Fonction de formatage de la date
+const formatDateTime = (isoDate) => {
+  try {
+    return format(new Date(isoDate), "dd MMMM yyyy, HH:mm", { locale: fr });
+  } catch {
+    return "Date invalide";
+  }
+};
+
+const ShowMasterclass = () => {
+  const [currentPage, setCurrentPage] = useState(1);
+  const masterclassesPerPage = 10;
+  const [searchQuery, setSearchQuery] = useState("");
+  const [masterclasses, setMasterclasses] = useState([]);
+  const [deleteDialog, setDeleteDialog] = useState(false);
+  const [selectedMasterclass, setMasterclass] = useState(null);
+  const [error, setError] = useState(null);
+
   useEffect(() => {
     const fetchCourses = async () => {
       try {
-        const response = await axios.get("/api/course");
-        setCourses(response.data);
+        const response = await axios.get("/api/masterclass");
+        setMasterclasses(response.data);
       } catch (error) {
-        console.error("Erreur lors de la récupération des cours :", error);
+        console.error(
+          "Erreur lors de la récupération des masterclasses :",
+          error,
+        );
       }
     };
     fetchCourses();
   }, []);
 
-  const [currentPage, setCurrentPage] = useState(1);
-  const coursesPerPage = 10;
-  const [searchQuery, setSearchQuery] = useState("");
-
-  // Filtrer les cours en fonction de la recherche
-  const filteredCourses = courses.filter((course) =>
-    course.title.toLowerCase().includes(searchQuery.toLowerCase()),
-  );
-
-  // Calculate the courses to display on the current page
-  const indexOfLastCourse = currentPage * coursesPerPage;
-  const indexOfFirstCourse = indexOfLastCourse - coursesPerPage;
-  const currentCourses = filteredCourses.slice(
-    indexOfFirstCourse,
-    indexOfLastCourse,
-  );
-
-  // Handle search input
-  const handleSearch = (event) => {
-    setSearchQuery(event.target.value);
-    setCurrentPage(1); // Reset to the first page on search
+  const handleDelete = async () => {
+    try {
+      await axios.delete(`/api/masterclass/delete/${selectedMasterclass.id}`);
+      setDeleteDialog(false);
+      window.location.reload();
+    } catch (err) {
+      setError("Erreur lors de la suppression de l'instructeur");
+    }
   };
 
-  // Change page
+  const openDeleteDialog = (masterclass) => {
+    setMasterclass(masterclass);
+    setDeleteDialog(true);
+  };
+
+  // Filtrer les cours en fonction de la recherche et des dates
+  const filteredMasterclasses = masterclasses.filter((masterclass) => {
+    // Filtre par titre
+    const titleMatch = masterclass.title
+      .toLowerCase()
+      .includes(searchQuery.toLowerCase());
+
+    return titleMatch;
+  });
+
+  // Calcul des masterclasses à afficher pour la page actuelle
+  const indexOfLastMasterclass = currentPage * masterclassesPerPage;
+  const indexOfFirstMasterclass = indexOfLastMasterclass - masterclassesPerPage;
+  const currentMasterclasses = filteredMasterclasses.slice(
+    indexOfFirstMasterclass,
+    indexOfLastMasterclass,
+  );
+
+  // Fonction de pagination
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
+
+  // Fonction de gestion de la recherche
+  const handleSearch = (event) => {
+    setSearchQuery(event.target.value);
+    setCurrentPage(1);
+  };
 
   return (
     <>
-      {/* Table of Courses */}
-      <div className="relative flex w-full flex-col overflow-scroll rounded-lg border bg-white bg-clip-border p-4 text-gray-700 shadow-md dark:bg-[#25303F]">
+      {/* Table des Masterclasses */}
+      <div className="relative flex h-full w-full flex-col overflow-scroll rounded-lg border bg-white bg-clip-border p-4 text-gray-700 shadow-md dark:bg-[#25303F]">
         <Typography
           variant="h3"
           className="mb-3 text-xl font-bold dark:text-white md:text-3xl"
           color="blue-gray"
         >
-          Liste des formations
+          Liste des masterclasses
         </Typography>
+
         <div className="flex-column mb-4 flex flex-wrap items-center justify-center space-y-4 sm:flex-row sm:space-y-4 md:justify-between">
           <SearchInput handleSearch={handleSearch} searchQuery={searchQuery} />
-          <Link to={"/administrator/create-course"}>
+          <Link to={"/administrator/create-masterclass"}>
             <Button
               variant="gradient"
               size="sm"
               className="flex items-center text-white focus:outline-none"
             >
               <PlusCircle className="mr-2 h-4 w-4" />
-              Nouvelle formation
+              Nouveau masterclass
             </Button>
           </Link>
         </div>
@@ -80,17 +125,17 @@ const ShowCourses = () => {
               </th>
               <th className="border-slate-200 bg-slate-50 border-b p-4">
                 <p className="text-slate-500 text-sm font-normal leading-none">
-                  Catégorie
-                </p>
-              </th>
-              <th className="border-slate-200 bg-slate-50 border-b p-4">
-                <p className="text-slate-500 text-sm font-normal leading-none">
                   Prix
                 </p>
               </th>
               <th className="border-slate-200 bg-slate-50 border-b p-4">
                 <p className="text-slate-500 text-sm font-normal leading-none">
-                  État
+                  Début
+                </p>
+              </th>
+              <th className="border-slate-200 bg-slate-50 border-b p-4">
+                <p className="text-slate-500 text-sm font-normal leading-none">
+                  Fin
                 </p>
               </th>
               <th className="border-slate-200 bg-slate-50 border-b p-4">
@@ -101,46 +146,44 @@ const ShowCourses = () => {
             </tr>
           </thead>
           <tbody>
-            {currentCourses.map((course, index) => (
+            {currentMasterclasses.map((masterclass, index) => (
               <tr
                 className="hover:bg-slate-50 border-slate-200 border-b dark:text-white"
                 key={index}
               >
                 <td className="p-4 py-5">
-                  <p className="text-slate-800 block text-sm font-semibold">
-                    {course.title}
+                  <p className="text-slate-800 block text-sm">
+                    {masterclass.title}
                   </p>
                 </td>
                 <td className="p-4 py-5">
-                  <p className="text-slate-800 block text-sm font-semibold">
-                    {course.category
-                      ? course.category.title
-                      : "Catégorie non définie"}
-                  </p>
-                </td>
-                <td className="p-4 py-5">
-                  <p className="text-slate-500 text-sm">{course.price}€</p>
+                  <p className="text-slate-500 text-sm">{masterclass.price}€</p>
                 </td>
                 <td className="p-4 py-5">
                   <p className="text-slate-500 text-sm">
-                    {course.isPublished ? (
-                      <span className="me-2 rounded bg-green-100 px-2.5 py-0.5 text-xs font-medium text-green-800 dark:bg-green-900 dark:text-green-300">
-                        Publié
-                      </span>
-                    ) : (
-                      <span className="me-2 rounded bg-gray-100 px-2.5 py-0.5 text-xs font-medium text-gray-800 dark:bg-gray-700 dark:text-gray-300">
-                        Non publié
-                      </span>
-                    )}
+                    {formatDateTime(masterclass.startDate)}
                   </p>
                 </td>
                 <td className="p-4 py-5">
+                  <p className="text-slate-500 text-sm">
+                    {formatDateTime(masterclass.endDate)}
+                  </p>
+                </td>
+                <td className="flex items-center gap-2 p-4 py-5">
                   <Link
-                    to={`/administrator/edit-course/${course.id}`}
-                    className="flex w-min items-center gap-1 rounded-lg border bg-blue-gray-100 p-2 text-sm font-medium text-black dark:text-blue-500"
+                    to={`/administrator/edit-masterclass/${masterclass.id}`}
+                    className="flex w-min items-center gap-1 rounded-lg bg-blue-gray-100 p-2 text-sm font-medium text-black hover:bg-gray-200 dark:text-black"
                   >
                     <PencilIcon className="h-4 w-4" />
                   </Link>
+                  <Button
+                    size="sm"
+                    color="red"
+                    onClick={() => openDeleteDialog(masterclass)}
+                    className="flex items-center gap-1 rounded-lg p-2 dark:text-white"
+                  >
+                    <Trash className="h-4 w-4" />
+                  </Button>
                 </td>
               </tr>
             ))}
@@ -152,10 +195,10 @@ const ShowCourses = () => {
           <div className="text-slate-500 text-sm dark:text-white">
             Afficher{" "}
             <b>
-              {indexOfFirstCourse + 1}-
-              {Math.min(indexOfLastCourse, filteredCourses.length)}
+              {indexOfFirstMasterclass + 1}-
+              {Math.min(indexOfLastMasterclass, filteredMasterclasses.length)}
             </b>{" "}
-            sur <b>{filteredCourses.length}</b>
+            sur <b>{filteredMasterclasses.length}</b>
           </div>
           <div className="flex space-x-1">
             <button
@@ -171,7 +214,7 @@ const ShowCourses = () => {
             </button>
             {[
               ...Array(
-                Math.ceil(filteredCourses.length / coursesPerPage),
+                Math.ceil(filteredMasterclasses.length / masterclassesPerPage),
               ).keys(),
             ].map((page) => (
               <button
@@ -189,12 +232,12 @@ const ShowCourses = () => {
             <button
               disabled={
                 currentPage ===
-                Math.ceil(filteredCourses.length / coursesPerPage)
+                Math.ceil(filteredMasterclasses.length / masterclassesPerPage)
               }
               onClick={() => paginate(currentPage + 1)}
               className={`min-w-9 min-h-9 ease rounded border px-3 py-1 text-sm font-normal transition duration-200 ${
                 currentPage ===
-                Math.ceil(filteredCourses.length / coursesPerPage)
+                Math.ceil(filteredMasterclasses.length / masterclassesPerPage)
                   ? "border-gray-200 bg-gray-100 text-gray-300"
                   : "border-gray-200 bg-white text-gray-500 hover:border-gray-400 hover:bg-gray-50"
               }`}
@@ -203,9 +246,29 @@ const ShowCourses = () => {
             </button>
           </div>
         </div>
+        <Dialog open={deleteDialog} handler={() => setDeleteDialog(false)}>
+          <DialogHeader>Confirmer la suppression</DialogHeader>
+          <DialogBody>
+            Êtes-vous sûr de vouloir supprimer la masterclasse{" "}
+            {selectedMasterclass?.name} ? Cette action est irréversible.
+          </DialogBody>
+          <DialogFooter>
+            <Button
+              variant="text"
+              color="gray"
+              onClick={() => setDeleteDialog(false)}
+              className="mr-1"
+            >
+              Annuler
+            </Button>
+            <Button variant="gradient" color="red" onClick={handleDelete}>
+              Confirmer
+            </Button>
+          </DialogFooter>
+        </Dialog>
       </div>
     </>
   );
 };
 
-export default ShowCourses;
+export default ShowMasterclass;

@@ -35,7 +35,7 @@ function Icon({ id, open }) {
   );
 }
 
-const Coursedetail = () => {
+const CourseDetail = () => {
   const BASE_URL = import.meta.env.VITE_API_URL;
 
   const { id } = useParams();
@@ -538,4 +538,4 @@ const Coursedetail = () => {
   );
 };
 
-export default Coursedetail;
+export default CourseDetail;
